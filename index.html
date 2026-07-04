@@ -1,5 +1,6 @@
 <!DOCTYPE html>
 <html lang="en" data-theme="light">
+
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
@@ -10,12 +11,12 @@
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
     <!-- Google Fonts -->
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
-    
+
     <!-- Firebase Compat SDK CDN -->
     <script src="https://www.gstatic.com/firebasejs/10.8.0/firebase-app-compat.js"></script>
     <script src="https://www.gstatic.com/firebasejs/10.8.0/firebase-auth-compat.js"></script>
     <script src="https://www.gstatic.com/firebasejs/10.8.0/firebase-firestore-compat.js"></script>
-    
+
     <style>
         /* =========================================
            CSS VARIABLES & THEMING
@@ -28,30 +29,30 @@
             --text-main: #111827;
             --text-muted: #6b7280;
             --border-color: rgba(0, 0, 0, 0.08);
-            
+
             /* Accents */
             --primary: #6366f1;
             --primary-hover: #4f46e5;
             --primary-light: rgba(99, 102, 241, 0.1);
-            
+
             --success: #10b981;
             --success-light: rgba(16, 185, 129, 0.1);
-            
+
             --danger: #ef4444;
             --danger-light: rgba(239, 68, 68, 0.1);
-            
+
             --warning: #f59e0b;
             --info: #3b82f6;
-            
+
             /* Glassmorphism */
             --glass-border: rgba(255, 255, 255, 0.4);
             --glass-shadow: 0 8px 32px 0 rgba(31, 38, 135, 0.05);
             --glass-blur: blur(12px);
-            
+
             --radius-lg: 24px;
             --radius-md: 16px;
             --radius-sm: 8px;
-            
+
             --sidebar-width: 280px;
             --header-height: 80px;
         }
@@ -64,7 +65,7 @@
             --text-main: #f8fafc;
             --text-muted: #94a3b8;
             --border-color: rgba(255, 255, 255, 0.1);
-            
+
             --glass-border: rgba(255, 255, 255, 0.05);
             --glass-shadow: 0 8px 32px 0 rgba(0, 0, 0, 0.4);
         }
@@ -89,20 +90,64 @@
         }
 
         /* Scrollbar */
-        ::-webkit-scrollbar { width: 6px; height: 6px; }
-        ::-webkit-scrollbar-track { background: transparent; }
-        ::-webkit-scrollbar-thumb { background: var(--border-color); border-radius: 4px; }
-        ::-webkit-scrollbar-thumb:hover { background: var(--text-muted); }
+        ::-webkit-scrollbar {
+            width: 6px;
+            height: 6px;
+        }
+
+        ::-webkit-scrollbar-track {
+            background: transparent;
+        }
+
+        ::-webkit-scrollbar-thumb {
+            background: var(--border-color);
+            border-radius: 4px;
+        }
+
+        ::-webkit-scrollbar-thumb:hover {
+            background: var(--text-muted);
+        }
 
         /* Typography */
-        h1, h2, h3, h4, h5, h6 { font-weight: 600; color: var(--text-main); }
-        h1 { font-size: 1.75rem; }
-        h2 { font-size: 1.25rem; margin-bottom: 1rem; }
-        
-        a { text-decoration: none; color: inherit; }
-        ul { list-style: none; }
-        button { cursor: pointer; border: none; background: none; font-family: inherit; }
-        input, select { font-family: inherit; }
+        h1,
+        h2,
+        h3,
+        h4,
+        h5,
+        h6 {
+            font-weight: 600;
+            color: var(--text-main);
+        }
+
+        h1 {
+            font-size: 1.75rem;
+        }
+
+        h2 {
+            font-size: 1.25rem;
+            margin-bottom: 1rem;
+        }
+
+        a {
+            text-decoration: none;
+            color: inherit;
+        }
+
+        ul {
+            list-style: none;
+        }
+
+        button {
+            cursor: pointer;
+            border: none;
+            background: none;
+            font-family: inherit;
+        }
+
+        input,
+        select {
+            font-family: inherit;
+        }
 
         /* =========================================
            LAYOUT: SIDEBAR
@@ -131,7 +176,11 @@
             padding-left: 0.5rem;
         }
 
-        .logo i { background: linear-gradient(135deg, var(--primary), #a855f7); -webkit-background-clip: text; -webkit-text-fill-color: transparent; }
+        .logo i {
+            background: linear-gradient(135deg, var(--primary), #a855f7);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+        }
 
         .nav-group {
             margin-bottom: 1.5rem;
@@ -160,8 +209,12 @@
             margin-bottom: 4px;
         }
 
-        .nav-item i { width: 20px; text-align: center; font-size: 1.1rem; }
-        
+        .nav-item i {
+            width: 20px;
+            text-align: center;
+            font-size: 1.1rem;
+        }
+
         .nav-item:hover {
             background: var(--primary-light);
             color: var(--primary);
@@ -232,7 +285,10 @@
             outline: none;
         }
 
-        .search-bar input:focus { border-color: var(--primary); box-shadow: 0 0 0 3px var(--primary-light); }
+        .search-bar input:focus {
+            border-color: var(--primary);
+            box-shadow: 0 0 0 3px var(--primary-light);
+        }
 
         .topbar-right {
             display: flex;
@@ -255,7 +311,10 @@
             transition: all 0.2s;
         }
 
-        .icon-btn:hover { background: var(--border-color); transform: translateY(-2px); }
+        .icon-btn:hover {
+            background: var(--border-color);
+            transform: translateY(-2px);
+        }
 
         .user-profile {
             display: flex;
@@ -269,8 +328,17 @@
             cursor: pointer;
         }
 
-        .user-profile img { width: 32px; height: 32px; border-radius: 50%; object-fit: cover; }
-        .user-profile span { font-weight: 500; padding-right: 0.5rem; }
+        .user-profile img {
+            width: 32px;
+            height: 32px;
+            border-radius: 50%;
+            object-fit: cover;
+        }
+
+        .user-profile span {
+            font-weight: 500;
+            padding-right: 0.5rem;
+        }
 
         /* View Container */
         .content-area {
@@ -285,17 +353,26 @@
             animation: fadeIn 0.4s ease forwards;
         }
 
-        .view-section.active { display: block; }
+        .view-section.active {
+            display: block;
+        }
 
         @keyframes fadeIn {
-            from { opacity: 0; transform: translateY(10px); }
-            to { opacity: 1; transform: translateY(0); }
+            from {
+                opacity: 0;
+                transform: translateY(10px);
+            }
+
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
         }
 
         /* =========================================
            COMPONENTS
            ========================================= */
-        
+
         /* Buttons */
         .btn {
             padding: 0.75rem 1.5rem;
@@ -313,7 +390,11 @@
             box-shadow: 0 4px 12px var(--primary-light);
         }
 
-        .btn-primary:hover { background: var(--primary-hover); transform: translateY(-2px); box-shadow: 0 6px 16px var(--primary-light); }
+        .btn-primary:hover {
+            background: var(--primary-hover);
+            transform: translateY(-2px);
+            box-shadow: 0 6px 16px var(--primary-light);
+        }
 
         .btn-secondary {
             background: var(--card-bg);
@@ -321,14 +402,19 @@
             border: 1px solid var(--border-color);
         }
 
-        .btn-secondary:hover { background: var(--border-color); }
+        .btn-secondary:hover {
+            background: var(--border-color);
+        }
 
         .btn-danger {
             background: var(--danger-light);
             color: var(--danger);
         }
-        
-        .btn-danger:hover { background: var(--danger); color: white; }
+
+        .btn-danger:hover {
+            background: var(--danger);
+            color: white;
+        }
 
         /* Glass Cards */
         .card {
@@ -351,11 +437,30 @@
         }
 
         /* Grid Layouts */
-        .grid-1 { display: grid; grid-template-columns: 1fr; gap: 1.5rem; }
-        .grid-2 { display: grid; grid-template-columns: repeat(2, 1fr); gap: 1.5rem; }
-        .grid-3 { display: grid; grid-template-columns: repeat(3, 1fr); gap: 1.5rem; }
-        .grid-4 { display: grid; grid-template-columns: repeat(4, 1fr); gap: 1.5rem; }
-        
+        .grid-1 {
+            display: grid;
+            grid-template-columns: 1fr;
+            gap: 1.5rem;
+        }
+
+        .grid-2 {
+            display: grid;
+            grid-template-columns: repeat(2, 1fr);
+            gap: 1.5rem;
+        }
+
+        .grid-3 {
+            display: grid;
+            grid-template-columns: repeat(3, 1fr);
+            gap: 1.5rem;
+        }
+
+        .grid-4 {
+            display: grid;
+            grid-template-columns: repeat(4, 1fr);
+            gap: 1.5rem;
+        }
+
         /* Metric Cards */
         .metric-card {
             display: flex;
@@ -374,32 +479,126 @@
             margin-bottom: 0.5rem;
         }
 
-        .metric-title { font-size: 0.875rem; color: var(--text-muted); font-weight: 500; }
-        .metric-value { font-size: 1.75rem; font-weight: 700; color: var(--text-main); }
-        .metric-trend { font-size: 0.875rem; display: flex; align-items: center; gap: 4px; }
-        .trend-up { color: var(--success); }
-        .trend-down { color: var(--danger); }
-        .trend-neutral { color: var(--text-muted); }
+        .metric-title {
+            font-size: 0.875rem;
+            color: var(--text-muted);
+            font-weight: 500;
+        }
+
+        .metric-value {
+            font-size: 1.75rem;
+            font-weight: 700;
+            color: var(--text-main);
+        }
+
+        .metric-trend {
+            font-size: 0.875rem;
+            display: flex;
+            align-items: center;
+            gap: 4px;
+        }
+
+        .trend-up {
+            color: var(--success);
+        }
+
+        .trend-down {
+            color: var(--danger);
+        }
+
+        .trend-neutral {
+            color: var(--text-muted);
+        }
 
         /* Progress Bars */
-        .progress-container { width: 100%; height: 8px; background: var(--border-color); border-radius: 4px; overflow: hidden; margin-top: 8px; }
-        .progress-bar { height: 100%; border-radius: 4px; transition: width 0.5s ease; }
-        .bg-primary { background: var(--primary); }
-        .bg-success { background: var(--success); }
-        .bg-info { background: var(--info); }
-        .bg-warning { background: var(--warning); }
-        .bg-danger { background: var(--danger); }
-        .progress-status { font-size: 0.75rem; color: var(--text-muted); margin-top: 0.25rem; }
-        .progress-status.exceeded { color: var(--danger); font-weight: 500; }
+        .progress-container {
+            width: 100%;
+            height: 8px;
+            background: var(--border-color);
+            border-radius: 4px;
+            overflow: hidden;
+            margin-top: 8px;
+        }
+
+        .progress-bar {
+            height: 100%;
+            border-radius: 4px;
+            transition: width 0.5s ease;
+        }
+
+        .bg-primary {
+            background: var(--primary);
+        }
+
+        .bg-success {
+            background: var(--success);
+        }
+
+        .bg-info {
+            background: var(--info);
+        }
+
+        .bg-warning {
+            background: var(--warning);
+        }
+
+        .bg-danger {
+            background: var(--danger);
+        }
+
+        .progress-status {
+            font-size: 0.75rem;
+            color: var(--text-muted);
+            margin-top: 0.25rem;
+        }
+
+        .progress-status.exceeded {
+            color: var(--danger);
+            font-weight: 500;
+        }
 
         /* Tables */
-        .table-wrapper { width: 100%; overflow-x: auto; max-height: 500px; overflow-y: auto; content-visibility: auto; }
-        table { width: 100%; border-collapse: collapse; text-align: left; }
-        th { padding: 1rem; font-size: 0.75rem; text-transform: uppercase; color: var(--text-muted); border-bottom: 1px solid var(--border-color); font-weight: 600; }
-        td { padding: 1rem; border-bottom: 1px solid var(--border-color); font-size: 0.875rem; color: var(--text-main); }
-        tr:last-child td { border-bottom: none; }
-        tr:hover td { background: rgba(0,0,0,0.02); }
-        [data-theme="dark"] tr:hover td { background: rgba(255,255,255,0.02); }
+        .table-wrapper {
+            width: 100%;
+            overflow-x: auto;
+            max-height: 500px;
+            overflow-y: auto;
+            content-visibility: auto;
+        }
+
+        table {
+            width: 100%;
+            border-collapse: collapse;
+            text-align: left;
+        }
+
+        th {
+            padding: 1rem;
+            font-size: 0.75rem;
+            text-transform: uppercase;
+            color: var(--text-muted);
+            border-bottom: 1px solid var(--border-color);
+            font-weight: 600;
+        }
+
+        td {
+            padding: 1rem;
+            border-bottom: 1px solid var(--border-color);
+            font-size: 0.875rem;
+            color: var(--text-main);
+        }
+
+        tr:last-child td {
+            border-bottom: none;
+        }
+
+        tr:hover td {
+            background: rgba(0, 0, 0, 0.02);
+        }
+
+        [data-theme="dark"] tr:hover td {
+            background: rgba(255, 255, 255, 0.02);
+        }
 
         .tag {
             padding: 4px 10px;
@@ -409,16 +608,34 @@
             display: inline-block;
         }
 
-        .tag-income { background: var(--success-light); color: var(--success); }
-        .tag-expense { background: var(--danger-light); color: var(--danger); }
-        .tag-need { background: var(--info); color: white; }
-        .tag-want { background: var(--warning); color: white; }
+        .tag-income {
+            background: var(--success-light);
+            color: var(--success);
+        }
+
+        .tag-expense {
+            background: var(--danger-light);
+            color: var(--danger);
+        }
+
+        .tag-need {
+            background: var(--info);
+            color: white;
+        }
+
+        .tag-want {
+            background: var(--warning);
+            color: white;
+        }
 
         /* Modals */
         .modal-overlay {
             position: fixed;
-            top: 0; left: 0; right: 0; bottom: 0;
-            background: rgba(0,0,0,0.5);
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background: rgba(0, 0, 0, 0.5);
             backdrop-filter: blur(4px);
             z-index: 100;
             display: none;
@@ -428,7 +645,10 @@
             transition: opacity 0.3s;
         }
 
-        .modal-overlay.active { display: flex; opacity: 1; }
+        .modal-overlay.active {
+            display: flex;
+            opacity: 1;
+        }
 
         .modal-content {
             background: var(--bg-color);
@@ -443,15 +663,40 @@
             overflow-y: auto;
         }
 
-        .modal-overlay.active .modal-content { transform: scale(1); }
+        .modal-overlay.active .modal-content {
+            transform: scale(1);
+        }
 
-        .modal-header { display: flex; justify-content: space-between; align-items: center; margin-bottom: 1.5rem; }
-        .modal-close { font-size: 1.25rem; color: var(--text-muted); cursor: pointer; }
-        .modal-close:hover { color: var(--text-main); }
+        .modal-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 1.5rem;
+        }
+
+        .modal-close {
+            font-size: 1.25rem;
+            color: var(--text-muted);
+            cursor: pointer;
+        }
+
+        .modal-close:hover {
+            color: var(--text-main);
+        }
 
         /* Forms */
-        .form-group { margin-bottom: 1rem; }
-        .form-label { display: block; margin-bottom: 0.5rem; font-size: 0.875rem; font-weight: 500; color: var(--text-main); }
+        .form-group {
+            margin-bottom: 1rem;
+        }
+
+        .form-label {
+            display: block;
+            margin-bottom: 0.5rem;
+            font-size: 0.875rem;
+            font-weight: 500;
+            color: var(--text-main);
+        }
+
         .form-control {
             width: 100%;
             padding: 0.75rem 1rem;
@@ -462,39 +707,99 @@
             outline: none;
             transition: border-color 0.2s;
         }
-        .form-control:focus { border-color: var(--primary); }
-        
-        .form-row { display: grid; grid-template-columns: 1fr 1fr; gap: 1rem; }
+
+        .form-control:focus {
+            border-color: var(--primary);
+        }
+
+        .form-row {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 1rem;
+        }
 
         /* Empty States */
-        .empty-state { text-align: center; padding: 3rem 1rem; color: var(--text-muted); }
-        .empty-state i { font-size: 3rem; margin-bottom: 1rem; opacity: 0.5; }
-        .empty-state p { margin-bottom: 1.5rem; }
+        .empty-state {
+            text-align: center;
+            padding: 3rem 1rem;
+            color: var(--text-muted);
+        }
+
+        .empty-state i {
+            font-size: 3rem;
+            margin-bottom: 1rem;
+            opacity: 0.5;
+        }
+
+        .empty-state p {
+            margin-bottom: 1.5rem;
+        }
 
         /* Flash / Pulse Metric Cards */
         .flash-card {
             animation: pulseGlow 2s ease-in-out infinite;
             border: 2px solid var(--primary);
         }
+
         @keyframes pulseGlow {
-            0%, 100% { box-shadow: 0 0 0 0 rgba(99, 102, 241, 0.4); }
-            50% { box-shadow: 0 0 20px 4px rgba(99, 102, 241, 0.25); }
+
+            0%,
+            100% {
+                box-shadow: 0 0 0 0 rgba(99, 102, 241, 0.4);
+            }
+
+            50% {
+                box-shadow: 0 0 20px 4px rgba(99, 102, 241, 0.25);
+            }
         }
-        .flash-card.success-flash { border-color: var(--success); }
-        .flash-card.success-flash { animation-name: pulseGlowSuccess; }
+
+        .flash-card.success-flash {
+            border-color: var(--success);
+        }
+
+        .flash-card.success-flash {
+            animation-name: pulseGlowSuccess;
+        }
+
         @keyframes pulseGlowSuccess {
-            0%, 100% { box-shadow: 0 0 0 0 rgba(16, 185, 129, 0.4); }
-            50% { box-shadow: 0 0 20px 4px rgba(16, 185, 129, 0.25); }
+
+            0%,
+            100% {
+                box-shadow: 0 0 0 0 rgba(16, 185, 129, 0.4);
+            }
+
+            50% {
+                box-shadow: 0 0 20px 4px rgba(16, 185, 129, 0.25);
+            }
         }
-        .flash-card.warning-flash { border-color: var(--warning); animation-name: pulseGlowWarning; }
+
+        .flash-card.warning-flash {
+            border-color: var(--warning);
+            animation-name: pulseGlowWarning;
+        }
+
         @keyframes pulseGlowWarning {
-            0%, 100% { box-shadow: 0 0 0 0 rgba(245, 158, 11, 0.4); }
-            50% { box-shadow: 0 0 20px 4px rgba(245, 158, 11, 0.25); }
+
+            0%,
+            100% {
+                box-shadow: 0 0 0 0 rgba(245, 158, 11, 0.4);
+            }
+
+            50% {
+                box-shadow: 0 0 20px 4px rgba(245, 158, 11, 0.25);
+            }
         }
 
         /* Theme Toggle - distinct sun/moon icons */
-        #theme-toggle .icon-sun { color: #f59e0b; font-size: 1.25rem; }
-        #theme-toggle .icon-moon { color: #6366f1; font-size: 1.1rem; }
+        #theme-toggle .icon-sun {
+            color: #f59e0b;
+            font-size: 1.25rem;
+        }
+
+        #theme-toggle .icon-moon {
+            color: #6366f1;
+            font-size: 1.1rem;
+        }
 
         /* Filter Bar */
         .filter-bar {
@@ -508,7 +813,12 @@
             border: 1px solid var(--border-color);
             border-radius: var(--radius-md);
         }
-        .filter-bar .form-group { margin-bottom: 0; flex: 1; min-width: 140px; }
+
+        .filter-bar .form-group {
+            margin-bottom: 0;
+            flex: 1;
+            min-width: 140px;
+        }
 
         /* Insight Cards */
         .insight-card {
@@ -518,13 +828,36 @@
             background: var(--primary-light);
             margin-bottom: 1rem;
         }
-        .insight-card.warning { border-left-color: var(--warning); background: rgba(245, 158, 11, 0.1); }
-        .insight-card.success { border-left-color: var(--success); background: var(--success-light); }
-        .insight-card.danger { border-left-color: var(--danger); background: var(--danger-light); }
-        .insight-card h4 { font-size: 0.875rem; margin-bottom: 0.25rem; }
-        .insight-card p { font-size: 0.875rem; color: var(--text-muted); margin: 0; }
 
-        .text-muted { color: var(--text-muted); }
+        .insight-card.warning {
+            border-left-color: var(--warning);
+            background: rgba(245, 158, 11, 0.1);
+        }
+
+        .insight-card.success {
+            border-left-color: var(--success);
+            background: var(--success-light);
+        }
+
+        .insight-card.danger {
+            border-left-color: var(--danger);
+            background: var(--danger-light);
+        }
+
+        .insight-card h4 {
+            font-size: 0.875rem;
+            margin-bottom: 0.25rem;
+        }
+
+        .insight-card p {
+            font-size: 0.875rem;
+            color: var(--text-muted);
+            margin: 0;
+        }
+
+        .text-muted {
+            color: var(--text-muted);
+        }
 
         /* Tabs */
         .tab-bar {
@@ -534,6 +867,7 @@
             border-bottom: 1px solid var(--border-color);
             padding-bottom: 0.5rem;
         }
+
         .tab-btn {
             padding: 0.6rem 1.25rem;
             border-radius: var(--radius-sm);
@@ -543,14 +877,25 @@
             border: 1px solid transparent;
             transition: all 0.2s;
         }
-        .tab-btn:hover { color: var(--primary); background: var(--primary-light); }
+
+        .tab-btn:hover {
+            color: var(--primary);
+            background: var(--primary-light);
+        }
+
         .tab-btn.active {
             color: var(--primary);
             background: var(--primary-light);
             border-color: var(--primary);
         }
-        .tab-panel { display: none; }
-        .tab-panel.active { display: block; }
+
+        .tab-panel {
+            display: none;
+        }
+
+        .tab-panel.active {
+            display: block;
+        }
 
         /* Toggle Switch */
         .toggle-row {
@@ -559,13 +904,20 @@
             justify-content: space-between;
             padding: 0.75rem 0;
         }
+
         .toggle-switch {
             position: relative;
             width: 48px;
             height: 26px;
             flex-shrink: 0;
         }
-        .toggle-switch input { opacity: 0; width: 0; height: 0; }
+
+        .toggle-switch input {
+            opacity: 0;
+            width: 0;
+            height: 0;
+        }
+
         .toggle-slider {
             position: absolute;
             cursor: pointer;
@@ -574,6 +926,7 @@
             border-radius: 999px;
             transition: 0.3s;
         }
+
         .toggle-slider:before {
             content: "";
             position: absolute;
@@ -585,8 +938,14 @@
             border-radius: 50%;
             transition: 0.3s;
         }
-        .toggle-switch input:checked + .toggle-slider { background: var(--primary); }
-        .toggle-switch input:checked + .toggle-slider:before { transform: translateX(22px); }
+
+        .toggle-switch input:checked+.toggle-slider {
+            background: var(--primary);
+        }
+
+        .toggle-switch input:checked+.toggle-slider:before {
+            transform: translateX(22px);
+        }
 
         /* Budget Planner */
         .budget-item-row {
@@ -596,7 +955,11 @@
             padding: 0.5rem 0;
             border-bottom: 1px solid var(--border-color);
         }
-        .budget-item-row:last-child { border-bottom: none; }
+
+        .budget-item-row:last-child {
+            border-bottom: none;
+        }
+
         .budget-cat-header {
             display: flex;
             align-items: center;
@@ -604,6 +967,7 @@
             gap: 1rem;
             flex-wrap: wrap;
         }
+
         .budget-input-sm {
             width: 120px;
             padding: 0.4rem 0.6rem;
@@ -612,6 +976,7 @@
             background: var(--card-bg);
             color: var(--text-main);
         }
+
         .goal-achieved {
             color: var(--success);
             font-weight: 600;
@@ -619,15 +984,26 @@
             align-items: center;
             gap: 0.5rem;
         }
-        .emi-fields { display: none; }
-        .emi-fields.visible { display: block; }
+
+        .emi-fields {
+            display: none;
+        }
+
+        .emi-fields.visible {
+            display: block;
+        }
 
         /* =========================================
            RESPONSIVE DESIGN
            ========================================= */
         @media (max-width: 1024px) {
-            .grid-4 { grid-template-columns: repeat(2, 1fr); }
-            .grid-3 { grid-template-columns: repeat(2, 1fr); }
+            .grid-4 {
+                grid-template-columns: repeat(2, 1fr);
+            }
+
+            .grid-3 {
+                grid-template-columns: repeat(2, 1fr);
+            }
         }
 
         @media (max-width: 768px) {
@@ -637,12 +1013,33 @@
                 height: 100%;
                 transition: left 0.3s ease;
             }
-            .sidebar.open { left: 0; }
-            .mobile-menu-btn { display: block; }
-            .grid-4, .grid-3, .grid-2 { grid-template-columns: 1fr; }
-            .search-bar { display: none; } /* Hide on small mobile, could move to a toggle */
-            .content-area { padding: 0 1rem 1rem 1rem; }
-            .topbar { padding: 0 1rem; }
+
+            .sidebar.open {
+                left: 0;
+            }
+
+            .mobile-menu-btn {
+                display: block;
+            }
+
+            .grid-4,
+            .grid-3,
+            .grid-2 {
+                grid-template-columns: 1fr;
+            }
+
+            .search-bar {
+                display: none;
+            }
+
+            /* Hide on small mobile, could move to a toggle */
+            .content-area {
+                padding: 0 1rem 1rem 1rem;
+            }
+
+            .topbar {
+                padding: 0 1rem;
+            }
         }
 
         /* Firebase Integration Styles */
@@ -660,20 +1057,24 @@
             user-select: none;
             transition: all 0.2s ease;
         }
+
         .user-profile:hover {
             background: var(--border-color);
         }
+
         .user-profile img {
             width: 32px;
             height: 32px;
             border-radius: 50%;
             object-fit: cover;
         }
+
         .user-profile span {
             font-weight: 500;
             font-size: 0.875rem;
             color: var(--text-main);
         }
+
         .user-dropdown {
             position: absolute;
             top: calc(100% + 8px);
@@ -691,28 +1092,34 @@
             z-index: 100;
             animation: slideDown 0.2s ease forwards;
         }
+
         .user-dropdown.active {
             display: flex;
         }
+
         .user-dropdown-header {
             display: flex;
             flex-direction: column;
             padding: 0.25rem 0.5rem 0.5rem 0.5rem;
         }
+
         .user-dropdown-header strong {
             font-size: 0.875rem;
             color: var(--text-main);
         }
+
         .user-dropdown-header span {
             font-size: 0.75rem;
             color: var(--text-muted);
             word-break: break-all;
         }
+
         .user-dropdown-divider {
             height: 1px;
             background: var(--border-color);
             margin: 0.5rem 0;
         }
+
         .dropdown-item {
             display: flex;
             align-items: center;
@@ -726,10 +1133,12 @@
             text-align: left;
             transition: all 0.2s;
         }
+
         .dropdown-item:hover {
             background: var(--primary-light);
             color: var(--primary);
         }
+
         .dropdown-item.text-danger:hover {
             background: var(--danger-light);
             color: var(--danger);
@@ -743,9 +1152,11 @@
             border: 1px solid var(--border-color);
             font-size: 0.75rem;
         }
+
         [data-theme="dark"] .firebase-status-panel {
             background: rgba(255, 255, 255, 0.02);
         }
+
         .firebase-status-panel .status-title {
             font-weight: 600;
             margin-bottom: 0.5rem;
@@ -753,6 +1164,7 @@
             text-transform: uppercase;
             letter-spacing: 0.05em;
         }
+
         .status-item {
             display: flex;
             align-items: center;
@@ -760,9 +1172,11 @@
             margin-bottom: 0.25rem;
             color: var(--text-main);
         }
+
         .status-item:last-child {
             margin-bottom: 0;
         }
+
         .status-dot {
             width: 8px;
             height: 8px;
@@ -770,15 +1184,20 @@
             background: #94a3b8;
             transition: background-color 0.3s ease;
         }
-        .status-dot.connected, .status-dot.logged-in {
+
+        .status-dot.connected,
+        .status-dot.logged-in {
             background: var(--success);
         }
+
         .status-dot.error {
             background: var(--danger);
         }
+
         .status-dot.loading {
             background: var(--warning);
         }
+
         .test-status {
             margin-top: 0.5rem;
             font-size: 0.7rem;
@@ -788,15 +1207,25 @@
         }
 
         @keyframes slideDown {
-            from { opacity: 0; transform: translateY(-5px); }
-            to { opacity: 1; transform: translateY(0); }
+            from {
+                opacity: 0;
+                transform: translateY(-5px);
+            }
+
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
         }
 
         /* Loading Overlay */
         #loading-overlay {
             display: none;
             position: fixed;
-            top: 0; left: 0; right: 0; bottom: 0;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
             background: rgba(240, 242, 245, 0.85);
             z-index: 9999;
             align-items: center;
@@ -806,9 +1235,11 @@
             backdrop-filter: blur(5px);
             transition: opacity 0.3s ease;
         }
+
         [data-theme="dark"] #loading-overlay {
             background: rgba(15, 23, 42, 0.85);
         }
+
         #loading-overlay .spinner {
             width: 50px;
             height: 50px;
@@ -817,13 +1248,17 @@
             border-radius: 50%;
             animation: spin 1s linear infinite;
         }
+
         #loading-overlay span {
             font-weight: 600;
             color: var(--text-main);
             font-size: 1rem;
         }
+
         @keyframes spin {
-            to { transform: rotate(360deg); }
+            to {
+                transform: rotate(360deg);
+            }
         }
 
         /* Toast Notifications CSS */
@@ -846,20 +1281,25 @@
             transition: all 0.3s cubic-bezier(0.68, -0.55, 0.265, 1.55);
             pointer-events: auto;
         }
+
         [data-theme="dark"] .toast-msg {
             background: rgba(15, 23, 42, 0.6);
             border: 1px solid rgba(255, 255, 255, 0.1);
         }
+
         .toast-msg.show {
             transform: translateY(0);
             opacity: 1;
         }
+
         .toast-msg.success {
             border-left: 4px solid var(--success);
         }
+
         .toast-msg.error {
             border-left: 4px solid var(--danger);
         }
+
         .toast-msg.info {
             border-left: 4px solid var(--primary);
         }
@@ -874,9 +1314,11 @@
             justify-content: center;
             background: linear-gradient(135deg, #f0f2f5 0%, #e2e8f0 100%);
         }
+
         [data-theme="dark"] #auth-gate {
             background: linear-gradient(135deg, #0f172a 0%, #1e293b 100%);
         }
+
         .auth-panel {
             display: flex;
             flex-direction: column;
@@ -886,6 +1328,7 @@
             text-align: center;
             padding: 2rem;
         }
+
         .auth-card {
             background: var(--card-bg);
             backdrop-filter: var(--glass-blur);
@@ -901,6 +1344,7 @@
             align-items: center;
             gap: 1.25rem;
         }
+
         .auth-logo {
             display: flex;
             align-items: center;
@@ -909,21 +1353,25 @@
             font-weight: 700;
             color: var(--primary);
         }
+
         .auth-logo i {
             font-size: 2rem;
         }
+
         .auth-card h1 {
             font-size: 1.5rem;
             font-weight: 700;
             color: var(--text-main);
             margin: 0;
         }
+
         .auth-card p {
             color: var(--text-muted);
             margin: 0;
             font-size: 0.9375rem;
             line-height: 1.5;
         }
+
         .auth-error {
             width: 100%;
             padding: 0.75rem 1rem;
@@ -934,6 +1382,7 @@
             text-align: left;
             line-height: 1.4;
         }
+
         .btn-google {
             display: inline-flex;
             align-items: center;
@@ -950,27 +1399,33 @@
             cursor: pointer;
             transition: all 0.2s ease;
         }
+
         .btn-google:hover:not(:disabled) {
             background: #f8f9fa;
             box-shadow: 0 1px 3px rgba(0, 0, 0, 0.12);
         }
+
         .btn-google:disabled {
             opacity: 0.6;
             cursor: not-allowed;
         }
+
         [data-theme="dark"] .btn-google {
             background: #2d3748;
             color: #e2e8f0;
             border-color: #4a5568;
         }
+
         [data-theme="dark"] .btn-google:hover:not(:disabled) {
             background: #374151;
         }
+
         .user-profile-info {
             display: flex;
             flex-direction: column;
             line-height: 1.2;
         }
+
         .user-profile-info .user-email-visible {
             font-size: 0.7rem;
             color: var(--text-muted);
@@ -982,6 +1437,7 @@
         }
     </style>
 </head>
+
 <body>
     <!-- Loading Overlay -->
     <div id="loading-overlay">
@@ -990,7 +1446,9 @@
     </div>
 
     <!-- Toast Notifications Container -->
-    <div id="toast-container" style="position: fixed; top: 20px; right: 20px; z-index: 10000; display: flex; flex-direction: column; gap: 10px; pointer-events: none;"></div>
+    <div id="toast-container"
+        style="position: fixed; top: 20px; right: 20px; z-index: 10000; display: flex; flex-direction: column; gap: 10px; pointer-events: none;">
+    </div>
 
     <!-- Auth Gate (shown until Firebase auth state is resolved) -->
     <div id="auth-gate">
@@ -1016,209 +1474,212 @@
     </div>
 
     <div id="app-shell" style="display: none;">
-    <!-- =========================================
+        <!-- =========================================
          SIDEBAR
          ========================================= -->
-    <aside class="sidebar" id="sidebar">
-        <div class="logo">
-            <i class="fa-solid fa-infinity"></i>
-            Finova
-        </div>
-
-        <div class="nav-group">
-            <div class="nav-group-title">Overview</div>
-            <div class="nav-item active" data-target="view-dashboard">
-                <i class="fa-solid fa-house"></i> Dashboard
-            </div>
-        </div>
-
-        <div class="nav-group">
-            <div class="nav-group-title">Tracking</div>
-            <div class="nav-item" data-target="view-income">
-                <i class="fa-solid fa-arrow-down-wide-short"></i> Income Tracker
-            </div>
-            <div class="nav-item" data-target="view-expenses">
-                <i class="fa-solid fa-arrow-up-wide-short"></i> Expense Tracker
-            </div>
-            <div class="nav-item" data-target="view-categories">
-                <i class="fa-solid fa-list"></i> Category Manager
-            </div>
-        </div>
-
-        <div class="nav-group">
-            <div class="nav-group-title">Planning & Goals</div>
-            <div class="nav-item" data-target="view-budget">
-                <i class="fa-solid fa-wallet"></i> Budget Planner
-            </div>
-            <div class="nav-item" data-target="view-debts">
-                <i class="fa-solid fa-hand-holding-dollar"></i> Debt Tracker
-            </div>
-            <div class="nav-item" data-target="view-goals">
-                <i class="fa-solid fa-bullseye"></i> Savings
-            </div>
-            <div class="nav-item" data-target="view-goals-dashboard">
-                <i class="fa-solid fa-trophy"></i> Goals Dashboard
-            </div>
-        </div>
-
-        <div class="nav-group">
-            <div class="nav-group-title">Insights</div>
-            <div class="nav-item" data-target="view-analytics">
-                <i class="fa-solid fa-chart-line"></i> Spending Analytics
+        <aside class="sidebar" id="sidebar">
+            <div class="logo">
+                <i class="fa-solid fa-infinity"></i>
+                Finova
             </div>
 
-            <div class="nav-item" data-target="view-insights">
-                <i class="fa-solid fa-lightbulb"></i> Smart Insights
+            <div class="nav-group">
+                <div class="nav-group-title">Overview</div>
+                <div class="nav-item active" data-target="view-dashboard">
+                    <i class="fa-solid fa-house"></i> Dashboard
+                </div>
             </div>
-        </div>
 
-        <!-- Firebase Status Indicator Panel -->
-        <div class="firebase-status-panel">
-            <div class="status-title">Firebase Status</div>
-            <div class="status-item" id="status-firebase">
-                <span class="status-dot"></span> Firebase: <span class="status-text">Disconnected</span>
+            <div class="nav-group">
+                <div class="nav-group-title">Tracking</div>
+                <div class="nav-item" data-target="view-income">
+                    <i class="fa-solid fa-arrow-down-wide-short"></i> Income Tracker
+                </div>
+                <div class="nav-item" data-target="view-expenses">
+                    <i class="fa-solid fa-arrow-up-wide-short"></i> Expense Tracker
+                </div>
+                <div class="nav-item" data-target="view-categories">
+                    <i class="fa-solid fa-list"></i> Category Manager
+                </div>
             </div>
-            <div class="status-item" id="status-firestore">
-                <span class="status-dot"></span> Firestore: <span class="status-text">Disconnected</span>
-            </div>
-            <div class="status-item" id="status-auth">
-                <span class="status-dot"></span> Session: <span class="status-text">Logged Out</span>
-            </div>
-            <div class="status-item" id="status-sync">
-                <span class="status-dot"></span> Sync: <span class="status-text">Idle</span>
-            </div>
-            <div id="firestore-test-status" class="test-status"></div>
-        </div>
 
-    </aside>
+            <div class="nav-group">
+                <div class="nav-group-title">Planning & Goals</div>
+                <div class="nav-item" data-target="view-budget">
+                    <i class="fa-solid fa-wallet"></i> Budget Planner
+                </div>
+                <div class="nav-item" data-target="view-debts">
+                    <i class="fa-solid fa-hand-holding-dollar"></i> Debt Tracker
+                </div>
+                <div class="nav-item" data-target="view-goals">
+                    <i class="fa-solid fa-bullseye"></i> Savings
+                </div>
+                <div class="nav-item" data-target="view-goals-dashboard">
+                    <i class="fa-solid fa-trophy"></i> Goals Dashboard
+                </div>
+            </div>
 
-    <!-- =========================================
+            <div class="nav-group">
+                <div class="nav-group-title">Insights</div>
+                <div class="nav-item" data-target="view-analytics">
+                    <i class="fa-solid fa-chart-line"></i> Spending Analytics
+                </div>
+
+                <div class="nav-item" data-target="view-insights">
+                    <i class="fa-solid fa-lightbulb"></i> Smart Insights
+                </div>
+            </div>
+
+            <!-- Firebase Status Indicator Panel -->
+            <div class="firebase-status-panel">
+                <div class="status-title">Firebase Status</div>
+                <div class="status-item" id="status-firebase">
+                    <span class="status-dot"></span> Firebase: <span class="status-text">Disconnected</span>
+                </div>
+                <div class="status-item" id="status-firestore">
+                    <span class="status-dot"></span> Firestore: <span class="status-text">Disconnected</span>
+                </div>
+                <div class="status-item" id="status-auth">
+                    <span class="status-dot"></span> Session: <span class="status-text">Logged Out</span>
+                </div>
+                <div class="status-item" id="status-sync">
+                    <span class="status-dot"></span> Sync: <span class="status-text">Idle</span>
+                </div>
+                <div id="firestore-test-status" class="test-status"></div>
+            </div>
+
+        </aside>
+
+        <!-- =========================================
          MAIN CONTENT
          ========================================= -->
-    <main class="main-wrapper">
-        <!-- Topbar -->
-        <header class="topbar">
-            <div class="topbar-left">
-                <button class="mobile-menu-btn" id="mobile-menu-btn">
-                    <i class="fa-solid fa-bars"></i>
-                </button>
-                <div class="search-bar">
-                    <i class="fa-solid fa-magnifying-glass"></i>
-                    <input type="text" placeholder="Search Transaction..." id="global-search-input">
-                </div>
-            </div>
-            <div class="topbar-right">
-                <button class="btn btn-primary" onclick="openModal('modal-add-transaction')">
-                    <i class="fa-solid fa-plus"></i> New
-                </button>
-                <button class="icon-btn" id="theme-toggle" title="Toggle Theme">
-                    <i class="fa-solid fa-moon"></i>
-                </button>
-                <button class="icon-btn" onclick="navigate('view-settings')" title="Settings">
-                    <i class="fa-solid fa-gear"></i>
-                </button>
-            </div>
-        </header>
-
-        <!-- Content Area -->
-        <div class="content-area">
-
-            <!-- Firebase Alert Banner -->
-            <div id="firebase-alert-banner" class="insight-card danger" style="display: none; margin-bottom: 1.5rem;">
-                <h4><i class="fa-solid fa-triangle-exclamation"></i> Firebase Connection Error</h4>
-                <p id="firebase-alert-msg"></p>
-            </div>
-
-            <!-- ================= VIEW: DASHBOARD ================= -->
-            <section id="view-dashboard" class="view-section active">
-                <div class="card-header">
-                    <h2>Dashboard</h2>
-                    <span class="text-muted" id="dashboard-date"></span>
-                </div>
-
-                <!-- Metrics Grid -->
-                <div class="grid-4" style="margin-bottom: 1.5rem;">
-                    <div class="card metric-card">
-                        <div class="metric-icon" style="background: var(--success-light); color: var(--success);">
-                            <i class="fa-solid fa-arrow-down"></i>
-                        </div>
-                        <div class="metric-title">Monthly Income</div>
-                        <div class="metric-value" id="dash-income">₹0</div>
-                    </div>
-                    <div class="card metric-card">
-                        <div class="metric-icon" style="background: var(--danger-light); color: var(--danger);">
-                            <i class="fa-solid fa-arrow-up"></i>
-                        </div>
-                        <div class="metric-title">Monthly Expenses</div>
-                        <div class="metric-value" id="dash-expense">₹0</div>
-                    </div>
-                    <div class="card metric-card">
-                        <div class="metric-icon" style="background: var(--info); color: white;">
-                            <i class="fa-solid fa-wallet"></i>
-                        </div>
-                        <div class="metric-title">Current Cash</div>
-                        <div class="metric-value" id="dash-cash">₹0</div>
-                    </div>
-                    <div class="card metric-card">
-                        <div class="metric-icon" style="background: var(--warning); color: white;">
-                            <i class="fa-solid fa-piggy-bank"></i>
-                        </div>
-                        <div class="metric-title">Total Savings</div>
-                        <div class="metric-value" id="dash-savings">₹0</div>
+        <main class="main-wrapper">
+            <!-- Topbar -->
+            <header class="topbar">
+                <div class="topbar-left">
+                    <button class="mobile-menu-btn" id="mobile-menu-btn">
+                        <i class="fa-solid fa-bars"></i>
+                    </button>
+                    <div class="search-bar">
+                        <i class="fa-solid fa-magnifying-glass"></i>
+                        <input type="text" placeholder="Search Transaction..." id="global-search-input">
                     </div>
                 </div>
+                <div class="topbar-right">
+                    <button class="btn btn-primary" onclick="openModal('modal-add-transaction')">
+                        <i class="fa-solid fa-plus"></i> New
+                    </button>
+                    <button class="icon-btn" id="theme-toggle" title="Toggle Theme">
+                        <i class="fa-solid fa-moon"></i>
+                    </button>
+                    <button class="icon-btn" onclick="navigate('view-settings')" title="Settings">
+                        <i class="fa-solid fa-gear"></i>
+                    </button>
+                </div>
+            </header>
 
-                <div style="margin-bottom: 1.5rem;">
-                    <div class="card">
-                        <h3 class="card-header">Monthly Trend</h3>
-                        <div style="position: relative; height: 280px; width: 100%;">
-                            <canvas id="chart-dash-trend"></canvas>
-                        </div>
-                    </div>
+            <!-- Content Area -->
+            <div class="content-area">
+
+                <!-- Firebase Alert Banner -->
+                <div id="firebase-alert-banner" class="insight-card danger"
+                    style="display: none; margin-bottom: 1.5rem;">
+                    <h4><i class="fa-solid fa-triangle-exclamation"></i> Firebase Connection Error</h4>
+                    <p id="firebase-alert-msg"></p>
                 </div>
 
-                <div class="grid-2">
-                    <!-- Recent Transactions -->
-                    <div class="card">
-                        <div class="card-header">
-                            <h3>Recent Transactions</h3>
-                            <button class="btn btn-secondary" onclick="navigate('view-expenses')">View All</button>
+                <!-- ================= VIEW: DASHBOARD ================= -->
+                <section id="view-dashboard" class="view-section active">
+                    <div class="card-header">
+                        <h2>Dashboard</h2>
+                        <span class="text-muted" id="dashboard-date"></span>
+                    </div>
+
+                    <!-- Metrics Grid -->
+                    <div class="grid-4" style="margin-bottom: 1.5rem;">
+                        <div class="card metric-card">
+                            <div class="metric-icon" style="background: var(--success-light); color: var(--success);">
+                                <i class="fa-solid fa-arrow-down"></i>
+                            </div>
+                            <div class="metric-title">Monthly Income</div>
+                            <div class="metric-value" id="dash-income">₹0</div>
                         </div>
-                        <div class="table-wrapper">
-                            <table>
-                                <thead>
-                                    <tr>
-                                        <th>Date</th>
-                                        <th>Description</th>
-                                        <th>Amount</th>
-                                    </tr>
-                                </thead>
-                                <tbody id="dash-recent-tx">
-                                    <!-- Rendered via JS -->
-                                </tbody>
-                            </table>
+                        <div class="card metric-card">
+                            <div class="metric-icon" style="background: var(--danger-light); color: var(--danger);">
+                                <i class="fa-solid fa-arrow-up"></i>
+                            </div>
+                            <div class="metric-title">Monthly Expenses</div>
+                            <div class="metric-value" id="dash-expense">₹0</div>
+                        </div>
+                        <div class="card metric-card">
+                            <div class="metric-icon" style="background: var(--info); color: white;">
+                                <i class="fa-solid fa-wallet"></i>
+                            </div>
+                            <div class="metric-title">Current Cash</div>
+                            <div class="metric-value" id="dash-cash">₹0</div>
+                        </div>
+                        <div class="card metric-card">
+                            <div class="metric-icon" style="background: var(--warning); color: white;">
+                                <i class="fa-solid fa-piggy-bank"></i>
+                            </div>
+                            <div class="metric-title">Total Savings</div>
+                            <div class="metric-value" id="dash-savings">₹0</div>
                         </div>
                     </div>
-                    <!-- Active Goal & Upcoming -->
-                    <div class="grid-1">
-                        <div class="card" style="display:none;">
-                        </div>
+
+                    <div style="margin-bottom: 1.5rem;">
                         <div class="card">
-                            <h3>Upcoming Bills</h3>
-                            <div id="dash-upcoming-bills" style="margin-top: 1rem; max-height: 400px; overflow-y: auto; content-visibility: auto;">
-                                <!-- JS -->
+                            <h3 class="card-header">Monthly Trend</h3>
+                            <div style="position: relative; height: 280px; width: 100%;">
+                                <canvas id="chart-dash-trend"></canvas>
                             </div>
                         </div>
                     </div>
-                </div>
-            </section>
 
-            <!-- ================= VIEW: EXPENSE TRACKER ================= -->
-            <section id="view-expenses" class="view-section">
-                <div class="card-header">
-                    <h2>Expense Tracker</h2>
-                    <button class="btn btn-primary" onclick="openModal('modal-add-transaction')">Add Expense</button>
-                </div>
+                    <div class="grid-2">
+                        <!-- Recent Transactions -->
+                        <div class="card">
+                            <div class="card-header">
+                                <h3>Recent Transactions</h3>
+                                <button class="btn btn-secondary" onclick="navigate('view-expenses')">View All</button>
+                            </div>
+                            <div class="table-wrapper">
+                                <table>
+                                    <thead>
+                                        <tr>
+                                            <th>Date</th>
+                                            <th>Description</th>
+                                            <th>Amount</th>
+                                        </tr>
+                                    </thead>
+                                    <tbody id="dash-recent-tx">
+                                        <!-- Rendered via JS -->
+                                    </tbody>
+                                </table>
+                            </div>
+                        </div>
+                        <!-- Active Goal & Upcoming -->
+                        <div class="grid-1">
+                            <div class="card" style="display:none;">
+                            </div>
+                            <div class="card">
+                                <h3>Upcoming Bills</h3>
+                                <div id="dash-upcoming-bills"
+                                    style="margin-top: 1rem; max-height: 400px; overflow-y: auto; content-visibility: auto;">
+                                    <!-- JS -->
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </section>
+
+                <!-- ================= VIEW: EXPENSE TRACKER ================= -->
+                <section id="view-expenses" class="view-section">
+                    <div class="card-header">
+                        <h2>Expense Tracker</h2>
+                        <button class="btn btn-primary" onclick="openModal('modal-add-transaction')">Add
+                            Expense</button>
+                    </div>
                     <div class="filter-bar">
                         <div class="form-group">
                             <label class="form-label">From Date</label>
@@ -1239,581 +1700,626 @@
 
                     <div class="card">
                         <div class="table-wrapper">
-                        <table>
-                            <thead>
-                                <tr>
-                                    <th>Date</th>
-                                    <th>Description</th>
-                                    <th>Category</th>
-                                    <th>Type</th>
-                                    <th>Amount</th>
-                                    <th>Actions</th>
-                                </tr>
-                            </thead>
-                            <tbody id="expense-table-body">
-                                <!-- JS -->
-                            </tbody>
-                        </table>
-                    </div>
-                </div>
-            </section>
-            
-            <section id="view-income" class="view-section">
-                <div class="card-header">
-                    <h2>Income Tracker</h2>
-                    <button class="btn btn-primary" onclick="openModal('modal-add-income')">Add Income</button>
-                </div>
-                <div class="card">
-                    <div class="table-wrapper">
-                        <table>
-                            <thead>
-                                <tr>
-                                    <th>Date</th>
-                                    <th>Source / Description</th>
-                                    <th>Amount</th>
-                                    <th>Actions</th>
-                                </tr>
-                            </thead>
-                            <tbody id="income-table-body">
-                                <!-- JS -->
-                            </tbody>
-                        </table>
-                    </div>
-                </div>
-            </section>
-            <section id="view-budget" class="view-section">
-                <div class="card-header">
-                    <h2>Budget Planner</h2>
-                    <button class="btn btn-primary" onclick="openBudgetCategoryModal()">
-                        <i class="fa-solid fa-plus"></i> Add Category
-                    </button>
-                </div>
-
-                <div class="grid-3" style="margin-bottom: 1.5rem;">
-                    <div class="card metric-card">
-                        <div class="metric-title">Total Allocated</div>
-                        <div class="metric-value" id="budget-total-allocated">₹0</div>
-                    </div>
-                    <div class="card metric-card">
-                        <div class="metric-title">Total Spent (This Month)</div>
-                        <div class="metric-value" id="budget-total-spent" style="color: var(--danger);">₹0</div>
-                    </div>
-                    <div class="card metric-card">
-                        <div class="metric-title">Remaining Budget</div>
-                        <div class="metric-value" id="budget-remaining" style="color: var(--success);">₹0</div>
-                    </div>
-                </div>
-
-                <div id="budget-categories-list">
-                    <!-- JS renders editable budget categories -->
-                </div>
-            </section>
-            <section id="view-debts" class="view-section">
-                <div class="card-header">
-                    <h2>Debt Tracker</h2>
-                    <button class="btn btn-primary" onclick="openModal('modal-add-debt')">
-                        <i class="fa-solid fa-plus"></i> Add Debt
-                    </button>
-                </div>
-
-                <div class="grid-3" style="margin-bottom: 1.5rem;">
-                    <div class="card metric-card">
-                        <div class="metric-title">Total Debt</div>
-                        <div class="metric-value" id="debt-total-owed">₹0</div>
-                    </div>
-                    <div class="card metric-card">
-                        <div class="metric-title">Total Paid</div>
-                        <div class="metric-value" id="debt-total-paid" style="color: var(--success);">₹0</div>
-                    </div>
-                    <div class="card metric-card">
-                        <div class="metric-title">Remaining</div>
-                        <div class="metric-value" id="debt-remaining" style="color: var(--danger);">₹0</div>
-                    </div>
-                </div>
-
-                <div id="debts-list">
-                    <!-- JS renders debt cards -->
-                </div>
-            </section>
-            <section id="view-goals" class="view-section">
-                <div class="card-header">
-                    <h2>Savings</h2>
-                    <button class="btn btn-primary" onclick="openModal('modal-add-savings')">
-                        <i class="fa-solid fa-plus"></i> Add Savings
-                    </button>
-                </div>
-
-                <div class="card metric-card flash-card success-flash" style="margin-bottom: 1.5rem; max-width: 400px;">
-                    <div class="metric-icon" style="background: var(--success-light); color: var(--success);">
-                        <i class="fa-solid fa-piggy-bank"></i>
-                    </div>
-                    <div class="metric-title">Total Savings</div>
-                    <div class="metric-value" id="savings-total">₹0</div>
-                </div>
-
-                <div class="card">
-                    <div class="table-wrapper">
-                        <table>
-                            <thead>
-                                <tr>
-                                    <th>Date</th>
-                                    <th>Amount</th>
-                                    <th>Actions</th>
-                                </tr>
-                            </thead>
-                            <tbody id="savings-table-body">
-                                <!-- JS -->
-                            </tbody>
-                        </table>
-                    </div>
-                </div>
-            </section>
-            <section id="view-goals-dashboard" class="view-section">
-                <div class="card-header">
-                    <h2>Goals Dashboard</h2>
-                    <button class="btn btn-primary" onclick="openModal('modal-add-goal')">
-                        <i class="fa-solid fa-plus"></i> Add Goal
-                    </button>
-                </div>
-
-                <div class="grid-2" style="margin-bottom: 1.5rem;">
-                    <div class="card metric-card flash-card success-flash">
-                        <div class="metric-icon" style="background: var(--success-light); color: var(--success);">
-                            <i class="fa-solid fa-piggy-bank"></i>
-                        </div>
-                        <div class="metric-title">Total Savings</div>
-                        <div class="metric-value" id="goals-dash-savings">₹0</div>
-                    </div>
-                    <div class="card metric-card flash-card warning-flash">
-                        <div class="metric-icon" style="background: rgba(245, 158, 11, 0.15); color: var(--warning);">
-                            <i class="fa-solid fa-bullseye"></i>
-                        </div>
-                        <div class="metric-title">Total Needed to Achieve Goals</div>
-                        <div class="metric-value" id="goals-dash-target">₹0</div>
-                    </div>
-                </div>
-
-                <div id="financial-goals-list">
-                    <!-- JS -->
-                </div>
-            </section>
-            <section id="view-analytics" class="view-section">
-                <div class="card-header" style="display:flex; justify-content:space-between; align-items:center;">
-                    <h2>Spending Analytics</h2>
-                    <div style="display:flex; gap: 10px;">
-                        <select class="form-control" id="analytics-year-filter" onchange="updateAnalytics()" style="width: auto;">
-                        </select>
-                        <select class="form-control" id="analytics-month-filter" onchange="updateAnalytics()" style="width: auto;">
-                            <option value="01">January</option>
-                            <option value="02">February</option>
-                            <option value="03">March</option>
-                            <option value="04">April</option>
-                            <option value="05">May</option>
-                            <option value="06">June</option>
-                            <option value="07">July</option>
-                            <option value="08">August</option>
-                            <option value="09">September</option>
-                            <option value="10">October</option>
-                            <option value="11">November</option>
-                            <option value="12">December</option>
-                        </select>
-                    </div>
-                </div>
-
-                <div class="grid-3" style="margin-bottom: 1.5rem;">
-                    <div class="card metric-card">
-                        <div class="metric-title">Total Expenses (All Time)</div>
-                        <div class="metric-value" id="analytics-total-expense">₹0</div>
-                    </div>
-                    <div class="card metric-card">
-                        <div class="metric-title">This Month</div>
-                        <div class="metric-value" id="analytics-month-expense">₹0</div>
-                    </div>
-                    <div class="card metric-card">
-                        <div class="metric-title">Top Category</div>
-                        <div class="metric-value" id="analytics-top-category" style="font-size: 1.25rem;">—</div>
-                    </div>
-                </div>
-
-                <div class="card">
-                    <h3 class="card-header">Spending by Category</h3>
-                    <div style="position: relative; height: 320px; width: 100%;">
-                        <canvas id="chart-category-pie"></canvas>
-                    </div>
-                </div>
-
-                <div class="card" style="margin-top: 1.5rem;">
-                    <h3 class="card-header">Category Breakdown</h3>
-                    <div class="table-wrapper">
-                        <table>
-                            <thead>
-                                <tr>
-                                    <th>Category</th>
-                                    <th>Amount</th>
-                                    <th>% of Total</th>
-                                </tr>
-                            </thead>
-                            <tbody id="analytics-category-table">
-                                <!-- JS -->
-                            </tbody>
-                        </table>
-                    </div>
-                </div>
-            </section>
-            <section id="view-insights" class="view-section">
-                <div class="card-header"><h2>Smart Insights</h2></div>
-
-                <div class="tab-bar">
-                    <button class="tab-btn active" data-insights-tab="insights-smart" onclick="switchInsightsTab('insights-smart')">
-                        <i class="fa-solid fa-lightbulb"></i> Smart Insights
-                    </button>
-                    <button class="tab-btn" data-insights-tab="insights-advisor" onclick="switchInsightsTab('insights-advisor')">
-                        <i class="fa-solid fa-user-tie"></i> Financial Advisor
-                    </button>
-                </div>
-
-                <div id="insights-smart" class="tab-panel active">
-                    <div id="insights-container"></div>
-                </div>
-                <div id="insights-advisor" class="tab-panel">
-                    <div id="advisor-container"></div>
-                </div>
-            </section>
-            <section id="view-search" class="view-section">
-                <div class="card-header"><h2>Search Transaction</h2></div>
-                <div class="card">
-                    <div id="search-results-wrapper">
-                        <div class="empty-state" id="search-empty-state">
-                            <i class="fa-solid fa-magnifying-glass"></i>
-                            <p>Type in the search bar above to find transactions by description, category, or amount.</p>
-                        </div>
-                        <div class="table-wrapper" id="search-table-wrapper" style="display: none;">
                             <table>
                                 <thead>
                                     <tr>
                                         <th>Date</th>
-                                        <th>Type</th>
                                         <th>Description</th>
                                         <th>Category</th>
+                                        <th>Type</th>
                                         <th>Amount</th>
+                                        <th>Actions</th>
                                     </tr>
                                 </thead>
-                                <tbody id="search-results-container"></tbody>
+                                <tbody id="expense-table-body">
+                                    <!-- JS -->
+                                </tbody>
                             </table>
                         </div>
                     </div>
-            </section>
+                </section>
 
-            <!-- ================= VIEW: EXPENSE CATEGORY MANAGER ================= -->
-            <section id="view-categories" class="view-section">
-                <div class="card-header">
-                    <h2>Expense Category Manager</h2>
-                    <button class="btn btn-primary" onclick="openCategoryModal()">Add Category</button>
-                </div>
-                <div class="card">
-                    <p class="text-muted" style="margin-bottom: 1rem;">Manage your expense categories here. These categories are used globally for transactions and budgeting.</p>
-                    <div class="table-wrapper">
-                        <table>
-                            <thead>
-                                <tr>
-                                    <th>Category Name</th>
-                                    <th style="text-align: right;">Actions</th>
-                                </tr>
-                            </thead>
-                            <tbody id="expense-categories-list">
-                                <!-- Rendered via JS -->
-                            </tbody>
-                        </table>
+                <section id="view-income" class="view-section">
+                    <div class="card-header">
+                        <h2>Income Tracker</h2>
+                        <button class="btn btn-primary" onclick="openModal('modal-add-income')">Add Income</button>
                     </div>
-                </div>
-            </section>
-            <section id="view-settings" class="view-section">
-                <div class="card-header"><h2>Settings</h2></div>
-                <div class="card" style="margin-bottom: 1.5rem;">
-                    <h3>Reset Passcode</h3>
-                    <p class="text-muted" style="margin-bottom: 1rem;">Set a passcode required before resetting all data.</p>
-                    <div class="form-row">
-                        <div class="form-group">
-                            <label class="form-label">Current Passcode</label>
-                            <input type="password" class="form-control" id="settings-current-passcode" maxlength="4" pattern="[0-9]{4}" placeholder="••••">
-                        </div>
-                        <div class="form-group">
-                            <label class="form-label">New Passcode (4 digits)</label>
-                            <input type="password" class="form-control" id="settings-new-passcode" maxlength="4" pattern="[0-9]{4}" placeholder="••••">
-                        </div>
-                        <div class="form-group">
-                            <label class="form-label">Confirm Passcode</label>
-                            <input type="password" class="form-control" id="settings-confirm-passcode" maxlength="4" pattern="[0-9]{4}" placeholder="••••">
+                    <div class="card">
+                        <div class="table-wrapper">
+                            <table>
+                                <thead>
+                                    <tr>
+                                        <th>Date</th>
+                                        <th>Source / Description</th>
+                                        <th>Amount</th>
+                                        <th>Actions</th>
+                                    </tr>
+                                </thead>
+                                <tbody id="income-table-body">
+                                    <!-- JS -->
+                                </tbody>
+                            </table>
                         </div>
                     </div>
-                    <button class="btn btn-primary" onclick="updateResetPasscode()">Save Passcode</button>
-                </div>
-                <div class="card" style="margin-bottom: 1.5rem;">
-                    <h3>Data Management</h3>
-                    <p class="text-muted" style="margin-bottom: 1rem;">Manage your dashboard data. Import or export your data state dynamically.</p>
-                    <div style="display: flex; gap: 0.5rem; flex-wrap: wrap; margin-bottom: 1rem;">
-                        <button class="btn btn-secondary" onclick="exportDataJSON()"><i class="fa-solid fa-file-export"></i> Export JSON</button>
-                        <button class="btn btn-secondary" onclick="exportDataCSV()"><i class="fa-solid fa-file-csv"></i> Export CSV</button>
-                        <button class="btn btn-primary" onclick="triggerImportJSON()"><i class="fa-solid fa-file-import"></i> Import JSON</button>
-                        <input type="file" id="import-file-input" style="display: none;" accept=".json" onchange="handleImportJSON(event)">
+                </section>
+                <section id="view-budget" class="view-section">
+                    <div class="card-header">
+                        <h2>Budget Planner</h2>
+                        <button class="btn btn-primary" onclick="openBudgetCategoryModal()">
+                            <i class="fa-solid fa-plus"></i> Add Category
+                        </button>
                     </div>
-                    <div style="display: flex; gap: 0.5rem; flex-wrap: wrap;">
-                        <button class="btn btn-danger" onclick="promptResetData()"><i class="fa-solid fa-trash-can"></i> Reset All Data</button>
-                        <button class="btn btn-secondary" onclick="generateMockData()"><i class="fa-solid fa-database"></i> Load Demo Data</button>
+
+                    <div class="grid-3" style="margin-bottom: 1.5rem;">
+                        <div class="card metric-card">
+                            <div class="metric-title">Total Allocated</div>
+                            <div class="metric-value" id="budget-total-allocated">₹0</div>
+                        </div>
+                        <div class="card metric-card">
+                            <div class="metric-title">Total Spent (This Month)</div>
+                            <div class="metric-value" id="budget-total-spent" style="color: var(--danger);">₹0</div>
+                        </div>
+                        <div class="card metric-card">
+                            <div class="metric-title">Remaining Budget</div>
+                            <div class="metric-value" id="budget-remaining" style="color: var(--success);">₹0</div>
+                        </div>
                     </div>
-                </div>
-                <div class="card" id="settings-account-card" style="margin-bottom: 1.5rem; display: none;">
-                    <h3>Account Management</h3>
-                    <p class="text-muted" style="margin-bottom: 1rem;">Delete your account and clear all Firestore records permanently.</p>
-                    <button class="btn btn-danger" onclick="handleDeleteAccount()"><i class="fa-solid fa-user-minus"></i> Delete Account</button>
-                </div>
-            </section>
 
-        </div>
-    </main>
+                    <div id="budget-categories-list">
+                        <!-- JS renders editable budget categories -->
+                    </div>
+                </section>
+                <section id="view-debts" class="view-section">
+                    <div class="card-header">
+                        <h2>Debt Tracker</h2>
+                        <button class="btn btn-primary" onclick="openModal('modal-add-debt')">
+                            <i class="fa-solid fa-plus"></i> Add Debt
+                        </button>
+                    </div>
 
-    <!-- =========================================
+                    <div class="grid-3" style="margin-bottom: 1.5rem;">
+                        <div class="card metric-card">
+                            <div class="metric-title">Total Debt</div>
+                            <div class="metric-value" id="debt-total-owed">₹0</div>
+                        </div>
+                        <div class="card metric-card">
+                            <div class="metric-title">Total Paid</div>
+                            <div class="metric-value" id="debt-total-paid" style="color: var(--success);">₹0</div>
+                        </div>
+                        <div class="card metric-card">
+                            <div class="metric-title">Remaining</div>
+                            <div class="metric-value" id="debt-remaining" style="color: var(--danger);">₹0</div>
+                        </div>
+                    </div>
+
+                    <div id="debts-list">
+                        <!-- JS renders debt cards -->
+                    </div>
+                </section>
+                <section id="view-goals" class="view-section">
+                    <div class="card-header">
+                        <h2>Savings</h2>
+                        <button class="btn btn-primary" onclick="openModal('modal-add-savings')">
+                            <i class="fa-solid fa-plus"></i> Add Savings
+                        </button>
+                    </div>
+
+                    <div class="card metric-card flash-card success-flash"
+                        style="margin-bottom: 1.5rem; max-width: 400px;">
+                        <div class="metric-icon" style="background: var(--success-light); color: var(--success);">
+                            <i class="fa-solid fa-piggy-bank"></i>
+                        </div>
+                        <div class="metric-title">Total Savings</div>
+                        <div class="metric-value" id="savings-total">₹0</div>
+                    </div>
+
+                    <div class="card">
+                        <div class="table-wrapper">
+                            <table>
+                                <thead>
+                                    <tr>
+                                        <th>Date</th>
+                                        <th>Amount</th>
+                                        <th>Actions</th>
+                                    </tr>
+                                </thead>
+                                <tbody id="savings-table-body">
+                                    <!-- JS -->
+                                </tbody>
+                            </table>
+                        </div>
+                    </div>
+                </section>
+                <section id="view-goals-dashboard" class="view-section">
+                    <div class="card-header">
+                        <h2>Goals Dashboard</h2>
+                        <button class="btn btn-primary" onclick="openModal('modal-add-goal')">
+                            <i class="fa-solid fa-plus"></i> Add Goal
+                        </button>
+                    </div>
+
+                    <div class="grid-2" style="margin-bottom: 1.5rem;">
+                        <div class="card metric-card flash-card success-flash">
+                            <div class="metric-icon" style="background: var(--success-light); color: var(--success);">
+                                <i class="fa-solid fa-piggy-bank"></i>
+                            </div>
+                            <div class="metric-title">Total Savings</div>
+                            <div class="metric-value" id="goals-dash-savings">₹0</div>
+                        </div>
+                        <div class="card metric-card flash-card warning-flash">
+                            <div class="metric-icon"
+                                style="background: rgba(245, 158, 11, 0.15); color: var(--warning);">
+                                <i class="fa-solid fa-bullseye"></i>
+                            </div>
+                            <div class="metric-title">Total Needed to Achieve Goals</div>
+                            <div class="metric-value" id="goals-dash-target">₹0</div>
+                        </div>
+                    </div>
+
+                    <div id="financial-goals-list">
+                        <!-- JS -->
+                    </div>
+                </section>
+                <section id="view-analytics" class="view-section">
+                    <div class="card-header" style="display:flex; justify-content:space-between; align-items:center;">
+                        <h2>Spending Analytics</h2>
+                        <div style="display:flex; gap: 10px;">
+                            <select class="form-control" id="analytics-year-filter" onchange="updateAnalytics()"
+                                style="width: auto;">
+                            </select>
+                            <select class="form-control" id="analytics-month-filter" onchange="updateAnalytics()"
+                                style="width: auto;">
+                                <option value="01">January</option>
+                                <option value="02">February</option>
+                                <option value="03">March</option>
+                                <option value="04">April</option>
+                                <option value="05">May</option>
+                                <option value="06">June</option>
+                                <option value="07">July</option>
+                                <option value="08">August</option>
+                                <option value="09">September</option>
+                                <option value="10">October</option>
+                                <option value="11">November</option>
+                                <option value="12">December</option>
+                            </select>
+                        </div>
+                    </div>
+
+                    <div class="grid-3" style="margin-bottom: 1.5rem;">
+                        <div class="card metric-card">
+                            <div class="metric-title">Total Expenses (All Time)</div>
+                            <div class="metric-value" id="analytics-total-expense">₹0</div>
+                        </div>
+                        <div class="card metric-card">
+                            <div class="metric-title">This Month</div>
+                            <div class="metric-value" id="analytics-month-expense">₹0</div>
+                        </div>
+                        <div class="card metric-card">
+                            <div class="metric-title">Top Category</div>
+                            <div class="metric-value" id="analytics-top-category" style="font-size: 1.25rem;">—</div>
+                        </div>
+                    </div>
+
+                    <div class="card">
+                        <h3 class="card-header">Spending by Category</h3>
+                        <div style="position: relative; height: 320px; width: 100%;">
+                            <canvas id="chart-category-pie"></canvas>
+                        </div>
+                    </div>
+
+                    <div class="card" style="margin-top: 1.5rem;">
+                        <h3 class="card-header">Category Breakdown</h3>
+                        <div class="table-wrapper">
+                            <table>
+                                <thead>
+                                    <tr>
+                                        <th>Category</th>
+                                        <th>Amount</th>
+                                        <th>% of Total</th>
+                                    </tr>
+                                </thead>
+                                <tbody id="analytics-category-table">
+                                    <!-- JS -->
+                                </tbody>
+                            </table>
+                        </div>
+                    </div>
+                </section>
+                <section id="view-insights" class="view-section">
+                    <div class="card-header">
+                        <h2>Smart Insights</h2>
+                    </div>
+
+                    <div class="tab-bar">
+                        <button class="tab-btn active" data-insights-tab="insights-smart"
+                            onclick="switchInsightsTab('insights-smart')">
+                            <i class="fa-solid fa-lightbulb"></i> Smart Insights
+                        </button>
+                        <button class="tab-btn" data-insights-tab="insights-advisor"
+                            onclick="switchInsightsTab('insights-advisor')">
+                            <i class="fa-solid fa-user-tie"></i> Financial Advisor
+                        </button>
+                    </div>
+
+                    <div id="insights-smart" class="tab-panel active">
+                        <div id="insights-container"></div>
+                    </div>
+                    <div id="insights-advisor" class="tab-panel">
+                        <div id="advisor-container"></div>
+                    </div>
+                </section>
+                <section id="view-search" class="view-section">
+                    <div class="card-header">
+                        <h2>Search Transaction</h2>
+                    </div>
+                    <div class="card">
+                        <div id="search-results-wrapper">
+                            <div class="empty-state" id="search-empty-state">
+                                <i class="fa-solid fa-magnifying-glass"></i>
+                                <p>Type in the search bar above to find transactions by description, category, or
+                                    amount.</p>
+                            </div>
+                            <div class="table-wrapper" id="search-table-wrapper" style="display: none;">
+                                <table>
+                                    <thead>
+                                        <tr>
+                                            <th>Date</th>
+                                            <th>Type</th>
+                                            <th>Description</th>
+                                            <th>Category</th>
+                                            <th>Amount</th>
+                                        </tr>
+                                    </thead>
+                                    <tbody id="search-results-container"></tbody>
+                                </table>
+                            </div>
+                        </div>
+                </section>
+
+                <!-- ================= VIEW: EXPENSE CATEGORY MANAGER ================= -->
+                <section id="view-categories" class="view-section">
+                    <div class="card-header">
+                        <h2>Expense Category Manager</h2>
+                        <button class="btn btn-primary" onclick="openCategoryModal()">Add Category</button>
+                    </div>
+                    <div class="card">
+                        <p class="text-muted" style="margin-bottom: 1rem;">Manage your expense categories here. These
+                            categories are used globally for transactions and budgeting.</p>
+                        <div class="table-wrapper">
+                            <table>
+                                <thead>
+                                    <tr>
+                                        <th>Category Name</th>
+                                        <th style="text-align: right;">Actions</th>
+                                    </tr>
+                                </thead>
+                                <tbody id="expense-categories-list">
+                                    <!-- Rendered via JS -->
+                                </tbody>
+                            </table>
+                        </div>
+                    </div>
+                </section>
+                <section id="view-settings" class="view-section">
+                    <div class="card-header">
+                        <h2>Settings</h2>
+                    </div>
+                    <div class="card" style="margin-bottom: 1.5rem;">
+                        <h3>Reset Passcode</h3>
+                        <p class="text-muted" style="margin-bottom: 1rem;">Set a passcode required before resetting all
+                            data.</p>
+                        <div class="form-row">
+                            <div class="form-group">
+                                <label class="form-label">Current Passcode</label>
+                                <input type="password" class="form-control" id="settings-current-passcode" maxlength="4"
+                                    pattern="[0-9]{4}" placeholder="••••">
+                            </div>
+                            <div class="form-group">
+                                <label class="form-label">New Passcode (4 digits)</label>
+                                <input type="password" class="form-control" id="settings-new-passcode" maxlength="4"
+                                    pattern="[0-9]{4}" placeholder="••••">
+                            </div>
+                            <div class="form-group">
+                                <label class="form-label">Confirm Passcode</label>
+                                <input type="password" class="form-control" id="settings-confirm-passcode" maxlength="4"
+                                    pattern="[0-9]{4}" placeholder="••••">
+                            </div>
+                        </div>
+                        <button class="btn btn-primary" onclick="updateResetPasscode()">Save Passcode</button>
+                    </div>
+                    <div class="card" style="margin-bottom: 1.5rem;">
+                        <h3>Data Management</h3>
+                        <p class="text-muted" style="margin-bottom: 1rem;">Manage your dashboard data. Import or export
+                            your data state dynamically.</p>
+                        <div style="display: flex; gap: 0.5rem; flex-wrap: wrap; margin-bottom: 1rem;">
+                            <button class="btn btn-secondary" onclick="exportDataJSON()"><i
+                                    class="fa-solid fa-file-export"></i> Export JSON</button>
+                            <button class="btn btn-secondary" onclick="exportDataCSV()"><i
+                                    class="fa-solid fa-file-csv"></i> Export CSV</button>
+                            <button class="btn btn-primary" onclick="triggerImportJSON()"><i
+                                    class="fa-solid fa-file-import"></i> Import JSON</button>
+                            <input type="file" id="import-file-input" style="display: none;" accept=".json"
+                                onchange="handleImportJSON(event)">
+                        </div>
+                        <div style="display: flex; gap: 0.5rem; flex-wrap: wrap;">
+                            <button class="btn btn-danger" onclick="promptResetData()"><i
+                                    class="fa-solid fa-trash-can"></i> Reset All Data</button>
+                            <button class="btn btn-secondary" onclick="generateMockData()"><i
+                                    class="fa-solid fa-database"></i> Load Demo Data</button>
+                        </div>
+                    </div>
+                    <div class="card" id="settings-account-card" style="margin-bottom: 1.5rem; display: none;">
+                        <h3>Account Management</h3>
+                        <p class="text-muted" style="margin-bottom: 1rem;">Delete your account and clear all Firestore
+                            records permanently.</p>
+                        <button class="btn btn-danger" onclick="handleDeleteAccount()"><i
+                                class="fa-solid fa-user-minus"></i> Delete Account</button>
+                    </div>
+                </section>
+
+            </div>
+        </main>
+
+        <!-- =========================================
          MODALS
          ========================================= -->
-    <!-- Add Expense Modal -->
-    <div class="modal-overlay" id="modal-add-transaction">
-        <div class="modal-content">
-            <div class="modal-header">
-                <h3>Add Expense</h3>
-                <i class="fa-solid fa-xmark modal-close" onclick="closeModal('modal-add-transaction')"></i>
-            </div>
-            <form id="form-add-tx" onsubmit="handleTransactionSubmit(event)">
-                <div class="form-group">
-                    <label class="form-label">Date</label>
-                    <input type="date" class="form-control" id="tx-date" required>
+        <!-- Add Expense Modal -->
+        <div class="modal-overlay" id="modal-add-transaction">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h3>Add Expense</h3>
+                    <i class="fa-solid fa-xmark modal-close" onclick="closeModal('modal-add-transaction')"></i>
                 </div>
-                <div class="form-group">
-                    <label class="form-label">Amount (₹)</label>
-                    <input type="number" class="form-control" id="tx-amount" step="0.01" required>
-                </div>
-                <div class="form-group">
-                    <label class="form-label">Description / Merchant</label>
-                    <input type="text" class="form-control" id="tx-desc" required>
-                </div>
-                <div class="form-row">
-                    <div class="form-group">
-                        <label class="form-label">Category</label>
-                        <select class="form-control" id="tx-category" required>
-                        </select>
-                    </div>
-                    <div class="form-group">
-                        <label class="form-label">Need / Want</label>
-                        <select class="form-control" id="tx-need-want">
-                            <option value="need">Need</option>
-                            <option value="want">Want</option>
-                            <option value="">N/A</option>
-                        </select>
-                    </div>
-                </div>
-                <button type="submit" class="btn btn-primary" style="width: 100%; justify-content: center; margin-top: 1rem;">Save Expense</button>
-            </form>
-        </div>
-    </div>
-
-    <!-- Add Income Modal -->
-    <div class="modal-overlay" id="modal-add-income">
-        <div class="modal-content">
-            <div class="modal-header">
-                <h3>Add Income</h3>
-                <i class="fa-solid fa-xmark modal-close" onclick="closeModal('modal-add-income')"></i>
-            </div>
-            <form id="form-add-income" onsubmit="handleIncomeSubmit(event)">
-                <div class="form-group">
-                    <label class="form-label">Date</label>
-                    <input type="date" class="form-control" id="income-date" required>
-                </div>
-                <div class="form-group">
-                    <label class="form-label">Amount (₹)</label>
-                    <input type="number" class="form-control" id="income-amount" step="0.01" required>
-                </div>
-                <div class="form-group">
-                    <label class="form-label">Description</label>
-                    <input type="text" class="form-control" id="income-desc" placeholder="e.g. Salary, Freelance" required>
-                </div>
-                <button type="submit" class="btn btn-primary" style="width: 100%; justify-content: center; margin-top: 1rem;">Save Income</button>
-            </form>
-        </div>
-    </div>
-
-    <!-- Add Debt Modal -->
-    <div class="modal-overlay" id="modal-add-debt">
-        <div class="modal-content">
-            <div class="modal-header">
-                <h3 id="debt-modal-title">Add Debt</h3>
-                <i class="fa-solid fa-xmark modal-close" onclick="closeModal('modal-add-debt')"></i>
-            </div>
-            <form id="form-add-debt" onsubmit="handleDebtSubmit(event)">
-                <input type="hidden" id="debt-edit-id">
-                <div class="form-group">
-                    <label class="form-label">Debt Name</label>
-                    <input type="text" class="form-control" id="debt-name" placeholder="e.g. Car Loan, Credit Card" required>
-                </div>
-                <div class="toggle-row">
-                    <div>
-                        <div class="form-label" style="margin-bottom:0;">Recurring Payment (EMI)</div>
-                        <div class="text-muted" style="font-size:0.75rem;">Enable for monthly loan/EMI payments</div>
-                    </div>
-                    <label class="toggle-switch">
-                        <input type="checkbox" id="debt-recurring" onchange="toggleEmiFields()">
-                        <span class="toggle-slider"></span>
-                    </label>
-                </div>
-                <div id="debt-onetime-fields">
-                    <div class="form-group">
-                        <label class="form-label">Total Amount Owed (₹)</label>
-                        <input type="number" class="form-control" id="debt-amount" step="0.01">
-                    </div>
-                </div>
-                <div id="debt-emi-fields" class="emi-fields">
-                    <div class="form-group">
-                        <label class="form-label">Total Loan Amount (₹)</label>
-                        <input type="number" class="form-control" id="debt-loan-amount" step="0.01">
-                    </div>
-                    <div class="form-row">
-                        <div class="form-group">
-                            <label class="form-label">Monthly EMI (₹)</label>
-                            <input type="number" class="form-control" id="debt-emi-amount" step="0.01">
-                        </div>
-                        <div class="form-group">
-                            <label class="form-label">Due Date (day of month)</label>
-                            <input type="number" class="form-control" id="debt-due-day" min="1" max="28" placeholder="e.g. 5">
-                        </div>
-                    </div>
-                </div>
-                <button type="submit" class="btn btn-primary" style="width: 100%; justify-content: center; margin-top: 1rem;">Save Debt</button>
-            </form>
-        </div>
-    </div>
-
-    <!-- Add Debt Payment Modal -->
-    <div class="modal-overlay" id="modal-add-payment">
-        <div class="modal-content">
-            <div class="modal-header">
-                <h3>Record Monthly Payment</h3>
-                <i class="fa-solid fa-xmark modal-close" onclick="closeModal('modal-add-payment')"></i>
-            </div>
-            <form id="form-add-payment" onsubmit="handlePaymentSubmit(event)">
-                <input type="hidden" id="payment-debt-id">
-                <div class="form-group">
-                    <label class="form-label">Month</label>
-                    <input type="month" class="form-control" id="payment-month" required>
-                </div>
-                <div class="form-group">
-                    <label class="form-label">Amount Paid (₹)</label>
-                    <input type="number" class="form-control" id="payment-amount" step="0.01" required>
-                </div>
-                <button type="submit" class="btn btn-primary" style="width: 100%; justify-content: center; margin-top: 1rem;">Save Payment</button>
-            </form>
-        </div>
-    </div>
-
-    <!-- Add Savings Modal -->
-    <div class="modal-overlay" id="modal-add-savings">
-        <div class="modal-content">
-            <div class="modal-header">
-                <h3>Add Savings Entry</h3>
-                <i class="fa-solid fa-xmark modal-close" onclick="closeModal('modal-add-savings')"></i>
-            </div>
-            <form id="form-add-savings" onsubmit="handleSavingsSubmit(event)">
-                <div class="form-row">
+                <form id="form-add-tx" onsubmit="handleTransactionSubmit(event)">
                     <div class="form-group">
                         <label class="form-label">Date</label>
-                        <input type="date" class="form-control" id="savings-date" required>
+                        <input type="date" class="form-control" id="tx-date" required>
                     </div>
                     <div class="form-group">
                         <label class="form-label">Amount (₹)</label>
-                        <input type="number" class="form-control" id="savings-amount" step="0.01" required>
+                        <input type="number" class="form-control" id="tx-amount" step="0.01" required>
                     </div>
-                </div>
-                <button type="submit" class="btn btn-primary" style="width: 100%; justify-content: center; margin-top: 1rem;">Save</button>
-            </form>
-        </div>
-    </div>
-
-    <!-- Add Financial Goal Modal -->
-    <div class="modal-overlay" id="modal-add-goal">
-        <div class="modal-content">
-            <div class="modal-header">
-                <h3>Add Financial Goal</h3>
-                <i class="fa-solid fa-xmark modal-close" onclick="closeModal('modal-add-goal')"></i>
+                    <div class="form-group">
+                        <label class="form-label">Description / Merchant</label>
+                        <input type="text" class="form-control" id="tx-desc" required>
+                    </div>
+                    <div class="form-row">
+                        <div class="form-group">
+                            <label class="form-label">Category</label>
+                            <select class="form-control" id="tx-category" required>
+                            </select>
+                        </div>
+                        <div class="form-group">
+                            <label class="form-label">Need / Want</label>
+                            <select class="form-control" id="tx-need-want">
+                                <option value="need">Need</option>
+                                <option value="want">Want</option>
+                                <option value="">N/A</option>
+                            </select>
+                        </div>
+                    </div>
+                    <button type="submit" class="btn btn-primary"
+                        style="width: 100%; justify-content: center; margin-top: 1rem;">Save Expense</button>
+                </form>
             </div>
-            <form id="form-add-goal" onsubmit="handleGoalSubmit(event)">
-                <div class="form-group">
-                    <label class="form-label">Goal Name</label>
-                    <input type="text" class="form-control" id="goal-name" placeholder="e.g. New Phone, Emergency Fund" required>
-                </div>
-                <div class="form-group">
-                    <label class="form-label">Target Amount (₹)</label>
-                    <input type="number" class="form-control" id="goal-amount" step="0.01" required>
-                </div>
-                <button type="submit" class="btn btn-primary" style="width: 100%; justify-content: center; margin-top: 1rem;">Save Goal</button>
-            </form>
         </div>
-    </div>
 
-    <!-- Add/Edit Expense Category Modal -->
-    <div class="modal-overlay" id="modal-add-category">
-        <div class="modal-content">
-            <div class="modal-header">
-                <h3 id="category-modal-title">Add Expense Category</h3>
-                <i class="fa-solid fa-xmark modal-close" onclick="closeModal('modal-add-category')"></i>
-            </div>
-            <form id="form-expense-category" onsubmit="handleCategorySubmit(event)">
-                <input type="hidden" id="category-edit-id">
-                <div class="form-group">
-                    <label class="form-label">Category Names (comma-separated)</label>
-                    <input type="text" class="form-control" id="category-name-input" placeholder="Housing, Food, Entertainment" required>
+        <!-- Add Income Modal -->
+        <div class="modal-overlay" id="modal-add-income">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h3>Add Income</h3>
+                    <i class="fa-solid fa-xmark modal-close" onclick="closeModal('modal-add-income')"></i>
                 </div>
-                <button type="submit" class="btn btn-primary" style="width: 100%; justify-content: center;">Save</button>
-            </form>
+                <form id="form-add-income" onsubmit="handleIncomeSubmit(event)">
+                    <div class="form-group">
+                        <label class="form-label">Date</label>
+                        <input type="date" class="form-control" id="income-date" required>
+                    </div>
+                    <div class="form-group">
+                        <label class="form-label">Amount (₹)</label>
+                        <input type="number" class="form-control" id="income-amount" step="0.01" required>
+                    </div>
+                    <div class="form-group">
+                        <label class="form-label">Description</label>
+                        <input type="text" class="form-control" id="income-desc" placeholder="e.g. Salary, Freelance"
+                            required>
+                    </div>
+                    <button type="submit" class="btn btn-primary"
+                        style="width: 100%; justify-content: center; margin-top: 1rem;">Save Income</button>
+                </form>
+            </div>
         </div>
-    </div>
 
-    <!-- Budget Category Modal -->
-    <div class="modal-overlay" id="modal-budget-category">
-        <div class="modal-content">
-            <div class="modal-header">
-                <h3 id="budget-cat-modal-title">Add Budget Category</h3>
-                <i class="fa-solid fa-xmark modal-close" onclick="closeModal('modal-budget-category')"></i>
+        <!-- Add Debt Modal -->
+        <div class="modal-overlay" id="modal-add-debt">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h3 id="debt-modal-title">Add Debt</h3>
+                    <i class="fa-solid fa-xmark modal-close" onclick="closeModal('modal-add-debt')"></i>
+                </div>
+                <form id="form-add-debt" onsubmit="handleDebtSubmit(event)">
+                    <input type="hidden" id="debt-edit-id">
+                    <div class="form-group">
+                        <label class="form-label">Debt Name</label>
+                        <input type="text" class="form-control" id="debt-name" placeholder="e.g. Car Loan, Credit Card"
+                            required>
+                    </div>
+                    <div class="toggle-row">
+                        <div>
+                            <div class="form-label" style="margin-bottom:0;">Recurring Payment (EMI)</div>
+                            <div class="text-muted" style="font-size:0.75rem;">Enable for monthly loan/EMI payments
+                            </div>
+                        </div>
+                        <label class="toggle-switch">
+                            <input type="checkbox" id="debt-recurring" onchange="toggleEmiFields()">
+                            <span class="toggle-slider"></span>
+                        </label>
+                    </div>
+                    <div id="debt-onetime-fields">
+                        <div class="form-group">
+                            <label class="form-label">Total Amount Owed (₹)</label>
+                            <input type="number" class="form-control" id="debt-amount" step="0.01">
+                        </div>
+                    </div>
+                    <div id="debt-emi-fields" class="emi-fields">
+                        <div class="form-group">
+                            <label class="form-label">Total Loan Amount (₹)</label>
+                            <input type="number" class="form-control" id="debt-loan-amount" step="0.01">
+                        </div>
+                        <div class="form-row">
+                            <div class="form-group">
+                                <label class="form-label">Monthly EMI (₹)</label>
+                                <input type="number" class="form-control" id="debt-emi-amount" step="0.01">
+                            </div>
+                            <div class="form-group">
+                                <label class="form-label">Due Date (day of month)</label>
+                                <input type="number" class="form-control" id="debt-due-day" min="1" max="28"
+                                    placeholder="e.g. 5">
+                            </div>
+                        </div>
+                    </div>
+                    <button type="submit" class="btn btn-primary"
+                        style="width: 100%; justify-content: center; margin-top: 1rem;">Save Debt</button>
+                </form>
             </div>
-            <form id="form-budget-category" onsubmit="handleBudgetCategorySubmit(event)">
-                <input type="hidden" id="budget-cat-edit-id">
-                <div class="form-group">
-                    <label class="form-label">Category Name</label>
-                    <select class="form-control" id="budget-cat-name" required>
-                    </select>
-                </div>
-                <div class="form-group">
-                    <label class="form-label">Category Budget (₹)</label>
-                    <input type="number" class="form-control" id="budget-cat-amount" step="0.01" min="0" placeholder="Budget amount">
-                </div>
-                <button type="submit" class="btn btn-primary" style="width: 100%; justify-content: center;">Save Category</button>
-            </form>
         </div>
-    </div>
 
-    <!-- Reset Passcode Modal -->
-    <div class="modal-overlay" id="modal-reset-passcode">
-        <div class="modal-content">
-            <div class="modal-header">
-                <h3>Enter Passcode to Reset</h3>
-                <i class="fa-solid fa-xmark modal-close" onclick="closeModal('modal-reset-passcode')"></i>
-            </div>
-            <form id="form-reset-passcode" onsubmit="verifyResetPasscode(event)">
-                <p class="text-muted" style="margin-bottom:1rem;">Enter your reset passcode to continue. This prevents accidental data loss.</p>
-                <div class="form-group">
-                    <label class="form-label">Passcode</label>
-                    <input type="password" class="form-control" id="reset-passcode-input" maxlength="4" pattern="[0-9]{4}" required autocomplete="off">
+        <!-- Add Debt Payment Modal -->
+        <div class="modal-overlay" id="modal-add-payment">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h3>Record Monthly Payment</h3>
+                    <i class="fa-solid fa-xmark modal-close" onclick="closeModal('modal-add-payment')"></i>
                 </div>
-                <button type="submit" class="btn btn-danger" style="width:100%;justify-content:center;">Verify Passcode</button>
-            </form>
+                <form id="form-add-payment" onsubmit="handlePaymentSubmit(event)">
+                    <input type="hidden" id="payment-debt-id">
+                    <div class="form-group">
+                        <label class="form-label">Month</label>
+                        <input type="month" class="form-control" id="payment-month" required>
+                    </div>
+                    <div class="form-group">
+                        <label class="form-label">Amount Paid (₹)</label>
+                        <input type="number" class="form-control" id="payment-amount" step="0.01" required>
+                    </div>
+                    <button type="submit" class="btn btn-primary"
+                        style="width: 100%; justify-content: center; margin-top: 1rem;">Save Payment</button>
+                </form>
+            </div>
         </div>
-    </div>
+
+        <!-- Add Savings Modal -->
+        <div class="modal-overlay" id="modal-add-savings">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h3>Add Savings Entry</h3>
+                    <i class="fa-solid fa-xmark modal-close" onclick="closeModal('modal-add-savings')"></i>
+                </div>
+                <form id="form-add-savings" onsubmit="handleSavingsSubmit(event)">
+                    <div class="form-row">
+                        <div class="form-group">
+                            <label class="form-label">Date</label>
+                            <input type="date" class="form-control" id="savings-date" required>
+                        </div>
+                        <div class="form-group">
+                            <label class="form-label">Amount (₹)</label>
+                            <input type="number" class="form-control" id="savings-amount" step="0.01" required>
+                        </div>
+                    </div>
+                    <button type="submit" class="btn btn-primary"
+                        style="width: 100%; justify-content: center; margin-top: 1rem;">Save</button>
+                </form>
+            </div>
+        </div>
+
+        <!-- Add Financial Goal Modal -->
+        <div class="modal-overlay" id="modal-add-goal">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h3>Add Financial Goal</h3>
+                    <i class="fa-solid fa-xmark modal-close" onclick="closeModal('modal-add-goal')"></i>
+                </div>
+                <form id="form-add-goal" onsubmit="handleGoalSubmit(event)">
+                    <div class="form-group">
+                        <label class="form-label">Goal Name</label>
+                        <input type="text" class="form-control" id="goal-name"
+                            placeholder="e.g. New Phone, Emergency Fund" required>
+                    </div>
+                    <div class="form-group">
+                        <label class="form-label">Target Amount (₹)</label>
+                        <input type="number" class="form-control" id="goal-amount" step="0.01" required>
+                    </div>
+                    <button type="submit" class="btn btn-primary"
+                        style="width: 100%; justify-content: center; margin-top: 1rem;">Save Goal</button>
+                </form>
+            </div>
+        </div>
+
+        <!-- Add/Edit Expense Category Modal -->
+        <div class="modal-overlay" id="modal-add-category">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h3 id="category-modal-title">Add Expense Category</h3>
+                    <i class="fa-solid fa-xmark modal-close" onclick="closeModal('modal-add-category')"></i>
+                </div>
+                <form id="form-expense-category" onsubmit="handleCategorySubmit(event)">
+                    <input type="hidden" id="category-edit-id">
+                    <div class="form-group">
+                        <label class="form-label">Category Names (comma-separated)</label>
+                        <input type="text" class="form-control" id="category-name-input"
+                            placeholder="Housing, Food, Entertainment" required>
+                    </div>
+                    <button type="submit" class="btn btn-primary"
+                        style="width: 100%; justify-content: center;">Save</button>
+                </form>
+            </div>
+        </div>
+
+        <!-- Budget Category Modal -->
+        <div class="modal-overlay" id="modal-budget-category">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h3 id="budget-cat-modal-title">Add Budget Category</h3>
+                    <i class="fa-solid fa-xmark modal-close" onclick="closeModal('modal-budget-category')"></i>
+                </div>
+                <form id="form-budget-category" onsubmit="handleBudgetCategorySubmit(event)">
+                    <input type="hidden" id="budget-cat-edit-id">
+                    <div class="form-group">
+                        <label class="form-label">Category Name</label>
+                        <select class="form-control" id="budget-cat-name" required>
+                        </select>
+                    </div>
+                    <div class="form-group">
+                        <label class="form-label">Category Budget (₹)</label>
+                        <input type="number" class="form-control" id="budget-cat-amount" step="0.01" min="0"
+                            placeholder="Budget amount">
+                    </div>
+                    <button type="submit" class="btn btn-primary" style="width: 100%; justify-content: center;">Save
+                        Category</button>
+                </form>
+            </div>
+        </div>
+
+        <!-- Reset Passcode Modal -->
+        <div class="modal-overlay" id="modal-reset-passcode">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h3>Enter Passcode to Reset</h3>
+                    <i class="fa-solid fa-xmark modal-close" onclick="closeModal('modal-reset-passcode')"></i>
+                </div>
+                <form id="form-reset-passcode" onsubmit="verifyResetPasscode(event)">
+                    <p class="text-muted" style="margin-bottom:1rem;">Enter your reset passcode to continue. This
+                        prevents accidental data loss.</p>
+                    <div class="form-group">
+                        <label class="form-label">Passcode</label>
+                        <input type="password" class="form-control" id="reset-passcode-input" maxlength="4"
+                            pattern="[0-9]{4}" required autocomplete="off">
+                    </div>
+                    <button type="submit" class="btn btn-danger" style="width:100%;justify-content:center;">Verify
+                        Passcode</button>
+                </form>
+            </div>
+        </div>
 
     </div><!-- /#app-shell -->
 
@@ -1823,7 +2329,7 @@
     <script>
         // --- STATE MANAGEMENT ---
         const STORAGE_KEY = 'finova_data';
-        
+
         let state = {
             transactions: [],
             savings: [],
@@ -1953,7 +2459,7 @@
             // Update active nav
             navItems.forEach(i => i.classList.remove('active'));
             const activeNav = document.querySelector(`.nav-item[data-target="${targetId}"]`);
-            if(activeNav) activeNav.classList.add('active');
+            if (activeNav) activeNav.classList.add('active');
 
             // Show view
             views.forEach(v => v.classList.remove('active'));
@@ -1961,18 +2467,18 @@
 
             // Mobile sidebar auto-close
             document.getElementById('sidebar').classList.remove('open');
-            
+
             // Refresh specific view data if needed
-            if(targetId === 'view-dashboard') updateDashboard();
-            if(targetId === 'view-expenses') updateExpenseTable();
-            if(targetId === 'view-income') updateIncomeTable();
-            if(targetId === 'view-categories') renderExpenseCategories();
-            if(targetId === 'view-budget') updateBudgets();
-            if(targetId === 'view-debts') updateDebts();
-            if(targetId === 'view-goals') updateSavings();
-            if(targetId === 'view-goals-dashboard') updateGoalsDashboard();
-            if(targetId === 'view-analytics') updateAnalytics();
-            if(targetId === 'view-insights') { updateInsights(); updateAdvisor(); }
+            if (targetId === 'view-dashboard') updateDashboard();
+            if (targetId === 'view-expenses') updateExpenseTable();
+            if (targetId === 'view-income') updateIncomeTable();
+            if (targetId === 'view-categories') renderExpenseCategories();
+            if (targetId === 'view-budget') updateBudgets();
+            if (targetId === 'view-debts') updateDebts();
+            if (targetId === 'view-goals') updateSavings();
+            if (targetId === 'view-goals-dashboard') updateGoalsDashboard();
+            if (targetId === 'view-analytics') updateAnalytics();
+            if (targetId === 'view-insights') { updateInsights(); updateAdvisor(); }
         }
 
         function switchInsightsTab(tabId) {
@@ -1987,7 +2493,7 @@
 
         // --- THEME MANAGEMENT ---
         const themeToggleBtn = document.getElementById('theme-toggle');
-        
+
         function applyTheme(theme) {
             document.documentElement.setAttribute('data-theme', theme);
             if (theme === 'dark') {
@@ -1996,11 +2502,11 @@
                 themeToggleBtn.innerHTML = '<i class="fa-solid fa-moon icon-moon"></i>';
             }
             state.settings.theme = theme;
-            
+
             Chart.defaults.color = theme === 'dark' ? '#94a3b8' : '#6b7280';
             Chart.defaults.borderColor = theme === 'dark' ? 'rgba(255,255,255,0.1)' : 'rgba(0,0,0,0.1)';
-            if(charts.trend) charts.trend.update();
-            if(charts.categoryPie) charts.categoryPie.update();
+            if (charts.trend) charts.trend.update();
+            if (charts.categoryPie) charts.categoryPie.update();
         }
 
         themeToggleBtn.addEventListener('click', () => {
@@ -2012,22 +2518,22 @@
         // --- MODAL LOGIC ---
         function openModal(id) {
             document.getElementById(id).classList.add('active');
-            if(id === 'modal-add-transaction') {
+            if (id === 'modal-add-transaction') {
                 document.getElementById('tx-date').valueAsDate = new Date();
             }
-            if(id === 'modal-add-income') {
+            if (id === 'modal-add-income') {
                 document.getElementById('income-date').valueAsDate = new Date();
             }
-            if(id === 'modal-add-savings') {
+            if (id === 'modal-add-savings') {
                 document.getElementById('savings-date').valueAsDate = new Date();
             }
-            if(id === 'modal-add-debt' && !document.getElementById('debt-edit-id').value) {
+            if (id === 'modal-add-debt' && !document.getElementById('debt-edit-id').value) {
                 document.getElementById('debt-edit-id').value = '';
                 document.getElementById('debt-modal-title').textContent = 'Add Debt';
                 document.getElementById('debt-recurring').checked = false;
                 toggleEmiFields();
             }
-            if(id === 'modal-add-payment') {
+            if (id === 'modal-add-payment') {
                 const now = new Date();
                 document.getElementById('payment-month').value = now.toISOString().slice(0, 7);
             }
@@ -2139,7 +2645,7 @@
                 createdAt: new Date().toISOString(),
                 updatedAt: new Date().toISOString()
             };
-            
+
             state.transactions.push(tx);
             saveData();
             showToast("Expense added successfully!", "success");
@@ -2175,7 +2681,7 @@
                 createdAt: new Date().toISOString(),
                 updatedAt: new Date().toISOString()
             };
-            
+
             state.transactions.push(tx);
             saveData();
             showToast("Income added successfully!", "success");
@@ -2183,7 +2689,7 @@
         }
 
         function deleteTransaction(id) {
-            if(confirm("Delete this transaction?")) {
+            if (confirm("Delete this transaction?")) {
                 state.transactions = state.transactions.filter(t => t.id !== id);
                 saveData();
                 showToast("Transaction deleted.", "info");
@@ -2201,8 +2707,8 @@
                 data: {
                     labels: ['Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun'],
                     datasets: [
-                        { label: 'Income', data: [0,0,0,0,0,0], backgroundColor: 'rgba(16, 185, 129, 0.8)', borderRadius: 4 },
-                        { label: 'Expense', data: [0,0,0,0,0,0], backgroundColor: 'rgba(239, 68, 68, 0.8)', borderRadius: 4 }
+                        { label: 'Income', data: [0, 0, 0, 0, 0, 0], backgroundColor: 'rgba(16, 185, 129, 0.8)', borderRadius: 4 },
+                        { label: 'Expense', data: [0, 0, 0, 0, 0, 0], backgroundColor: 'rgba(239, 68, 68, 0.8)', borderRadius: 4 }
                     ]
                 },
                 options: { responsive: true, maintainAspectRatio: false, scales: { y: { beginAtZero: true } } }
@@ -2212,7 +2718,7 @@
             if (ctxPie) {
                 charts.categoryPie = new Chart(ctxPie.getContext('2d'), {
                     type: 'doughnut',
-                    data: { labels: [], datasets: [{ data: [], backgroundColor: ['#6366f1','#10b981','#f59e0b','#ef4444','#3b82f6','#a855f7','#ec4899'], borderWidth: 0 }] },
+                    data: { labels: [], datasets: [{ data: [], backgroundColor: ['#6366f1', '#10b981', '#f59e0b', '#ef4444', '#3b82f6', '#a855f7', '#ec4899'], borderWidth: 0 }] },
                     options: { responsive: true, maintainAspectRatio: false, plugins: { legend: { position: 'bottom' } } }
                 });
             }
@@ -2221,13 +2727,13 @@
         function populateCategoryDropdowns() {
             const expenseCategories = state.expenseCategories || [];
             const optionsHtml = expenseCategories.map(cat => `<option value="${cat}">${cat}</option>`).join('');
-            
+
             const txCatSelect = document.getElementById('tx-category');
             if (txCatSelect) txCatSelect.innerHTML = optionsHtml;
-            
+
             const budgetCatSelect = document.getElementById('budget-cat-name');
             if (budgetCatSelect) budgetCatSelect.innerHTML = optionsHtml;
-            
+
             const filterSelect = document.getElementById('expense-filter-category');
             if (filterSelect) filterSelect.innerHTML = `<option value="">All Categories</option>` + optionsHtml;
         }
@@ -2283,22 +2789,22 @@
         function updateDashboard() {
             const now = new Date();
             const currentMonthStr = now.toISOString().slice(0, 7);
-            
+
             let monthlyIncome = 0;
             let monthlyExpense = 0;
 
             const recentTxs = state.transactions
-                .sort((a,b) => new Date(b.date) - new Date(a.date));
+                .sort((a, b) => new Date(b.date) - new Date(a.date));
 
             state.transactions.forEach(tx => {
-                if(tx.date.startsWith(currentMonthStr)) {
-                    if(tx.type === 'income') monthlyIncome += tx.amount;
-                    if(tx.type === 'expense') monthlyExpense += tx.amount;
+                if (tx.date.startsWith(currentMonthStr)) {
+                    if (tx.type === 'income') monthlyIncome += tx.amount;
+                    if (tx.type === 'expense') monthlyExpense += tx.amount;
                 }
             });
 
             const currentCash = monthlyIncome - monthlyExpense;
-            
+
             document.getElementById('dashboard-date').textContent = now.toLocaleDateString('en-US', { month: 'long', year: 'numeric' });
             document.getElementById('dash-income').textContent = formatCurrency(monthlyIncome);
             document.getElementById('dash-expense').textContent = formatCurrency(monthlyExpense);
@@ -2319,8 +2825,8 @@
                 `;
                 txBody.appendChild(tr);
             });
-            
-            if(recentTxs.length === 0) {
+
+            if (recentTxs.length === 0) {
                 txBody.innerHTML = '<tr><td colspan="3" style="text-align:center;" class="text-muted">No recent transactions</td></tr>';
             }
 
@@ -2347,7 +2853,7 @@
                 }
             }
 
-            if(charts.trend) {
+            if (charts.trend) {
                 charts.trend.data.datasets[0].data = [40000, 42000, 41000, 45000, 43000, monthlyIncome || 50000];
                 charts.trend.data.datasets[1].data = [35000, 36000, 38000, 32000, 39000, monthlyExpense || 30000];
                 charts.trend.update();
@@ -2364,7 +2870,7 @@
                 .filter(t => !fromDate || t.date >= fromDate)
                 .filter(t => !toDate || t.date <= toDate)
                 .filter(t => !category || t.category === category)
-                .sort((a,b) => new Date(b.date) - new Date(a.date));
+                .sort((a, b) => new Date(b.date) - new Date(a.date));
         }
 
         function clearExpenseFilters() {
@@ -2378,7 +2884,7 @@
             const tbody = document.getElementById('expense-table-body');
             if (!tbody) return;
             tbody.innerHTML = '';
-            
+
             const expenses = getFilteredExpenses();
 
             expenses.forEach(tx => {
@@ -2388,8 +2894,8 @@
                     <td><strong>${tx.desc}</strong></td>
                     <td><span class="tag" style="background:var(--border-color)">${tx.category}</span></td>
                     <td>
-                        ${tx.needWant === 'need' ? '<span class="tag tag-need">Need</span>' : 
-                          tx.needWant === 'want' ? '<span class="tag tag-want">Want</span>' : '-'}
+                        ${tx.needWant === 'need' ? '<span class="tag tag-need">Need</span>' :
+                        tx.needWant === 'want' ? '<span class="tag tag-want">Want</span>' : '-'}
                     </td>
                     <td style="font-weight: 600;">${formatCurrency(tx.amount)}</td>
                     <td>
@@ -2400,20 +2906,20 @@
                 `;
                 tbody.appendChild(tr);
             });
-            
-            if(expenses.length === 0) {
+
+            if (expenses.length === 0) {
                 tbody.innerHTML = '<tr><td colspan="6" style="text-align:center;" class="text-muted">No expenses found</td></tr>';
             }
         }
 
         function updateIncomeTable() {
             const tbody = document.getElementById('income-table-body');
-            if(!tbody) return;
+            if (!tbody) return;
             tbody.innerHTML = '';
-            
+
             const incomes = state.transactions
                 .filter(t => t.type === 'income')
-                .sort((a,b) => new Date(b.date) - new Date(a.date));
+                .sort((a, b) => new Date(b.date) - new Date(a.date));
 
             incomes.forEach(tx => {
                 const tr = document.createElement('tr');
@@ -2429,8 +2935,8 @@
                 `;
                 tbody.appendChild(tr);
             });
-            
-            if(incomes.length === 0) {
+
+            if (incomes.length === 0) {
                 tbody.innerHTML = '<tr><td colspan="4" style="text-align:center;" class="text-muted">No income found</td></tr>';
             }
         }
@@ -2491,16 +2997,16 @@
             if (editId) {
                 const idx = state.debts.findIndex(d => d.id === editId);
                 if (idx >= 0) {
-                    state.debts[idx] = { 
-                        ...state.debts[idx], 
-                        ...debtData 
+                    state.debts[idx] = {
+                        ...state.debts[idx],
+                        ...debtData
                     };
                 }
             } else {
-                state.debts.push({ 
-                    id: generateId(), 
+                state.debts.push({
+                    id: generateId(),
                     createdAt: new Date().toISOString(),
-                    ...debtData 
+                    ...debtData
                 });
             }
             saveData();
@@ -2522,10 +3028,10 @@
             const debtId = document.getElementById('payment-debt-id').value;
             const debt = state.debts.find(d => d.id === debtId);
             if (!debt) return;
-            
+
             const monthVal = document.getElementById('payment-month').value;
             const amtVal = parseFloat(document.getElementById('payment-amount').value);
-            
+
             if (!monthVal) {
                 showToast("Please select a month.", "error");
                 return;
@@ -2542,7 +3048,7 @@
                 createdAt: new Date().toISOString()
             });
             debt.updatedAt = new Date().toISOString();
-            
+
             saveData();
             showToast("Payment recorded successfully!", "success");
             closeModal('modal-add-payment');
@@ -2583,7 +3089,7 @@
                 const remaining = Math.max(0, d.totalOwed - paid);
                 const pct = d.totalOwed > 0 ? Math.min(100, (paid / d.totalOwed) * 100) : 0;
                 const paymentsHtml = (d.payments || [])
-                    .sort((a,b) => b.month.localeCompare(a.month))
+                    .sort((a, b) => b.month.localeCompare(a.month))
                     .map(p => `<tr><td>${p.month}</td><td style="color:var(--success);font-weight:600;">${formatCurrency(p.amount)}</td></tr>`)
                     .join('') || '<tr><td colspan="2" class="text-muted" style="text-align:center;">No payments recorded</td></tr>';
 
@@ -2675,7 +3181,7 @@
             if (!tbody) return;
             tbody.innerHTML = '';
 
-            const entries = [...state.savings].sort((a,b) => new Date(b.date) - new Date(a.date));
+            const entries = [...state.savings].sort((a, b) => new Date(b.date) - new Date(a.date));
             entries.forEach(s => {
                 const tr = document.createElement('tr');
                 tr.innerHTML = `
@@ -2795,7 +3301,7 @@
             if (totalEl) totalEl.textContent = formatCurrency(totalAll);
             if (monthEl) monthEl.textContent = formatCurrency(totalMonth);
 
-            const sortedCats = Object.entries(byCategory).sort((a,b) => b[1] - a[1]);
+            const sortedCats = Object.entries(byCategory).sort((a, b) => b[1] - a[1]);
             if (topEl) topEl.textContent = sortedCats.length > 0 ? sortedCats[0][0] : '—';
 
             const catTable = document.getElementById('analytics-category-table');
@@ -2834,8 +3340,8 @@
                 return;
             }
 
-            const monthExp = expenses.filter(t => t.date.startsWith(cm)).reduce((s,t) => s + t.amount, 0);
-            const prevExp = expenses.filter(t => t.date.startsWith(pm)).reduce((s,t) => s + t.amount, 0);
+            const monthExp = expenses.filter(t => t.date.startsWith(cm)).reduce((s, t) => s + t.amount, 0);
+            const prevExp = expenses.filter(t => t.date.startsWith(pm)).reduce((s, t) => s + t.amount, 0);
             if (prevExp > 0) {
                 const change = ((monthExp - prevExp) / prevExp * 100).toFixed(0);
                 if (monthExp > prevExp) {
@@ -2849,31 +3355,31 @@
             expenses.filter(t => t.date.startsWith(cm)).forEach(t => {
                 byCategory[t.category] = (byCategory[t.category] || 0) + t.amount;
             });
-            const topCat = Object.entries(byCategory).sort((a,b) => b[1] - a[1])[0];
+            const topCat = Object.entries(byCategory).sort((a, b) => b[1] - a[1])[0];
             if (topCat) {
-                insights.push({ type: '', title: 'Top Spending Category', text: `${topCat[0]} is your biggest expense this month at ${formatCurrency(topCat[1])} (${monthExp > 0 ? ((topCat[1]/monthExp)*100).toFixed(0) : 0}% of total).` });
+                insights.push({ type: '', title: 'Top Spending Category', text: `${topCat[0]} is your biggest expense this month at ${formatCurrency(topCat[1])} (${monthExp > 0 ? ((topCat[1] / monthExp) * 100).toFixed(0) : 0}% of total).` });
             }
 
-            const wants = expenses.filter(t => t.date.startsWith(cm) && t.needWant === 'want').reduce((s,t) => s + t.amount, 0);
-            const needs = expenses.filter(t => t.date.startsWith(cm) && t.needWant === 'need').reduce((s,t) => s + t.amount, 0);
+            const wants = expenses.filter(t => t.date.startsWith(cm) && t.needWant === 'want').reduce((s, t) => s + t.amount, 0);
+            const needs = expenses.filter(t => t.date.startsWith(cm) && t.needWant === 'need').reduce((s, t) => s + t.amount, 0);
             if (wants + needs > 0) {
                 insights.push({ type: wants > needs ? 'warning' : 'success', title: 'Needs vs Wants', text: `This month: ${formatCurrency(needs)} on needs and ${formatCurrency(wants)} on wants.` });
             }
 
-            const monthInc = incomes.filter(t => t.date.startsWith(cm)).reduce((s,t) => s + t.amount, 0);
+            const monthInc = incomes.filter(t => t.date.startsWith(cm)).reduce((s, t) => s + t.amount, 0);
             const savings = monthInc - monthExp;
             if (monthInc > 0) {
                 insights.push({
                     type: savings >= 0 ? 'success' : 'danger',
                     title: 'Monthly Balance',
                     text: savings >= 0
-                        ? `You're saving ${formatCurrency(savings)} this month (${((savings/monthInc)*100).toFixed(0)}% of income).`
+                        ? `You're saving ${formatCurrency(savings)} this month (${((savings / monthInc) * 100).toFixed(0)}% of income).`
                         : `You're overspending by ${formatCurrency(Math.abs(savings))} this month.`
                 });
             }
 
             const totalSavings = getTotalSavings();
-            const totalGoals = state.financialGoals.reduce((s,g) => s + g.targetAmount, 0);
+            const totalGoals = state.financialGoals.reduce((s, g) => s + g.targetAmount, 0);
             if (totalGoals > 0) {
                 const pct = ((totalSavings / totalGoals) * 100).toFixed(0);
                 insights.push({
@@ -2886,7 +3392,7 @@
             }
 
             if (state.debts.length > 0) {
-                const totalRemaining = state.debts.reduce((s,d) => s + Math.max(0, d.totalOwed - getDebtPaid(d)), 0);
+                const totalRemaining = state.debts.reduce((s, d) => s + Math.max(0, d.totalOwed - getDebtPaid(d)), 0);
                 insights.push({ type: 'warning', title: 'Outstanding Debt', text: `You have ${formatCurrency(totalRemaining)} in remaining debt across ${state.debts.length} account(s).` });
             }
 
@@ -2920,8 +3426,8 @@
             const cm = now.toISOString().slice(0, 7);
             const expenses = state.transactions.filter(t => t.type === 'expense' && t.date.startsWith(cm));
             const incomes = state.transactions.filter(t => t.type === 'income' && t.date.startsWith(cm));
-            const monthInc = incomes.reduce((s,t) => s + t.amount, 0);
-            const monthExp = expenses.reduce((s,t) => s + t.amount, 0);
+            const monthInc = incomes.reduce((s, t) => s + t.amount, 0);
+            const monthExp = expenses.reduce((s, t) => s + t.amount, 0);
             const totalSavings = getTotalSavings();
 
             if (monthInc === 0) {
@@ -2938,29 +3444,29 @@
                 if (allocated > 0 && spent > allocated) {
                     recs.push({ type: 'danger', icon: 'fa-chart-pie', title: `Budget Exceeded: ${cat.name}`, text: `${cat.name} is over budget by ${formatCurrency(spent - allocated)} (${formatCurrency(spent)} spent vs ${formatCurrency(allocated)} allocated).`, action: `Reduce ${cat.name} spending or adjust your budget in Budget Planner.` });
                 } else if (allocated > 0 && spent > allocated * 0.85) {
-                    recs.push({ type: 'warning', icon: 'fa-chart-pie', title: `Budget Warning: ${cat.name}`, text: `You've used ${((spent/allocated)*100).toFixed(0)}% of your ${cat.name} budget with time left in the month.`, action: 'Slow down spending in this category to stay on track.' });
+                    recs.push({ type: 'warning', icon: 'fa-chart-pie', title: `Budget Warning: ${cat.name}`, text: `You've used ${((spent / allocated) * 100).toFixed(0)}% of your ${cat.name} budget with time left in the month.`, action: 'Slow down spending in this category to stay on track.' });
                 }
             });
 
             const byCat = {};
             expenses.forEach(t => { byCat[t.category] = (byCat[t.category] || 0) + t.amount; });
-            const sorted = Object.entries(byCat).sort((a,b) => b[1] - a[1]);
+            const sorted = Object.entries(byCat).sort((a, b) => b[1] - a[1]);
             if (sorted.length > 0 && monthExp > 0) {
                 const [topName, topAmt] = sorted[0];
                 if (topAmt / monthExp > 0.4) {
-                    recs.push({ type: 'warning', icon: 'fa-scissors', title: 'Concentrated Spending', text: `${topName} accounts for ${((topAmt/monthExp)*100).toFixed(0)}% of your spending. Consider diversifying or reducing costs here.`, action: `Look for ways to lower ${topName} expenses — negotiate bills, find alternatives, or set a stricter sub-budget.` });
+                    recs.push({ type: 'warning', icon: 'fa-scissors', title: 'Concentrated Spending', text: `${topName} accounts for ${((topAmt / monthExp) * 100).toFixed(0)}% of your spending. Consider diversifying or reducing costs here.`, action: `Look for ways to lower ${topName} expenses — negotiate bills, find alternatives, or set a stricter sub-budget.` });
                 }
             }
 
-            const wantSpending = expenses.filter(t => t.needWant === 'want').reduce((s,t) => s + t.amount, 0);
+            const wantSpending = expenses.filter(t => t.needWant === 'want').reduce((s, t) => s + t.amount, 0);
             if (wantSpending > monthExp * 0.3 && monthExp > 0) {
-                recs.push({ type: 'warning', icon: 'fa-bag-shopping', title: 'High Discretionary Spending', text: `${formatCurrency(wantSpending)} (${((wantSpending/monthExp)*100).toFixed(0)}%) went to "wants" this month.`, action: 'Try a 30-day rule for non-essential purchases to boost savings.' });
+                recs.push({ type: 'warning', icon: 'fa-bag-shopping', title: 'High Discretionary Spending', text: `${formatCurrency(wantSpending)} (${((wantSpending / monthExp) * 100).toFixed(0)}%) went to "wants" this month.`, action: 'Try a 30-day rule for non-essential purchases to boost savings.' });
             }
 
             if (totalSavings === 0 && monthInc > monthExp) {
                 recs.push({ type: '', icon: 'fa-piggy-bank', title: 'Start Building Savings', text: `You have ${formatCurrency(monthInc - monthExp)} available this month but no savings recorded.`, action: 'Add a savings entry to start tracking your progress toward goals.' });
             } else if (state.financialGoals.length > 0) {
-                const totalNeeded = state.financialGoals.reduce((s,g) => s + g.targetAmount, 0);
+                const totalNeeded = state.financialGoals.reduce((s, g) => s + g.targetAmount, 0);
                 if (totalSavings < totalNeeded) {
                     const gap = totalNeeded - totalSavings;
                     const monthsToGoal = monthInc > monthExp ? Math.ceil(gap / (monthInc - monthExp)) : null;
@@ -2982,7 +3488,7 @@
                 }
             });
 
-            const totalAllocated = state.budgetCategories.reduce((s,c) => s + getCategoryBudget(c), 0);
+            const totalAllocated = state.budgetCategories.reduce((s, c) => s + getCategoryBudget(c), 0);
             if (totalAllocated > 0 && monthInc > 0 && totalAllocated > monthInc) {
                 recs.push({ type: 'danger', icon: 'fa-sliders', title: 'Over-Allocated Budget', text: `Your budget (${formatCurrency(totalAllocated)}) exceeds your monthly income (${formatCurrency(monthInc)}).`, action: 'Reduce category budgets in Budget Planner to match realistic income.' });
             } else if (totalAllocated > 0 && monthInc > totalAllocated) {
@@ -3041,9 +3547,9 @@
                     cat.updatedAt = new Date().toISOString();
                 }
             } else {
-                const newCat = { 
-                    id: generateId(), 
-                    name: nameVal, 
+                const newCat = {
+                    id: generateId(),
+                    name: nameVal,
                     budgetAmount,
                     createdAt: new Date().toISOString(),
                     updatedAt: new Date().toISOString()
@@ -3152,7 +3658,7 @@
             const newPass = document.getElementById('settings-new-passcode').value;
             const confirmPass = document.getElementById('settings-confirm-passcode').value;
             const expected = state.settings.resetPasscode || '0000';
-            
+
             if (currentPass !== expected) {
                 alert('Incorrect current passcode.');
                 return;
@@ -3206,7 +3712,7 @@
         function generateMockData() {
             const today = new Date();
             const cm = today.toISOString().slice(0, 7);
-            
+
             state.transactions = [
                 { id: '1', type: 'income', date: `${cm}-01`, amount: 85000, desc: 'Salary', category: 'Salary' },
                 { id: '2', type: 'expense', date: `${cm}-02`, amount: 25000, desc: 'Rent', category: 'Housing', needWant: 'need' },
@@ -3239,22 +3745,22 @@
 
         // --- GLOBAL SEARCH LOGIC ---
         const searchInput = document.getElementById('global-search-input');
-        
+
         searchInput.addEventListener('input', (e) => {
             const query = e.target.value.toLowerCase().trim();
-            if(query.length > 0) {
-                if(!document.getElementById('view-search').classList.contains('active')) {
+            if (query.length > 0) {
+                if (!document.getElementById('view-search').classList.contains('active')) {
                     navigate('view-search');
                 }
-                
-                const results = state.transactions.filter(tx => 
-                    tx.desc.toLowerCase().includes(query) || 
+
+                const results = state.transactions.filter(tx =>
+                    tx.desc.toLowerCase().includes(query) ||
                     tx.category.toLowerCase().includes(query) ||
                     tx.amount.toString().includes(query) ||
                     tx.type.toLowerCase().includes(query) ||
                     tx.date.includes(query)
                 );
-                
+
                 renderSearchResults(results, query);
             } else {
                 renderSearchResults([], '');
@@ -3265,7 +3771,7 @@
             const emptyState = document.getElementById('search-empty-state');
             const tableWrapper = document.getElementById('search-table-wrapper');
             const searchContainer = document.getElementById('search-results-container');
-            
+
             if (!query) {
                 if (emptyState) emptyState.style.display = 'block';
                 if (tableWrapper) tableWrapper.style.display = 'none';
@@ -3275,14 +3781,14 @@
             if (emptyState) emptyState.style.display = 'none';
             if (tableWrapper) tableWrapper.style.display = 'block';
             if (!searchContainer) return;
-            
+
             searchContainer.innerHTML = '';
-            
-            if(results.length === 0) {
+
+            if (results.length === 0) {
                 searchContainer.innerHTML = '<tr><td colspan="5" style="text-align:center;" class="text-muted">No results found for "' + query + '"</td></tr>';
                 return;
             }
-            
+
             results.forEach(tx => {
                 const tr = document.createElement('tr');
                 const isInc = tx.type === 'income';
@@ -3312,10 +3818,10 @@
         };
 
         // Determine if config is placeholder or empty
-        const isConfigPlaceholder = !firebaseConfig || 
-                                    !firebaseConfig.apiKey || 
-                                    firebaseConfig.apiKey.includes('YOUR_') || 
-                                    firebaseConfig.apiKey === '';
+        const isConfigPlaceholder = !firebaseConfig ||
+            !firebaseConfig.apiKey ||
+            firebaseConfig.apiKey.includes('YOUR_') ||
+            firebaseConfig.apiKey === '';
 
         let isFirebaseInitialized = false;
         let isAuthReady = false;
@@ -3572,14 +4078,14 @@
                     if (testStatusEl) {
                         testStatusEl.innerHTML = '<span style="color:var(--warning)"><i class="fa-solid fa-cloud-slash"></i> Offline - modifications cached</span>';
                     }
-                    if(typeof updateSyncStatus === 'function') updateSyncStatus('offline');
+                    if (typeof updateSyncStatus === 'function') updateSyncStatus('offline');
                 } else {
                     updateStatusDot('status-firestore', 'connected', 'Connected');
                     const testStatusEl = document.getElementById('firestore-test-status');
                     if (testStatusEl) {
                         testStatusEl.innerHTML = '<span style="color:var(--success)"><i class="fa-solid fa-circle-check"></i> Firestore Read/Write verified</span>';
                     }
-                    if(typeof updateSyncStatus === 'function') updateSyncStatus('connected');
+                    if (typeof updateSyncStatus === 'function') updateSyncStatus('connected');
                 }
             }, (error) => {
                 showLoading(false);
@@ -3595,7 +4101,7 @@
                 try {
                     const parsed = JSON.parse(localDataStr);
                     console.log("Found local storage data. Initiating auto-migration for UID:", user.uid);
-                    
+
                     state = {
                         transactions: parsed.transactions || [],
                         savings: parsed.savings || [],
@@ -3607,7 +4113,7 @@
                         subscriptions: parsed.subscriptions || [],
                         recurringTransactions: parsed.recurringTransactions || []
                     };
-                    
+
                     // Format corrections
                     state.debts.forEach(d => {
                         if (!d.payments) d.payments = [];
@@ -3660,7 +4166,7 @@
                     recurringTransactions: []
                 };
                 initDefaultBudgetCategories();
-                
+
                 const docRef = window.db.collection('users').doc(user.uid);
                 const dataToSave = {
                     profile: {
@@ -3706,7 +4212,7 @@
             updateAdvisor();
             populateCategoryDropdowns();
             renderExpenseCategories();
-            
+
             // Additional UI components that rely on Firestore data
             if (typeof updateForecast === 'function') updateForecast();
             if (typeof updateSmartInsights === 'function') updateSmartInsights();
@@ -3725,7 +4231,7 @@
             const dotEl = document.querySelector(`#${id} .status-dot`);
             const textEl = document.querySelector(`#${id} .status-text`);
             if (!dotEl || !textEl) return;
-            
+
             dotEl.className = 'status-dot';
             if (status === 'connected' || status === 'logged-in') {
                 dotEl.classList.add('connected');
@@ -3860,20 +4366,20 @@
         function showToast(message, type = 'info') {
             const container = document.getElementById('toast-container');
             if (!container) return;
-            
+
             const toast = document.createElement('div');
             toast.className = `toast-msg ${type}`;
-            
+
             let iconClass = 'fa-circle-info';
             if (type === 'success') iconClass = 'fa-circle-check';
             if (type === 'error') iconClass = 'fa-triangle-exclamation';
-            
+
             toast.innerHTML = `<i class="fa-solid ${iconClass}"></i><span>${message}</span>`;
             container.appendChild(toast);
-            
+
             // Trigger transition
             setTimeout(() => toast.classList.add('show'), 10);
-            
+
             // Auto fade out and remove
             setTimeout(() => {
                 toast.classList.remove('show');
@@ -3917,7 +4423,7 @@
                     t.createdAt || '',
                     t.updatedAt || ''
                 ]);
-                const csvContent = "data:text/csv;charset=utf-8," 
+                const csvContent = "data:text/csv;charset=utf-8,"
                     + [headers.join(","), ...rows.map(r => r.join(","))].join("\n");
                 const downloadAnchor = document.createElement('a');
                 downloadAnchor.setAttribute("href", encodeURI(csvContent));
@@ -3935,29 +4441,28 @@
         function triggerImportJSON() {
             document.getElementById('import-file-input').click();
         }
-
         // Data Management: JSON Import
         async function handleImportJSON(event) {
             const file = event.target.files[0];
             if (!file) return;
-            
+
             const reader = new FileReader();
-            reader.onload = async function(e) {
+            reader.onload = async function (e) {
                 try {
                     const imported = JSON.parse(e.target.result);
-                    
+
                     if (typeof imported !== 'object' || imported === null) {
                         throw new Error("Invalid structure. Root must be a JSON object.");
                     }
-                    
+
                     let importedCount = 0;
                     let skippedCount = 0;
-                    
+
                     const mergeList = (targetArray, sourceArray, name) => {
                         if (!Array.isArray(sourceArray)) return;
                         sourceArray.forEach(item => {
                             if (!item.id) item.id = generateId();
-                            
+
                             // Field validations
                             if (name === 'transactions') {
                                 if (!item.date || isNaN(parseFloat(item.amount)) || !item.type) return;
@@ -3968,7 +4473,7 @@
                             if (name === 'debts') {
                                 if (!item.name || isNaN(parseFloat(item.totalOwed))) return;
                             }
-                            
+
                             // Prevent duplicates
                             const exists = targetArray.some(x => x.id === item.id);
                             if (exists) {
@@ -3981,17 +4486,17 @@
                             }
                         });
                     };
-                    
+
                     if (imported.transactions) mergeList(state.transactions, imported.transactions, 'transactions');
                     if (imported.savings) mergeList(state.savings, imported.savings, 'savings');
                     if (imported.financialGoals) mergeList(state.financialGoals, imported.financialGoals, 'financialGoals');
                     if (imported.debts) mergeList(state.debts, imported.debts, 'debts');
                     if (imported.budgetCategories) mergeList(state.budgetCategories, imported.budgetCategories, 'budgetCategories');
-                    
+
                     if (imported.settings) {
                         state.settings = { ...state.settings, ...imported.settings };
                     }
-                    
+
                     if (importedCount > 0) {
                         await saveData();
                         showToast(`Import successful: ${importedCount} items added, ${skippedCount} duplicate items skipped.`, "success");
@@ -4013,19 +4518,19 @@
                 showToast("You must be logged in to delete your account.", "error");
                 return;
             }
-            
+
             const confirmation = confirm("WARNING: This will permanently delete your user profile, all financial data from Firestore, and your user account. This action cannot be undone.\n\nAre you sure you want to proceed?");
             if (!confirmation) return;
-            
+
             showLoading(true);
             const user = window.auth.currentUser;
             const uid = user.uid;
-            
+
             try {
                 // Cascade delete user data from Firestore subcollections
                 const userDocRef = window.db.collection('users').doc(uid);
                 const batch = window.db.batch();
-                
+
                 const collections = ['income', 'expenses', 'budgets', 'debts', 'savings', 'savingsGoals', 'settings'];
                 for (const colName of collections) {
                     const snap = await userDocRef.collection(colName).get();
@@ -4033,11 +4538,11 @@
                         batch.delete(doc.ref);
                     });
                 }
-                
+
                 batch.delete(userDocRef);
                 await batch.commit();
                 console.log("Firestore account data successfully deleted.");
-                
+
                 // Delete user account from authentication
                 await user.delete();
                 showLoading(false);
@@ -4210,4 +4715,5 @@
 
     </script>
 </body>
+
 </html>
