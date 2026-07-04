@@ -863,6 +863,123 @@
         .toast-msg.info {
             border-left: 4px solid var(--primary);
         }
+
+        /* Auth Gate */
+        #auth-gate {
+            position: fixed;
+            inset: 0;
+            z-index: 20000;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            background: linear-gradient(135deg, #f0f2f5 0%, #e2e8f0 100%);
+        }
+        [data-theme="dark"] #auth-gate {
+            background: linear-gradient(135deg, #0f172a 0%, #1e293b 100%);
+        }
+        .auth-panel {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            gap: 1.5rem;
+            text-align: center;
+            padding: 2rem;
+        }
+        .auth-card {
+            background: var(--card-bg);
+            backdrop-filter: var(--glass-blur);
+            -webkit-backdrop-filter: var(--glass-blur);
+            border: 1px solid var(--glass-border);
+            border-radius: var(--radius-lg);
+            box-shadow: var(--glass-shadow);
+            padding: 2.5rem;
+            max-width: 420px;
+            width: 90vw;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            gap: 1.25rem;
+        }
+        .auth-logo {
+            display: flex;
+            align-items: center;
+            gap: 0.75rem;
+            font-size: 1.75rem;
+            font-weight: 700;
+            color: var(--primary);
+        }
+        .auth-logo i {
+            font-size: 2rem;
+        }
+        .auth-card h1 {
+            font-size: 1.5rem;
+            font-weight: 700;
+            color: var(--text-main);
+            margin: 0;
+        }
+        .auth-card p {
+            color: var(--text-muted);
+            margin: 0;
+            font-size: 0.9375rem;
+            line-height: 1.5;
+        }
+        .auth-error {
+            width: 100%;
+            padding: 0.75rem 1rem;
+            border-radius: var(--radius-sm);
+            background: var(--danger-light);
+            color: var(--danger);
+            font-size: 0.875rem;
+            text-align: left;
+            line-height: 1.4;
+        }
+        .btn-google {
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            gap: 0.75rem;
+            width: 100%;
+            padding: 0.875rem 1.5rem;
+            font-size: 1rem;
+            font-weight: 600;
+            background: #fff;
+            color: #3c4043;
+            border: 1px solid #dadce0;
+            border-radius: var(--radius-md);
+            cursor: pointer;
+            transition: all 0.2s ease;
+        }
+        .btn-google:hover:not(:disabled) {
+            background: #f8f9fa;
+            box-shadow: 0 1px 3px rgba(0, 0, 0, 0.12);
+        }
+        .btn-google:disabled {
+            opacity: 0.6;
+            cursor: not-allowed;
+        }
+        [data-theme="dark"] .btn-google {
+            background: #2d3748;
+            color: #e2e8f0;
+            border-color: #4a5568;
+        }
+        [data-theme="dark"] .btn-google:hover:not(:disabled) {
+            background: #374151;
+        }
+        .user-profile-info {
+            display: flex;
+            flex-direction: column;
+            line-height: 1.2;
+        }
+        .user-profile-info .user-email-visible {
+            font-size: 0.7rem;
+            color: var(--text-muted);
+            font-weight: 400;
+            max-width: 140px;
+            overflow: hidden;
+            text-overflow: ellipsis;
+            white-space: nowrap;
+        }
     </style>
 </head>
 <body>
@@ -875,6 +992,30 @@
     <!-- Toast Notifications Container -->
     <div id="toast-container" style="position: fixed; top: 20px; right: 20px; z-index: 10000; display: flex; flex-direction: column; gap: 10px; pointer-events: none;"></div>
 
+    <!-- Auth Gate (shown until Firebase auth state is resolved) -->
+    <div id="auth-gate">
+        <div id="auth-loading" class="auth-panel">
+            <div class="spinner"></div>
+            <span style="color: var(--text-muted); font-weight: 500;">Checking authentication...</span>
+        </div>
+        <div id="auth-login" class="auth-panel" style="display: none;">
+            <div class="auth-card">
+                <div class="auth-logo">
+                    <i class="fa-solid fa-infinity"></i>
+                    Finova
+                </div>
+                <h1>Welcome back</h1>
+                <p>Sign in with your Google account to access your personal finance dashboard.</p>
+                <div id="auth-error" class="auth-error" style="display: none;" role="alert"></div>
+                <button type="button" id="google-signin-btn" class="btn-google">
+                    <i class="fa-brands fa-google"></i>
+                    Continue with Google
+                </button>
+            </div>
+        </div>
+    </div>
+
+    <div id="app-shell" style="display: none;">
     <!-- =========================================
          SIDEBAR
          ========================================= -->
@@ -1674,6 +1815,8 @@
         </div>
     </div>
 
+    </div><!-- /#app-shell -->
+
     <!-- =========================================
          JAVASCRIPT
          ========================================= -->
@@ -1743,46 +1886,42 @@
         }
 
         async function saveData() {
-            // Update sync status UI
+            if (!isFirebaseInitialized || !window.auth || !window.auth.currentUser) {
+                console.warn("Save blocked: user is not authenticated.");
+                showToast("You must be signed in to save data.", "error");
+                return;
+            }
+
             updateSyncStatus('syncing');
-            if (window.auth && window.auth.currentUser) {
-                const user = window.auth.currentUser;
-                const docRef = window.db.collection('users').doc(user.uid);
-                const dataToSave = {
-                    profile: {
-                        name: user.displayName || '',
-                        email: user.email || '',
-                        photoURL: user.photoURL || ''
-                    },
-                    income: state.transactions.filter(t => t.type === 'income'),
-                    expenses: state.transactions.filter(t => t.type === 'expense'),
-                    budgets: state.budgetCategories,
-                    debts: state.debts,
-                    savings: state.savings || [],
-                    savingsGoals: state.financialGoals || [],
-                    settings: state.settings,
-                    expenseCategories: state.expenseCategories || ['Housing', 'Food', 'Transport', 'Shopping', 'Entertainment', 'Misc'],
-                    subscriptions: state.subscriptions || [],
-                    recurringTransactions: state.recurringTransactions || [],
-                    updatedAt: firebase.firestore.FieldValue.serverTimestamp()
-                };
-                try {
-                    // Optimistically update UI
-                    updateAllUI();
-                    await docRef.set(dataToSave, { merge: true });
-                    // Store last synced state for diffing in future
-                    window.lastSyncedState = dataToSave;
-                    updateSyncStatus('saved');
-                } catch (error) {
-                    console.error("Error saving data to Firestore:", error);
-                    alert("Error saving data: " + error.message);
-                    updateSyncStatus('error');
-                }
-            } else {
-                // Guest mode – fallback to localStorage
-                localStorage.setItem(STORAGE_KEY, JSON.stringify(state));
+            const user = window.auth.currentUser;
+            const docRef = window.db.collection('users').doc(user.uid);
+            const dataToSave = {
+                profile: {
+                    name: user.displayName || '',
+                    email: user.email || '',
+                    photoURL: user.photoURL || ''
+                },
+                income: state.transactions.filter(t => t.type === 'income'),
+                expenses: state.transactions.filter(t => t.type === 'expense'),
+                budgets: state.budgetCategories,
+                debts: state.debts,
+                savings: state.savings || [],
+                savingsGoals: state.financialGoals || [],
+                settings: state.settings,
+                expenseCategories: state.expenseCategories || ['Housing', 'Food', 'Transport', 'Shopping', 'Entertainment', 'Misc'],
+                subscriptions: state.subscriptions || [],
+                recurringTransactions: state.recurringTransactions || [],
+                updatedAt: firebase.firestore.FieldValue.serverTimestamp()
+            };
+            try {
                 updateAllUI();
+                await docRef.set(dataToSave, { merge: true });
+                window.lastSyncedState = dataToSave;
                 updateSyncStatus('saved');
+            } catch (error) {
+                console.error("Error saving data to Firestore:", error);
+                showToast("Error saving data: " + error.message, "error");
+                updateSyncStatus('error');
             }
         }
 
@@ -1809,6 +1948,8 @@
         });
 
         function navigate(targetId) {
+            if (!isAuthenticated) return;
+
             // Update active nav
             navItems.forEach(i => i.classList.remove('active'));
             const activeNav = document.querySelector(`.nav-item[data-target="${targetId}"]`);
@@ -3159,15 +3300,15 @@
         }
 
         // --- FIREBASE INTEGRATION LOGIC ---
-        // Placeholder Firebase configuration template.
-        // Replace with your actual project details from Firebase Console.
-        const firebaseConfig = {
-            apiKey: "YOUR_API_KEY",
-            authDomain: "YOUR_AUTH_DOMAIN",
-            projectId: "YOUR_PROJECT_ID",
-            storageBucket: "YOUR_STORAGE_BUCKET",
-            messagingSenderId: "YOUR_MESSAGING_SENDER_ID",
-            appId: "YOUR_APP_ID"
+        // Replace with your Firebase project credentials, or set window.FIREBASE_CONFIG before this script runs.
+        const firebaseConfig = window.FIREBASE_CONFIG || {
+            apiKey: "AIzaSyB5D7gV0GfmkIsJOAEVrWXgUGrYO2W62PY",
+            authDomain: "revolution-5785d.firebaseapp.com",
+            projectId: "revolution-5785d",
+            storageBucket: "revolution-5785d.firebasestorage.app",
+            messagingSenderId: "13606877312",
+            appId: "1:13606877312:web:f54a29e205128606238e65",
+            measurementId: "G-JV9KR8MV2C"
         };
 
         // Determine if config is placeholder or empty
@@ -3177,8 +3318,122 @@
                                     firebaseConfig.apiKey === '';
 
         let isFirebaseInitialized = false;
+        let isAuthReady = false;
+        let isAuthenticated = false;
+        let appInitialized = false;
 
         let firestoreUnsubscribe = null;
+
+        function showAuthLoading() {
+            const gate = document.getElementById('auth-gate');
+            const loading = document.getElementById('auth-loading');
+            const login = document.getElementById('auth-login');
+            if (gate) gate.style.display = 'flex';
+            if (loading) loading.style.display = 'flex';
+            if (login) login.style.display = 'none';
+        }
+
+        function showAuthError(message) {
+            const authError = document.getElementById('auth-error');
+            if (authError) {
+                authError.textContent = message;
+                authError.style.display = 'block';
+            }
+        }
+
+        function clearAuthError() {
+            const authError = document.getElementById('auth-error');
+            if (authError) {
+                authError.textContent = '';
+                authError.style.display = 'none';
+            }
+        }
+
+        function showLoginScreen(errorMessage) {
+            const gate = document.getElementById('auth-gate');
+            const loading = document.getElementById('auth-loading');
+            const login = document.getElementById('auth-login');
+            const appShell = document.getElementById('app-shell');
+            const signInBtn = document.getElementById('google-signin-btn');
+
+            if (gate) gate.style.display = 'flex';
+            if (loading) loading.style.display = 'none';
+            if (login) login.style.display = 'flex';
+            if (appShell) appShell.style.display = 'none';
+
+            clearAuthError();
+            if (errorMessage) showAuthError(errorMessage);
+
+            if (signInBtn) {
+                signInBtn.disabled = !isFirebaseInitialized;
+            }
+        }
+
+        function hideAuthGate() {
+            const gate = document.getElementById('auth-gate');
+            if (gate) gate.style.display = 'none';
+            clearAuthError();
+        }
+
+        function showAppShell() {
+            const appShell = document.getElementById('app-shell');
+            if (appShell) appShell.style.display = 'contents';
+        }
+
+        function hideAppShell() {
+            const appShell = document.getElementById('app-shell');
+            if (appShell) appShell.style.display = 'none';
+        }
+
+        function getAuthErrorMessage(err) {
+            if (!err) return 'Authentication failed. Please try again.';
+            if (err.code === 'auth/popup-closed-by-user') return 'Sign-in was cancelled. Please try again.';
+            if (err.code === 'auth/popup-blocked') return 'Pop-up was blocked by your browser. Please allow pop-ups and try again.';
+            if (err.code === 'auth/cancelled-popup-request') return 'Another sign-in attempt is already in progress.';
+            if (err.code === 'auth/network-request-failed') return 'Network error. Check your connection and try again.';
+            return err.message || 'Authentication failed. Please try again.';
+        }
+
+        function handleAuthenticatedUser(user) {
+            isAuthenticated = true;
+            hideAuthGate();
+            showAppShell();
+            displayUserProfile(user);
+
+            const accountCard = document.getElementById('settings-account-card');
+            if (accountCard) accountCard.style.display = 'block';
+
+            if (!appInitialized) {
+                initializeAuthenticatedApp();
+            }
+
+            setupFirestoreSync(user);
+
+            if (typeof startIdleDetector === 'function') startIdleDetector();
+        }
+
+        function handleUnauthenticatedUser() {
+            isAuthenticated = false;
+            hideAppShell();
+            showLoginScreen();
+
+            updateStatusDot('status-auth', 'logged-out', 'Logged Out');
+            clearUserProfile();
+            updateStatusDot('status-firestore', 'neutral', 'Waiting for Sign-In');
+
+            const testStatusEl = document.getElementById('firestore-test-status');
+            if (testStatusEl) testStatusEl.innerHTML = '';
+
+            const accountCard = document.getElementById('settings-account-card');
+            if (accountCard) accountCard.style.display = 'none';
+
+            if (firestoreUnsubscribe) {
+                firestoreUnsubscribe();
+                firestoreUnsubscribe = null;
+            }
+
+            if (typeof stopIdleDetector === 'function') stopIdleDetector();
+        }
 
         function showLoading(show) {
             const overlay = document.getElementById('loading-overlay');
@@ -3186,31 +3441,36 @@
         }
 
         function initFirebase() {
-            // 1. Verify compatibility SDKs are loaded
             if (typeof firebase === 'undefined') {
+                isAuthReady = true;
                 showFirebaseError("Firebase SDK could not be loaded. Please ensure you are online and that CDN scripts loaded correctly.");
                 updateStatusDot('status-firebase', 'error', 'CDN Load Error');
+                showLoginScreen("Firebase SDK could not be loaded. Please check your internet connection and refresh the page.");
                 return;
             }
 
-            // 2. Handle missing config scenario gracefully
             if (isConfigPlaceholder) {
+                isAuthReady = true;
                 showFirebaseError("Firebase is not configured. Replace the placeholders in index.html (under firebaseConfig) to enable Firestore/Auth.");
                 updateStatusDot('status-firebase', 'error', 'Not Configured');
+                showLoginScreen("Firebase is not configured. Replace the placeholder values in firebaseConfig inside index.html with your Firebase project credentials.");
                 return;
             }
 
             try {
-                // Initialize Firebase
                 firebase.initializeApp(firebaseConfig);
                 isFirebaseInitialized = true;
                 updateStatusDot('status-firebase', 'connected', 'Connected');
 
-                // Initialize services
                 window.auth = firebase.auth();
                 window.db = firebase.firestore();
 
-                // Enable Firestore Offline Persistence
+                window.auth.setPersistence(firebase.auth.Auth.Persistence.LOCAL)
+                    .catch((err) => {
+                        console.error("Failed to set auth persistence:", err);
+                        showAuthError("Could not enable persistent sign-in: " + err.message);
+                    });
+
                 try {
                     window.db.enablePersistence({ synchronizeTabs: true })
                         .catch((err) => {
@@ -3224,54 +3484,38 @@
                     console.error("Error enabling offline persistence:", e);
                 }
 
-                // Setup Auth observer
                 window.auth.onAuthStateChanged((user) => {
-                    const accountCard = document.getElementById('settings-account-card');
+                    if (!isAuthReady) {
+                        isAuthReady = true;
+                    }
+
                     if (user) {
                         updateStatusDot('status-auth', 'logged-in', 'Logged In');
-                        displayUserProfile(user);
-                        
-                        // Show account deletion card if logged in
-                        if (accountCard) accountCard.style.display = 'block';
-                        
-                        // Setup real-time listener
-                        setupFirestoreSync(user);
-                        
-                        // Start idle detector to pause listeners when inactive
-                        if(typeof startIdleDetector === 'function') startIdleDetector();
+                        handleAuthenticatedUser(user);
                     } else {
-                        updateStatusDot('status-auth', 'logged-out', 'Logged Out');
-                        clearUserProfile();
-                        updateStatusDot('status-firestore', 'neutral', 'Waiting for Sign-In');
-                        if (document.getElementById('firestore-test-status')) {
-                            document.getElementById('firestore-test-status').innerHTML = '';
-                        }
-                        
-                        // Hide account deletion card if logged out
-                        if (accountCard) accountCard.style.display = 'none';
-                        
-                        // Unsubscribe from Firestore sync on logout
-                        if (firestoreUnsubscribe) {
-                            firestoreUnsubscribe();
-                            firestoreUnsubscribe = null;
-                        }
-                        
-                        if(typeof stopIdleDetector === 'function') stopIdleDetector();
-                        
-                        // Load guest/demo data from local storage
-                        loadData();
-                        updateAllUI();
+                        handleUnauthenticatedUser();
                     }
+                }, (error) => {
+                    isAuthReady = true;
+                    console.error("Auth state observer failed:", error);
+                    showLoginScreen("Authentication error: " + error.message);
+                    showFirebaseError("Authentication error: " + error.message);
                 });
 
             } catch (error) {
+                isAuthReady = true;
                 console.error("Firebase initialization failed:", error);
                 showFirebaseError("Firebase initialization failed: " + error.message);
                 updateStatusDot('status-firebase', 'error', 'Init Error');
+                showLoginScreen("Firebase initialization failed: " + error.message);
             }
         }
 
         function setupFirestoreSync(user) {
+            if (!isFirebaseInitialized || !window.db || !user) {
+                console.warn("Firestore sync skipped: Firebase is not ready or user is missing.");
+                return;
+            }
             // Clean up any previous listeners
             if (firestoreUnsubscribe) {
                 firestoreUnsubscribe();
@@ -3584,16 +3828,31 @@
         });
 
         async function handleLogin() {
-            if (!isFirebaseInitialized) {
-                alert("Firebase is not initialized. Please verify configuration settings.");
+            const signInBtn = document.getElementById('google-signin-btn');
+
+            if (!isFirebaseInitialized || !window.auth) {
+                showAuthError("Firebase is not initialized. Please verify your configuration settings and refresh the page.");
                 return;
             }
+
+            clearAuthError();
+
             try {
+                if (signInBtn) {
+                    signInBtn.disabled = true;
+                    signInBtn.innerHTML = '<div class="spinner" style="width:20px;height:20px;border-width:3px;"></div> Signing in...';
+                }
+
                 const provider = new firebase.auth.GoogleAuthProvider();
                 await window.auth.signInWithPopup(provider);
             } catch (err) {
                 console.error("Google Sign-In failed:", err);
-                alert("Google Sign-In failed: " + err.message);
+                showAuthError(getAuthErrorMessage(err));
+            } finally {
+                if (signInBtn) {
+                    signInBtn.disabled = false;
+                    signInBtn.innerHTML = '<i class="fa-brands fa-google"></i> Continue with Google';
+                }
             }
         }
 
@@ -3796,9 +4055,9 @@
         }
 
         function displayUserProfile(user) {
-            let loginBtn = document.getElementById('google-login-btn');
-            if (loginBtn) loginBtn.style.display = 'none';
-            
+            const oldLoginBtn = document.getElementById('google-login-btn');
+            if (oldLoginBtn) oldLoginBtn.remove();
+
             let profileWidget = document.getElementById('user-profile-widget');
             if (!profileWidget) {
                 profileWidget = document.createElement('div');
@@ -3806,7 +4065,10 @@
                 profileWidget.id = 'user-profile-widget';
                 profileWidget.innerHTML = `
                     <img id="user-avatar" src="${user.photoURL || 'https://www.gravatar.com/avatar/00000000000000000000000000000000?d=mp&f=y'}" alt="Avatar">
-                    <span id="user-name">${user.displayName || 'User'}</span>
+                    <div class="user-profile-info">
+                        <span id="user-name">${user.displayName || 'User'}</span>
+                        <span id="user-email-visible" class="user-email-visible">${user.email || ''}</span>
+                    </div>
                     <i class="fa-solid fa-chevron-down" style="font-size: 0.8rem; margin-right: 0.5rem; color: var(--text-muted);"></i>
                     <div class="user-dropdown" id="user-dropdown">
                         <div class="user-dropdown-header">
@@ -3819,24 +4081,26 @@
                         </button>
                     </div>
                 `;
-                
+
                 const topbarRight = document.querySelector('.topbar-right');
-                if (topbarRight) topbarRight.appendChild(profileWidget);
-                
+                if (topbarRight) topbarRight.insertBefore(profileWidget, topbarRight.firstChild);
+
                 profileWidget.addEventListener('click', (e) => {
                     e.stopPropagation();
                     const dropdown = document.getElementById('user-dropdown');
                     if (dropdown) dropdown.classList.toggle('active');
                 });
-                
+
                 const logoutBtn = document.getElementById('google-logout-btn');
                 if (logoutBtn) {
                     logoutBtn.addEventListener('click', async (e) => {
                         e.stopPropagation();
                         try {
                             await window.auth.signOut();
+                            showToast("Signed out successfully.", "info");
                         } catch (err) {
                             console.error("Logout failed:", err);
+                            showToast("Logout failed: " + err.message, "error");
                         }
                     });
                 }
@@ -3846,6 +4110,8 @@
                 if (avatar) avatar.src = user.photoURL || 'https://www.gravatar.com/avatar/00000000000000000000000000000000?d=mp&f=y';
                 const uName = document.getElementById('user-name');
                 if (uName) uName.textContent = user.displayName || 'User';
+                const uEmail = document.getElementById('user-email-visible');
+                if (uEmail) uEmail.textContent = user.email || '';
                 const dropName = document.getElementById('dropdown-user-name');
                 if (dropName) dropName.textContent = user.displayName || 'User';
                 const dropEmail = document.getElementById('dropdown-user-email');
@@ -3858,22 +4124,9 @@
             if (profileWidget) {
                 profileWidget.style.display = 'none';
             }
-            
-            let loginBtn = document.getElementById('google-login-btn');
-            if (!loginBtn) {
-                loginBtn = document.createElement('button');
-                loginBtn.className = 'btn btn-secondary';
-                loginBtn.id = 'google-login-btn';
-                loginBtn.style.padding = '0.5rem 1rem';
-                loginBtn.innerHTML = '<i class="fa-brands fa-google"></i> Sign In';
-                
-                const topbarRight = document.querySelector('.topbar-right');
-                if (topbarRight) topbarRight.appendChild(loginBtn);
-                
-                loginBtn.addEventListener('click', handleLogin);
-            } else {
-                loginBtn.style.display = 'inline-flex';
-            }
+
+            const oldLoginBtn = document.getElementById('google-login-btn');
+            if (oldLoginBtn) oldLoginBtn.remove();
         }
 
         // Close dropdown when clicking outside
@@ -3884,25 +4137,20 @@
             }
         });
 
-        // --- INIT ---
-        document.getElementById('mobile-menu-btn').addEventListener('click', () => {
-            document.getElementById('sidebar').classList.toggle('open');
-        });
+        function initializeAuthenticatedApp() {
+            if (appInitialized) return;
+            appInitialized = true;
 
-        window.addEventListener('DOMContentLoaded', () => {
-            loadData();
-            initFirebase();
-            
             const yearSelect = document.getElementById('analytics-year-filter');
             if (yearSelect) {
                 const currentYear = new Date().getFullYear();
                 let yearHtml = '';
-                for(let y = currentYear - 5; y <= currentYear + 5; y++) {
+                for (let y = currentYear - 5; y <= currentYear + 5; y++) {
                     yearHtml += `<option value="${y}" ${y === currentYear ? 'selected' : ''}>${y}</option>`;
                 }
                 yearSelect.innerHTML = yearHtml;
             }
-            
+
             const monthSelect = document.getElementById('analytics-month-filter');
             if (monthSelect) {
                 const cm = (new Date().getMonth() + 1).toString().padStart(2, '0');
@@ -3913,21 +4161,12 @@
             renderExpenseCategories();
             applyTheme(state.settings.theme);
             initCharts();
-            updateDashboard();
-            updateExpenseTable();
-            updateDebts();
-            updateSavings();
-            updateGoalsDashboard();
-            updateAnalytics();
-            updateInsights();
-            updateAdvisor();
 
             ['expense-filter-from', 'expense-filter-to', 'expense-filter-category'].forEach(id => {
                 const el = document.getElementById(id);
                 if (el) el.addEventListener('change', updateExpenseTable);
             });
 
-            // Keyboard accessibility for navigation
             const sideNavItems = document.querySelectorAll('.nav-item');
             sideNavItems.forEach(item => {
                 item.setAttribute('tabindex', '0');
@@ -3940,7 +4179,6 @@
                 });
             });
 
-            // Keyboard accessibility for modal close buttons
             document.querySelectorAll('.modal-close').forEach(btn => {
                 btn.setAttribute('tabindex', '0');
                 btn.setAttribute('role', 'button');
@@ -3952,6 +4190,22 @@
                     }
                 });
             });
+        }
+
+        // --- INIT ---
+        document.getElementById('mobile-menu-btn').addEventListener('click', () => {
+            document.getElementById('sidebar').classList.toggle('open');
+        });
+
+        window.addEventListener('DOMContentLoaded', () => {
+            showAuthLoading();
+
+            const signInBtn = document.getElementById('google-signin-btn');
+            if (signInBtn) {
+                signInBtn.addEventListener('click', handleLogin);
+            }
+
+            initFirebase();
         });
 
     </script>
