@@ -2004,29 +2004,7 @@
                     <div class="card-header">
                         <h2>Settings</h2>
                     </div>
-                    <div class="card" style="margin-bottom: 1.5rem;">
-                        <h3>Reset Passcode</h3>
-                        <p class="text-muted" style="margin-bottom: 1rem;">Set a passcode required before resetting all
-                            data.</p>
-                        <div class="form-row">
-                            <div class="form-group">
-                                <label class="form-label">Current Passcode</label>
-                                <input type="password" class="form-control" id="settings-current-passcode" maxlength="4"
-                                    pattern="[0-9]{4}" placeholder="••••">
-                            </div>
-                            <div class="form-group">
-                                <label class="form-label">New Passcode (4 digits)</label>
-                                <input type="password" class="form-control" id="settings-new-passcode" maxlength="4"
-                                    pattern="[0-9]{4}" placeholder="••••">
-                            </div>
-                            <div class="form-group">
-                                <label class="form-label">Confirm Passcode</label>
-                                <input type="password" class="form-control" id="settings-confirm-passcode" maxlength="4"
-                                    pattern="[0-9]{4}" placeholder="••••">
-                            </div>
-                        </div>
-                        <button class="btn btn-primary" onclick="updateResetPasscode()">Save Passcode</button>
-                    </div>
+
                     <div class="card" style="margin-bottom: 1.5rem;">
                         <h3>Data Management</h3>
                         <p class="text-muted" style="margin-bottom: 1rem;">Manage your dashboard data. Import or export
@@ -2042,7 +2020,7 @@
                                 onchange="handleImportJSON(event)">
                         </div>
                         <div style="display: flex; gap: 0.5rem; flex-wrap: wrap;">
-                            <button class="btn btn-danger" onclick="promptResetData()"><i
+                            <button class="btn btn-danger" onclick="confirmResetData()"><i
                                     class="fa-solid fa-trash-can"></i> Reset All Data</button>
                             <button class="btn btn-secondary" onclick="generateMockData()"><i
                                     class="fa-solid fa-database"></i> Load Demo Data</button>
@@ -2300,26 +2278,7 @@
             </div>
         </div>
 
-        <!-- Reset Passcode Modal -->
-        <div class="modal-overlay" id="modal-reset-passcode">
-            <div class="modal-content">
-                <div class="modal-header">
-                    <h3>Enter Passcode to Reset</h3>
-                    <i class="fa-solid fa-xmark modal-close" onclick="closeModal('modal-reset-passcode')"></i>
-                </div>
-                <form id="form-reset-passcode" onsubmit="verifyResetPasscode(event)">
-                    <p class="text-muted" style="margin-bottom:1rem;">Enter your reset passcode to continue. This
-                        prevents accidental data loss.</p>
-                    <div class="form-group">
-                        <label class="form-label">Passcode</label>
-                        <input type="password" class="form-control" id="reset-passcode-input" maxlength="4"
-                            pattern="[0-9]{4}" required autocomplete="off">
-                    </div>
-                    <button type="submit" class="btn btn-danger" style="width:100%;justify-content:center;">Verify
-                        Passcode</button>
-                </form>
-            </div>
-        </div>
+
 
     </div><!-- /#app-shell -->
 
@@ -2337,7 +2296,7 @@
             debts: [],
             budgetCategories: [],
             expenseCategories: ['Housing', 'Food', 'Transport', 'Shopping', 'Entertainment', 'Misc'],
-            settings: { currency: 'INR', theme: 'light', resetPasscode: '0000' }
+            settings: { currency: 'INR', theme: 'light' }
         };
 
         function loadData() {
@@ -2352,7 +2311,7 @@
                     debts: parsed.debts || [],
                     budgetCategories: parsed.budgetCategories || parsed.budgets || [],
                     expenseCategories: parsed.expenseCategories || ['Housing', 'Food', 'Transport', 'Shopping', 'Entertainment', 'Misc'],
-                    settings: { currency: 'INR', theme: 'light', resetPasscode: '0000', ...(parsed.settings || {}) },
+                    settings: { currency: 'INR', theme: 'light', ...(parsed.settings || {}) },
                     subscriptions: parsed.subscriptions || [],
                     recurringTransactions: parsed.recurringTransactions || []
                 };
@@ -3653,47 +3612,8 @@
             }).join('');
         }
 
-        function updateResetPasscode() {
-            const currentPass = document.getElementById('settings-current-passcode').value;
-            const newPass = document.getElementById('settings-new-passcode').value;
-            const confirmPass = document.getElementById('settings-confirm-passcode').value;
-            const expected = state.settings.resetPasscode || '0000';
-
-            if (currentPass !== expected) {
-                alert('Incorrect current passcode.');
-                return;
-            }
-            if (!/^\d{4}$/.test(newPass)) {
-                alert('Passcode must be exactly 4 digits.');
-                return;
-            }
-            if (newPass !== confirmPass) {
-                alert('Passcodes do not match.');
-                return;
-            }
-            state.settings.resetPasscode = newPass;
-            saveData();
-            document.getElementById('settings-current-passcode').value = '';
-            document.getElementById('settings-new-passcode').value = '';
-            document.getElementById('settings-confirm-passcode').value = '';
-            alert('Reset passcode updated successfully.');
-        }
-
-        function promptResetData() {
-            document.getElementById('reset-passcode-input').value = '';
-            openModal('modal-reset-passcode');
-        }
-
-        function verifyResetPasscode(e) {
-            e.preventDefault();
-            const entered = document.getElementById('reset-passcode-input').value;
-            const expected = state.settings.resetPasscode || '0000';
-            if (entered !== expected) {
-                alert('Incorrect passcode. Reset cancelled.');
-                return;
-            }
-            closeModal('modal-reset-passcode');
-            if (confirm('Passcode verified. Are you sure you want to permanently delete ALL financial data? This cannot be undone.')) {
+        function confirmResetData() {
+            if (confirm('Are you sure you want to permanently delete ALL financial data? This cannot be undone.')) {
                 resetData();
             }
         }
@@ -4052,7 +3972,7 @@
                         debts: data.debts || [],
                         budgetCategories: data.budgets || [],
                         expenseCategories: data.expenseCategories || ['Housing', 'Food', 'Transport', 'Shopping', 'Entertainment', 'Misc'],
-                        settings: { currency: 'INR', theme: 'light', resetPasscode: '0000', ...(data.settings || {}) },
+                        settings: { currency: 'INR', theme: 'light', ...(data.settings || {}) },
                         subscriptions: data.subscriptions || [],
                         recurringTransactions: data.recurringTransactions || []
                     };
@@ -4109,7 +4029,7 @@
                         debts: parsed.debts || [],
                         budgetCategories: parsed.budgetCategories || parsed.budgets || [],
                         expenseCategories: parsed.expenseCategories || ['Housing', 'Food', 'Transport', 'Shopping', 'Entertainment', 'Misc'],
-                        settings: { currency: 'INR', theme: 'light', resetPasscode: '0000', ...(parsed.settings || {}) },
+                        settings: { currency: 'INR', theme: 'light', ...(parsed.settings || {}) },
                         subscriptions: parsed.subscriptions || [],
                         recurringTransactions: parsed.recurringTransactions || []
                     };
@@ -4161,7 +4081,7 @@
                     debts: [],
                     budgetCategories: [],
                     expenseCategories: ['Housing', 'Food', 'Transport', 'Shopping', 'Entertainment', 'Misc'],
-                    settings: { currency: 'INR', theme: 'light', resetPasscode: '0000' },
+                    settings: { currency: 'INR', theme: 'light' },
                     subscriptions: [],
                     recurringTransactions: []
                 };
