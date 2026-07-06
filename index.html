@@ -179,6 +179,7 @@
         .logo i {
             background: linear-gradient(135deg, var(--primary), #a855f7);
             -webkit-background-clip: text;
+            background-clip: text;
             -webkit-text-fill-color: transparent;
         }
 
@@ -314,30 +315,6 @@
         .icon-btn:hover {
             background: var(--border-color);
             transform: translateY(-2px);
-        }
-
-        .user-profile {
-            display: flex;
-            align-items: center;
-            gap: 12px;
-            padding: 0.5rem;
-            background: var(--card-bg);
-            border: 1px solid var(--border-color);
-            border-radius: 999px;
-            backdrop-filter: var(--glass-blur);
-            cursor: pointer;
-        }
-
-        .user-profile img {
-            width: 32px;
-            height: 32px;
-            border-radius: 50%;
-            object-fit: cover;
-        }
-
-        .user-profile span {
-            font-weight: 500;
-            padding-right: 0.5rem;
         }
 
         /* View Container */
@@ -755,9 +732,6 @@
 
         .flash-card.success-flash {
             border-color: var(--success);
-        }
-
-        .flash-card.success-flash {
             animation-name: pulseGlowSuccess;
         }
 
@@ -2027,17 +2001,15 @@
                         <h3><i class="fa-solid fa-database" style="margin-right: 0.5rem; color: var(--primary);"></i> Data Management</h3>
                         <p class="text-muted" style="margin-bottom: 1rem;">Manage your dashboard data. Import or export
                             your data state dynamically.</p>
-                        <div style="display: flex; gap: 0.5rem; flex-wrap: wrap; margin-bottom: 1rem;">
+                        <div style="display: flex; gap: 0.5rem; flex-wrap: wrap;">
                             <button class="btn btn-secondary" onclick="exportDataJSON()"><i
                                     class="fa-solid fa-file-export"></i> Export JSON</button>
                             <button class="btn btn-secondary" onclick="exportDataCSV()"><i
                                     class="fa-solid fa-file-csv"></i> Export CSV</button>
-                            <button class="btn btn-primary" onclick="triggerImportJSON()"><i
+                            <button class="btn btn-secondary" onclick="triggerImportJSON()"><i
                                     class="fa-solid fa-file-import"></i> Import JSON</button>
                             <input type="file" id="import-file-input" style="display: none;" accept=".json"
                                 onchange="handleImportJSON(event)">
-                        </div>
-                        <div style="display: flex; gap: 0.5rem; flex-wrap: wrap;">
                             <button class="btn btn-danger" onclick="confirmResetData()"><i
                                     class="fa-solid fa-trash-can"></i> Reset All Data</button>
                             <button class="btn btn-secondary" onclick="generateMockData()"><i
