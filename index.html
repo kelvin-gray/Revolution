@@ -2010,8 +2010,6 @@
                                     class="fa-solid fa-file-import"></i> Import JSON</button>
                             <input type="file" id="import-file-input" style="display: none;" accept=".json"
                                 onchange="handleImportJSON(event)">
-                            <button class="btn btn-danger" onclick="confirmResetData()"><i
-                                    class="fa-solid fa-trash-can"></i> Reset All Data</button>
                             <button class="btn btn-secondary" onclick="generateMockData()"><i
                                     class="fa-solid fa-database"></i> Load Demo Data</button>
                         </div>
@@ -2020,10 +2018,13 @@
                     <!-- Account Management Card -->
                     <div class="card" id="settings-account-card" style="margin-bottom: 1.5rem; display: none;">
                         <h3><i class="fa-solid fa-shield-halved" style="margin-right: 0.5rem; color: var(--danger);"></i> Account Management</h3>
-                        <p class="text-muted" style="margin-bottom: 1rem;">Delete your account and clear all Firestore
-                            records permanently. This action cannot be undone.</p>
-                        <button class="btn btn-danger" onclick="handleDeleteAccount()"><i
-                                class="fa-solid fa-user-minus"></i> Delete Account</button>
+                        <p class="text-muted" style="margin-bottom: 1rem;">Manage your account session or reset all stored data.</p>
+                        <div style="display: flex; align-items: center; gap: 0.5rem; flex-wrap: wrap;">
+                            <button class="btn btn-danger" onclick="confirmResetData()"><i
+                                    class="fa-solid fa-trash-can"></i> Reset All Data</button>
+                            <button class="btn btn-danger" id="settings-logout-btn" onclick="handleSettingsLogout()" style="margin-left: auto;"><i
+                                    class="fa-solid fa-sign-out-alt"></i> Log Out</button>
+                        </div>
                     </div>
                 </section>
 
@@ -4506,135 +4507,33 @@
             reader.readAsText(file);
         }
 
-        // Account Management: Delete Account
-        async function handleDeleteAccount() {
-            if (!window.auth || !window.auth.currentUser) {
-                showToast("You must be logged in to delete your account.", "error");
-                return;
-            }
-
-            const confirmation = confirm("WARNING: This will permanently delete your user profile, all financial data from Firestore, and your user account. This action cannot be undone.\n\nAre you sure you want to proceed?");
-            if (!confirmation) return;
-
-            showLoading(true);
-            const user = window.auth.currentUser;
-            const uid = user.uid;
-
-            try {
-                // Cascade delete user data from Firestore subcollections
-                const userDocRef = window.db.collection('users').doc(uid);
-                const batch = window.db.batch();
-
-                const collections = ['income', 'expenses', 'budgets', 'debts', 'savings', 'savingsGoals', 'settings'];
-                for (const colName of collections) {
-                    const snap = await userDocRef.collection(colName).get();
-                    snap.forEach(doc => {
-                        batch.delete(doc.ref);
-                    });
-                }
-
-                batch.delete(userDocRef);
-                await batch.commit();
-                console.log("Firestore account data successfully deleted.");
-
-                // Delete user account from authentication
-                await user.delete();
-                showLoading(false);
-                alert("Your account and all associated data have been permanently deleted.");
-                window.location.reload();
-            } catch (err) {
-                showLoading(false);
-                console.error("Account deletion failed:", err);
-                if (err.code === 'auth/requires-recent-login') {
-                    alert("For security reasons, deleting your account requires recent authentication. Please sign out and sign back in, then try again.");
-                } else {
-                    alert("Account deletion failed: " + err.message);
-                }
-            }
-        }
-
         function displayUserProfile(user) {
             const oldLoginBtn = document.getElementById('google-login-btn');
             if (oldLoginBtn) oldLoginBtn.remove();
 
-            let profileWidget = document.getElementById('user-profile-widget');
-            if (!profileWidget) {
-                profileWidget = document.createElement('div');
-                profileWidget.className = 'user-profile';
-                profileWidget.id = 'user-profile-widget';
-                profileWidget.innerHTML = `
-                    <img id="user-avatar" src="${user.photoURL || 'https://www.gravatar.com/avatar/00000000000000000000000000000000?d=mp&f=y'}" alt="Avatar">
-                    <div class="user-profile-info">
-                        <span id="user-name">${user.displayName || 'User'}</span>
-                        <span id="user-email-visible" class="user-email-visible">${user.email || ''}</span>
-                    </div>
-                    <i class="fa-solid fa-chevron-down" style="font-size: 0.8rem; margin-right: 0.5rem; color: var(--text-muted);"></i>
-                    <div class="user-dropdown" id="user-dropdown">
-                        <div class="user-dropdown-header">
-                            <strong id="dropdown-user-name">${user.displayName || 'User'}</strong>
-                            <span id="dropdown-user-email">${user.email || ''}</span>
-                        </div>
-                        <div class="user-dropdown-divider"></div>
-                        <button class="dropdown-item text-danger" id="google-logout-btn">
-                            <i class="fa-solid fa-sign-out-alt"></i> Logout
-                        </button>
-                    </div>
-                `;
-
-                const topbarRight = document.querySelector('.topbar-right');
-                if (topbarRight) topbarRight.insertBefore(profileWidget, topbarRight.firstChild);
-
-                profileWidget.addEventListener('click', (e) => {
-                    e.stopPropagation();
-                    const dropdown = document.getElementById('user-dropdown');
-                    if (dropdown) dropdown.classList.toggle('active');
-                });
-
-                const logoutBtn = document.getElementById('google-logout-btn');
-                if (logoutBtn) {
-                    logoutBtn.addEventListener('click', async (e) => {
-                        e.stopPropagation();
-                        try {
-                            await window.auth.signOut();
-                            showToast("Signed out successfully.", "info");
-                        } catch (err) {
-                            console.error("Logout failed:", err);
-                            showToast("Logout failed: " + err.message, "error");
-                        }
-                    });
-                }
-            } else {
-                profileWidget.style.display = 'flex';
-                const avatar = document.getElementById('user-avatar');
-                if (avatar) avatar.src = user.photoURL || 'https://www.gravatar.com/avatar/00000000000000000000000000000000?d=mp&f=y';
-                const uName = document.getElementById('user-name');
-                if (uName) uName.textContent = user.displayName || 'User';
-                const uEmail = document.getElementById('user-email-visible');
-                if (uEmail) uEmail.textContent = user.email || '';
-                const dropName = document.getElementById('dropdown-user-name');
-                if (dropName) dropName.textContent = user.displayName || 'User';
-                const dropEmail = document.getElementById('dropdown-user-email');
-                if (dropEmail) dropEmail.textContent = user.email || '';
-            }
+            // Update the settings profile card with user info
+            const sAvatar = document.getElementById('settings-user-avatar');
+            const sName = document.getElementById('settings-user-name');
+            const sEmail = document.getElementById('settings-user-email');
+            if (sAvatar) sAvatar.src = user.photoURL || 'https://www.gravatar.com/avatar/00000000000000000000000000000000?d=mp&f=y';
+            if (sName) sName.textContent = user.displayName || 'User';
+            if (sEmail) sEmail.textContent = user.email || '';
         }
 
         function clearUserProfile() {
-            const profileWidget = document.getElementById('user-profile-widget');
-            if (profileWidget) {
-                profileWidget.style.display = 'none';
-            }
-
             const oldLoginBtn = document.getElementById('google-login-btn');
             if (oldLoginBtn) oldLoginBtn.remove();
         }
 
-        // Close dropdown when clicking outside
-        document.addEventListener('click', () => {
-            const dropdown = document.getElementById('user-dropdown');
-            if (dropdown && dropdown.classList.contains('active')) {
-                dropdown.classList.remove('active');
+        async function handleSettingsLogout() {
+            try {
+                await window.auth.signOut();
+                showToast("Signed out successfully.", "info");
+            } catch (err) {
+                console.error("Logout failed:", err);
+                showToast("Logout failed: " + err.message, "error");
             }
-        });
+        }
 
         function initializeAuthenticatedApp() {
             if (appInitialized) return;
