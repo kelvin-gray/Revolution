@@ -3,7 +3,7 @@
 
 <head>
     <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
     <title>Personal Finance Dashboard</title>
     <!-- Chart.js -->
     <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
@@ -81,12 +81,19 @@
             transition: background-color 0.3s ease, color 0.3s ease, border-color 0.3s ease;
         }
 
+        html {
+            /* Support safe-area on devices with notches / gesture nav bars */
+            padding: env(safe-area-inset-top) env(safe-area-inset-right) env(safe-area-inset-bottom) env(safe-area-inset-left);
+        }
+
         body {
             background-color: var(--bg-color);
             color: var(--text-main);
             overflow: hidden;
             display: flex;
             height: 100vh;
+            /* Use dvh where supported so mobile browser chrome is accounted for */
+            height: 100dvh;
         }
 
         /* Scrollbar */
@@ -980,6 +987,11 @@
             }
         }
 
+        /* Mobile sidebar overlay – covers the main content when sidebar is open */
+        .sidebar-overlay {
+            display: none;
+        }
+
         @media (max-width: 768px) {
             .sidebar {
                 position: fixed;
@@ -990,6 +1002,20 @@
 
             .sidebar.open {
                 left: 0;
+            }
+
+            /* Overlay shown when sidebar is open on mobile */
+            .sidebar-overlay {
+                display: none;
+                position: fixed;
+                inset: 0;
+                background: rgba(0, 0, 0, 0.4);
+                z-index: 49; /* just below sidebar (z-index: 50) */
+                -webkit-tap-highlight-color: transparent;
+            }
+
+            .sidebar-overlay.active {
+                display: block;
             }
 
             .mobile-menu-btn {
@@ -1006,9 +1032,10 @@
                 display: none;
             }
 
-            /* Hide on small mobile, could move to a toggle */
             .content-area {
                 padding: 0 1rem 1rem 1rem;
+                /* Extra bottom spacing so the last card is never hidden */
+                padding-bottom: calc(1.5rem + env(safe-area-inset-bottom, 0px));
             }
 
             .topbar {
@@ -1448,6 +1475,8 @@
     </div>
 
     <div id="app-shell" style="display: none;">
+        <!-- Mobile sidebar overlay: tapping this closes the sidebar -->
+        <div class="sidebar-overlay" id="sidebar-overlay"></div>
         <!-- =========================================
          SIDEBAR
          ========================================= -->
@@ -2418,7 +2447,7 @@
             document.getElementById(targetId).classList.add('active');
 
             // Mobile sidebar auto-close
-            document.getElementById('sidebar').classList.remove('open');
+            closeMobileSidebar();
 
             // Refresh specific view data if needed
             if (targetId === 'view-dashboard') updateDashboard();
@@ -4590,9 +4619,30 @@
             });
         }
 
+        // --- HELPERS: Mobile sidebar overlay ---
+        function openMobileSidebar() {
+            document.getElementById('sidebar').classList.add('open');
+            document.getElementById('sidebar-overlay').classList.add('active');
+        }
+
+        function closeMobileSidebar() {
+            document.getElementById('sidebar').classList.remove('open');
+            document.getElementById('sidebar-overlay').classList.remove('active');
+        }
+
         // --- INIT ---
         document.getElementById('mobile-menu-btn').addEventListener('click', () => {
-            document.getElementById('sidebar').classList.toggle('open');
+            const sidebar = document.getElementById('sidebar');
+            if (sidebar.classList.contains('open')) {
+                closeMobileSidebar();
+            } else {
+                openMobileSidebar();
+            }
+        });
+
+        // Tap outside sidebar (on overlay) to dismiss — mobile only
+        document.getElementById('sidebar-overlay').addEventListener('click', () => {
+            closeMobileSidebar();
         });
 
         window.addEventListener('DOMContentLoaded', () => {
