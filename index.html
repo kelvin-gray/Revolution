@@ -1530,6 +1530,13 @@
                 </div>
             </div>
 
+            <div class="nav-group">
+                <div class="nav-group-title">Account</div>
+                <div class="nav-item" data-target="view-settings">
+                    <i class="fa-solid fa-gear"></i> Settings
+                </div>
+            </div>
+
             <!-- Firebase Status Indicator Panel -->
             <div class="firebase-status-panel">
                 <div class="status-title">Firebase Status</div>
@@ -1572,9 +1579,7 @@
                     <button class="icon-btn" id="theme-toggle" title="Toggle Theme">
                         <i class="fa-solid fa-moon"></i>
                     </button>
-                    <button class="icon-btn" onclick="navigate('view-settings')" title="Settings">
-                        <i class="fa-solid fa-gear"></i>
-                    </button>
+
                 </div>
             </header>
 
@@ -2005,8 +2010,21 @@
                         <h2>Settings</h2>
                     </div>
 
+                    <!-- User Profile Card -->
+                    <div class="card" id="settings-profile-card" style="margin-bottom: 1.5rem; display: none;">
+                        <h3><i class="fa-solid fa-user" style="margin-right: 0.5rem; color: var(--primary);"></i> Your Profile</h3>
+                        <div style="display: flex; align-items: center; gap: 1rem; margin-top: 1rem; padding: 1rem; background: var(--primary-light); border-radius: var(--radius-md);">
+                            <img id="settings-user-avatar" src="" alt="Avatar" style="width: 56px; height: 56px; border-radius: 50%; object-fit: cover; border: 2px solid var(--primary);">
+                            <div>
+                                <div id="settings-user-name" style="font-size: 1.1rem; font-weight: 600; color: var(--text-main);"></div>
+                                <div id="settings-user-email" style="font-size: 0.875rem; color: var(--text-muted); margin-top: 2px;"></div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Data Management Card -->
                     <div class="card" style="margin-bottom: 1.5rem;">
-                        <h3>Data Management</h3>
+                        <h3><i class="fa-solid fa-database" style="margin-right: 0.5rem; color: var(--primary);"></i> Data Management</h3>
                         <p class="text-muted" style="margin-bottom: 1rem;">Manage your dashboard data. Import or export
                             your data state dynamically.</p>
                         <div style="display: flex; gap: 0.5rem; flex-wrap: wrap; margin-bottom: 1rem;">
@@ -2026,10 +2044,12 @@
                                     class="fa-solid fa-database"></i> Load Demo Data</button>
                         </div>
                     </div>
+
+                    <!-- Account Management Card -->
                     <div class="card" id="settings-account-card" style="margin-bottom: 1.5rem; display: none;">
-                        <h3>Account Management</h3>
+                        <h3><i class="fa-solid fa-shield-halved" style="margin-right: 0.5rem; color: var(--danger);"></i> Account Management</h3>
                         <p class="text-muted" style="margin-bottom: 1rem;">Delete your account and clear all Firestore
-                            records permanently.</p>
+                            records permanently. This action cannot be undone.</p>
                         <button class="btn btn-danger" onclick="handleDeleteAccount()"><i
                                 class="fa-solid fa-user-minus"></i> Delete Account</button>
                     </div>
@@ -3613,20 +3633,87 @@
         }
 
         function confirmResetData() {
-            if (confirm('Are you sure you want to permanently delete ALL financial data? This cannot be undone.')) {
+            if (confirm('Are you sure you want to permanently delete ALL financial data? This cannot be undone.\n\nAll transactions, budgets, income, categories, savings goals, preferences, and other data will be erased from Firebase and local storage.')) {
                 resetData();
             }
         }
 
-        function resetData() {
-            state.transactions = [];
-            state.savings = [];
-            state.financialGoals = [];
-            state.debts = [];
-            state.budgetCategories = [];
-            initDefaultBudgetCategories();
-            saveData();
-            alert('All data has been reset.');
+        async function resetData() {
+            showLoading(true);
+
+            try {
+                // Delete all data from Firebase if authenticated
+                if (isFirebaseInitialized && window.auth && window.auth.currentUser) {
+                    const user = window.auth.currentUser;
+                    const uid = user.uid;
+                    const userDocRef = window.db.collection('users').doc(uid);
+
+                    // Delete all subcollections
+                    const collections = ['income', 'expenses', 'budgets', 'debts', 'savings', 'savingsGoals', 'settings'];
+                    for (const colName of collections) {
+                        const snap = await userDocRef.collection(colName).get();
+                        const batch = window.db.batch();
+                        snap.forEach(doc => {
+                            batch.delete(doc.ref);
+                        });
+                        if (snap.size > 0) await batch.commit();
+                    }
+
+                    // Reset the main user document to a clean state
+                    const cleanData = {
+                        profile: {
+                            name: user.displayName || '',
+                            email: user.email || '',
+                            photoURL: user.photoURL || ''
+                        },
+                        income: [],
+                        expenses: [],
+                        budgets: [],
+                        debts: [],
+                        savings: [],
+                        savingsGoals: [],
+                        settings: { currency: 'INR', theme: 'light' },
+                        expenseCategories: ['Housing', 'Food', 'Transport', 'Shopping', 'Entertainment', 'Misc'],
+                        subscriptions: [],
+                        recurringTransactions: [],
+                        updatedAt: firebase.firestore.FieldValue.serverTimestamp()
+                    };
+
+                    await userDocRef.set(cleanData);
+                    console.log('All Firebase data deleted and user document reset.');
+                }
+
+                // Clear localStorage
+                localStorage.removeItem(STORAGE_KEY);
+
+                // Reset local state to clean first-time defaults
+                state = {
+                    transactions: [],
+                    savings: [],
+                    financialGoals: [],
+                    debts: [],
+                    budgetCategories: [],
+                    expenseCategories: ['Housing', 'Food', 'Transport', 'Shopping', 'Entertainment', 'Misc'],
+                    settings: { currency: 'INR', theme: 'light' },
+                    subscriptions: [],
+                    recurringTransactions: []
+                };
+                initDefaultBudgetCategories();
+
+                // Refresh all UI
+                updateAllUI();
+                applyTheme(state.settings.theme);
+                populateCategoryDropdowns();
+                renderExpenseCategories();
+                navigate('view-dashboard');
+
+                showLoading(false);
+                showToast('All data has been reset successfully. You are now in a clean state.', 'success');
+            } catch (error) {
+                showLoading(false);
+                console.error('Reset data failed:', error);
+                showToast('Reset failed: ' + error.message, 'error');
+            }
         }
 
         function generateMockData() {
@@ -3829,6 +3916,18 @@
             const accountCard = document.getElementById('settings-account-card');
             if (accountCard) accountCard.style.display = 'block';
 
+            // Update settings profile card
+            const profileCard = document.getElementById('settings-profile-card');
+            if (profileCard) {
+                profileCard.style.display = 'block';
+                const sAvatar = document.getElementById('settings-user-avatar');
+                const sName = document.getElementById('settings-user-name');
+                const sEmail = document.getElementById('settings-user-email');
+                if (sAvatar) sAvatar.src = user.photoURL || 'https://www.gravatar.com/avatar/00000000000000000000000000000000?d=mp&f=y';
+                if (sName) sName.textContent = user.displayName || 'User';
+                if (sEmail) sEmail.textContent = user.email || '';
+            }
+
             if (!appInitialized) {
                 initializeAuthenticatedApp();
             }
@@ -3852,6 +3951,9 @@
 
             const accountCard = document.getElementById('settings-account-card');
             if (accountCard) accountCard.style.display = 'none';
+
+            const profileCard = document.getElementById('settings-profile-card');
+            if (profileCard) profileCard.style.display = 'none';
 
             if (firestoreUnsubscribe) {
                 firestoreUnsubscribe();
