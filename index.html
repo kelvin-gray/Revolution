@@ -384,6 +384,12 @@
             transition: all 0.2s;
         }
 
+        .btn:disabled {
+            opacity: 0.5;
+            cursor: not-allowed;
+            pointer-events: none;
+        }
+
         .btn-primary {
             background: var(--primary);
             color: white;
@@ -2205,9 +2211,10 @@
                     </div>
                     <div class="form-group">
                         <label class="form-label">Amount Paid (₹)</label>
-                        <input type="number" class="form-control" id="payment-amount" step="0.01" required>
+                        <input type="number" class="form-control" id="payment-amount" step="0.01" oninput="validatePaymentAmount()" required>
+                        <div id="payment-amount-error" style="color: var(--danger); font-size: 0.85rem; margin-top: 0.25rem; display: none;">Payment amount cannot exceed the remaining balance.</div>
                     </div>
-                    <button type="submit" class="btn btn-primary"
+                    <button type="submit" class="btn btn-primary" id="btn-save-payment"
                         style="width: 100%; justify-content: center; margin-top: 1rem;">Save Payment</button>
                 </form>
             </div>
@@ -2345,6 +2352,7 @@
                 state.debts.forEach(d => {
                     if (!d.payments) d.payments = [];
                     if (d.isRecurring === undefined) d.isRecurring = false;
+                    if (d.isPaidOff === undefined) d.isPaidOff = false;
                 });
                 if (!state.budgetCategories.length) initDefaultBudgetCategories();
                 syncExpenseCategories();
@@ -2818,8 +2826,9 @@
 
             const billsEl = document.getElementById('dash-upcoming-bills');
             if (billsEl) {
-                if (state.debts.length > 0) {
-                    billsEl.innerHTML = state.debts.map(d => {
+                const activeDebts = state.debts.filter(d => !d.isPaidOff);
+                if (activeDebts.length > 0) {
+                    billsEl.innerHTML = activeDebts.map(d => {
                         if (d.isRecurring && d.emiAmount) {
                             const nextDue = getNextDueDate(d);
                             return `<div style="display:flex;justify-content:space-between;padding:0.5rem 0;border-bottom:1px solid var(--border-color);">
@@ -2983,10 +2992,17 @@
             if (editId) {
                 const idx = state.debts.findIndex(d => d.id === editId);
                 if (idx >= 0) {
-                    state.debts[idx] = {
-                        ...state.debts[idx],
+                    const currentDebt = state.debts[idx];
+                    const updatedDebt = {
+                        ...currentDebt,
                         ...debtData
                     };
+                    const paid = getDebtPaid(updatedDebt);
+                    const remaining = Math.max(0, updatedDebt.totalOwed - paid);
+                    if (remaining > 0) {
+                        updatedDebt.isPaidOff = false;
+                    }
+                    state.debts[idx] = updatedDebt;
                 }
             } else {
                 state.debts.push({
@@ -3003,9 +3019,53 @@
         function openPaymentModal(debtId) {
             document.getElementById('payment-debt-id').value = debtId;
             const debt = state.debts.find(d => d.id === debtId);
+            if (!debt || debt.isPaidOff) return;
             openModal('modal-add-payment');
-            if (debt?.isRecurring && debt.emiAmount) {
-                document.getElementById('payment-amount').value = debt.emiAmount;
+            const amtInput = document.getElementById('payment-amount');
+            if (debt.isRecurring && debt.emiAmount) {
+                amtInput.value = debt.emiAmount;
+            } else {
+                amtInput.value = '';
+            }
+            validatePaymentAmount();
+        }
+
+        function validatePaymentAmount() {
+            const debtId = document.getElementById('payment-debt-id').value;
+            const debt = state.debts.find(d => d.id === debtId);
+            const saveBtn = document.getElementById('btn-save-payment');
+            const errorEl = document.getElementById('payment-amount-error');
+            const amtInput = document.getElementById('payment-amount');
+            const amtVal = parseFloat(amtInput.value);
+
+            if (!debt) {
+                if (saveBtn) saveBtn.disabled = true;
+                return;
+            }
+
+            const paid = getDebtPaid(debt);
+            const remaining = Math.max(0, debt.totalOwed - paid);
+
+            let isValid = true;
+            if (isNaN(amtVal) || amtVal <= 0) {
+                isValid = false;
+                if (errorEl) {
+                    errorEl.style.display = 'none';
+                }
+            } else if (amtVal > remaining) {
+                isValid = false;
+                if (errorEl) {
+                    errorEl.textContent = "Payment amount cannot exceed the remaining balance.";
+                    errorEl.style.display = 'block';
+                }
+            } else {
+                if (errorEl) {
+                    errorEl.style.display = 'none';
+                }
+            }
+
+            if (saveBtn) {
+                saveBtn.disabled = !isValid;
             }
         }
 
@@ -3013,7 +3073,7 @@
             e.preventDefault();
             const debtId = document.getElementById('payment-debt-id').value;
             const debt = state.debts.find(d => d.id === debtId);
-            if (!debt) return;
+            if (!debt || debt.isPaidOff) return;
 
             const monthVal = document.getElementById('payment-month').value;
             const amtVal = parseFloat(document.getElementById('payment-amount').value);
@@ -3027,6 +3087,14 @@
                 return;
             }
 
+            const paid = getDebtPaid(debt);
+            const remaining = Math.max(0, debt.totalOwed - paid);
+
+            if (amtVal > remaining) {
+                showToast("Payment amount cannot exceed the remaining balance.", "error");
+                return;
+            }
+
             if (!debt.payments) debt.payments = [];
             debt.payments.push({
                 month: monthVal,
@@ -3034,6 +3102,10 @@
                 createdAt: new Date().toISOString()
             });
             debt.updatedAt = new Date().toISOString();
+
+            if (amtVal === remaining) {
+                debt.isPaidOff = true;
+            }
 
             saveData();
             showToast("Payment recorded successfully!", "success");
@@ -3091,13 +3163,19 @@
                     <div class="card" style="margin-bottom:1rem;">
                         <div class="card-header">
                             <h3>${d.name}${emiBadge}</h3>
-                            <div style="display:flex;gap:0.5rem;flex-wrap:wrap;">
+                            <div style="display:flex;gap:0.5rem;flex-wrap:wrap;align-items:center;">
                                 <button class="btn btn-secondary" style="padding:0.5rem 1rem;" onclick="openEditDebtModal('${d.id}')">
                                     <i class="fa-solid fa-pen"></i> Edit
                                 </button>
+                                ${d.isPaidOff ? `
+                                <span class="tag tag-income" style="padding: 0.5rem 1rem; border-radius: var(--radius-sm); font-weight:600; display: inline-flex; align-items: center; gap: 6px;">
+                                    <i class="fa-solid fa-circle-check"></i> Paid Off
+                                </span>
+                                ` : `
                                 <button class="btn btn-primary" style="padding:0.5rem 1rem;" onclick="openPaymentModal('${d.id}')">
                                     <i class="fa-solid fa-plus"></i> Add Payment
                                 </button>
+                                `}
                                 <button class="btn btn-danger" style="padding:0.5rem 1rem;" onclick="deleteDebt('${d.id}')">
                                     <i class="fa-solid fa-trash"></i>
                                 </button>
