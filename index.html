@@ -3,7 +3,7 @@
 
 <head>
     <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Personal Finance Dashboard</title>
     <!-- Chart.js -->
     <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
@@ -19,7 +19,7 @@
 
     <style>
         /* =========================================
-           CSS VARIABLES & THEMING
+           CSS VARIABLES & THEMING  
            ========================================= */
         :root {
             /* Light Theme Colors */
@@ -81,19 +81,12 @@
             transition: background-color 0.3s ease, color 0.3s ease, border-color 0.3s ease;
         }
 
-        html {
-            /* Support safe-area on devices with notches / gesture nav bars */
-            padding: env(safe-area-inset-top) env(safe-area-inset-right) env(safe-area-inset-bottom) env(safe-area-inset-left);
-        }
-
         body {
             background-color: var(--bg-color);
             color: var(--text-main);
             overflow: hidden;
             display: flex;
             height: 100vh;
-            /* Use dvh where supported so mobile browser chrome is accounted for */
-            height: 100dvh;
         }
 
         /* Scrollbar */
@@ -186,7 +179,6 @@
         .logo i {
             background: linear-gradient(135deg, var(--primary), #a855f7);
             -webkit-background-clip: text;
-            background-clip: text;
             -webkit-text-fill-color: transparent;
         }
 
@@ -322,6 +314,30 @@
         .icon-btn:hover {
             background: var(--border-color);
             transform: translateY(-2px);
+        }
+
+        .user-profile {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            padding: 0.5rem;
+            background: var(--card-bg);
+            border: 1px solid var(--border-color);
+            border-radius: 999px;
+            backdrop-filter: var(--glass-blur);
+            cursor: pointer;
+        }
+
+        .user-profile img {
+            width: 32px;
+            height: 32px;
+            border-radius: 50%;
+            object-fit: cover;
+        }
+
+        .user-profile span {
+            font-weight: 500;
+            padding-right: 0.5rem;
         }
 
         /* View Container */
@@ -739,6 +755,9 @@
 
         .flash-card.success-flash {
             border-color: var(--success);
+        }
+
+        .flash-card.success-flash {
             animation-name: pulseGlowSuccess;
         }
 
@@ -974,13 +993,6 @@
             display: block;
         }
 
-        /* Debt Tracker action buttons – desktop default (flex row, same as before) */
-        .debt-actions {
-            display: flex;
-            gap: 0.5rem;
-            flex-wrap: wrap;
-        }
-
         /* =========================================
            RESPONSIVE DESIGN
            ========================================= */
@@ -994,11 +1006,6 @@
             }
         }
 
-        /* Mobile sidebar overlay – covers the main content when sidebar is open */
-        .sidebar-overlay {
-            display: none;
-        }
-
         @media (max-width: 768px) {
             .sidebar {
                 position: fixed;
@@ -1009,20 +1016,6 @@
 
             .sidebar.open {
                 left: 0;
-            }
-
-            /* Overlay shown when sidebar is open on mobile */
-            .sidebar-overlay {
-                display: none;
-                position: fixed;
-                inset: 0;
-                background: rgba(0, 0, 0, 0.4);
-                z-index: 49; /* just below sidebar (z-index: 50) */
-                -webkit-tap-highlight-color: transparent;
-            }
-
-            .sidebar-overlay.active {
-                display: block;
             }
 
             .mobile-menu-btn {
@@ -1039,32 +1032,13 @@
                 display: none;
             }
 
+            /* Hide on small mobile, could move to a toggle */
             .content-area {
                 padding: 0 1rem 1rem 1rem;
-                /* Extra bottom spacing so the last card is never hidden */
-                padding-bottom: calc(1.5rem + env(safe-area-inset-bottom, 0px));
             }
 
             .topbar {
                 padding: 0 1rem;
-            }
-
-            /* Debt card header: stack title and actions vertically on mobile */
-            .debt-card-header {
-                flex-direction: column;
-                align-items: stretch;
-                gap: 0.75rem;
-            }
-
-            /* Debt action buttons: 2-row grid on mobile */
-            .debt-actions {
-                display: grid;
-                grid-template-columns: 1fr 1fr;
-                gap: 0.5rem;
-            }
-
-            .debt-actions .debt-action-primary {
-                grid-column: 1 / -1; /* full width row */
             }
         }
 
@@ -1500,8 +1474,6 @@
     </div>
 
     <div id="app-shell" style="display: none;">
-        <!-- Mobile sidebar overlay: tapping this closes the sidebar -->
-        <div class="sidebar-overlay" id="sidebar-overlay"></div>
         <!-- =========================================
          SIDEBAR
          ========================================= -->
@@ -2040,30 +2012,40 @@
 
                     <!-- User Profile Card -->
                     <div class="card" id="settings-profile-card" style="margin-bottom: 1.5rem; display: none;">
-                        <h3><i class="fa-solid fa-user" style="margin-right: 0.5rem; color: var(--primary);"></i> Your Profile</h3>
-                        <div style="display: flex; align-items: center; gap: 1rem; margin-top: 1rem; padding: 1rem; background: var(--primary-light); border-radius: var(--radius-md);">
-                            <img id="settings-user-avatar" src="" alt="Avatar" style="width: 56px; height: 56px; border-radius: 50%; object-fit: cover; border: 2px solid var(--primary);">
+                        <h3><i class="fa-solid fa-user" style="margin-right: 0.5rem; color: var(--primary);"></i> Your
+                            Profile</h3>
+                        <div
+                            style="display: flex; align-items: center; gap: 1rem; margin-top: 1rem; padding: 1rem; background: var(--primary-light); border-radius: var(--radius-md);">
+                            <img id="settings-user-avatar" src="" alt="Avatar"
+                                style="width: 56px; height: 56px; border-radius: 50%; object-fit: cover; border: 2px solid var(--primary);">
                             <div>
-                                <div id="settings-user-name" style="font-size: 1.1rem; font-weight: 600; color: var(--text-main);"></div>
-                                <div id="settings-user-email" style="font-size: 0.875rem; color: var(--text-muted); margin-top: 2px;"></div>
+                                <div id="settings-user-name"
+                                    style="font-size: 1.1rem; font-weight: 600; color: var(--text-main);"></div>
+                                <div id="settings-user-email"
+                                    style="font-size: 0.875rem; color: var(--text-muted); margin-top: 2px;"></div>
                             </div>
                         </div>
                     </div>
 
                     <!-- Data Management Card -->
                     <div class="card" style="margin-bottom: 1.5rem;">
-                        <h3><i class="fa-solid fa-database" style="margin-right: 0.5rem; color: var(--primary);"></i> Data Management</h3>
+                        <h3><i class="fa-solid fa-database" style="margin-right: 0.5rem; color: var(--primary);"></i>
+                            Data Management</h3>
                         <p class="text-muted" style="margin-bottom: 1rem;">Manage your dashboard data. Import or export
                             your data state dynamically.</p>
-                        <div style="display: flex; gap: 0.5rem; flex-wrap: wrap;">
+                        <div style="display: flex; gap: 0.5rem; flex-wrap: wrap; margin-bottom: 1rem;">
                             <button class="btn btn-secondary" onclick="exportDataJSON()"><i
                                     class="fa-solid fa-file-export"></i> Export JSON</button>
                             <button class="btn btn-secondary" onclick="exportDataCSV()"><i
                                     class="fa-solid fa-file-csv"></i> Export CSV</button>
-                            <button class="btn btn-secondary" onclick="triggerImportJSON()"><i
+                            <button class="btn btn-primary" onclick="triggerImportJSON()"><i
                                     class="fa-solid fa-file-import"></i> Import JSON</button>
                             <input type="file" id="import-file-input" style="display: none;" accept=".json"
                                 onchange="handleImportJSON(event)">
+                        </div>
+                        <div style="display: flex; gap: 0.5rem; flex-wrap: wrap;">
+                            <button class="btn btn-danger" onclick="confirmResetData()"><i
+                                    class="fa-solid fa-trash-can"></i> Reset All Data</button>
                             <button class="btn btn-secondary" onclick="generateMockData()"><i
                                     class="fa-solid fa-database"></i> Load Demo Data</button>
                         </div>
@@ -2071,14 +2053,12 @@
 
                     <!-- Account Management Card -->
                     <div class="card" id="settings-account-card" style="margin-bottom: 1.5rem; display: none;">
-                        <h3><i class="fa-solid fa-shield-halved" style="margin-right: 0.5rem; color: var(--danger);"></i> Account Management</h3>
-                        <p class="text-muted" style="margin-bottom: 1rem;">Manage your account session or reset all stored data.</p>
-                        <div style="display: flex; align-items: center; gap: 0.5rem; flex-wrap: wrap;">
-                            <button class="btn btn-danger" onclick="confirmResetData()"><i
-                                    class="fa-solid fa-trash-can"></i> Reset All Data</button>
-                            <button class="btn btn-danger" id="settings-logout-btn" onclick="handleSettingsLogout()" style="margin-left: auto;"><i
-                                    class="fa-solid fa-sign-out-alt"></i> Log Out</button>
-                        </div>
+                        <h3><i class="fa-solid fa-shield-halved"
+                                style="margin-right: 0.5rem; color: var(--danger);"></i> Account Management</h3>
+                        <p class="text-muted" style="margin-bottom: 1rem;">Delete your account and clear all Firestore
+                            records permanently. This action cannot be undone.</p>
+                        <button class="btn btn-danger" onclick="handleDeleteAccount()"><i
+                                class="fa-solid fa-user-minus"></i> Delete Account</button>
                     </div>
                 </section>
 
@@ -2472,7 +2452,7 @@
             document.getElementById(targetId).classList.add('active');
 
             // Mobile sidebar auto-close
-            closeMobileSidebar();
+            document.getElementById('sidebar').classList.remove('open');
 
             // Refresh specific view data if needed
             if (targetId === 'view-dashboard') updateDashboard();
@@ -3109,17 +3089,17 @@
 
                 return `
                     <div class="card" style="margin-bottom:1rem;">
-                        <div class="card-header debt-card-header">
+                        <div class="card-header">
                             <h3>${d.name}${emiBadge}</h3>
-                            <div class="debt-actions">
-                                <button class="btn btn-primary debt-action-primary" style="padding:0.5rem 1rem;justify-content:center;" onclick="openPaymentModal('${d.id}')">
-                                    <i class="fa-solid fa-plus"></i> Add Payment
-                                </button>
-                                <button class="btn btn-secondary" style="padding:0.5rem 1rem;justify-content:center;" onclick="openEditDebtModal('${d.id}')">
+                            <div style="display:flex;gap:0.5rem;flex-wrap:wrap;">
+                                <button class="btn btn-secondary" style="padding:0.5rem 1rem;" onclick="openEditDebtModal('${d.id}')">
                                     <i class="fa-solid fa-pen"></i> Edit
                                 </button>
-                                <button class="btn btn-danger" style="padding:0.5rem 1rem;justify-content:center;" onclick="deleteDebt('${d.id}')">
-                                    <i class="fa-solid fa-trash"></i> Delete
+                                <button class="btn btn-primary" style="padding:0.5rem 1rem;" onclick="openPaymentModal('${d.id}')">
+                                    <i class="fa-solid fa-plus"></i> Add Payment
+                                </button>
+                                <button class="btn btn-danger" style="padding:0.5rem 1rem;" onclick="deleteDebt('${d.id}')">
+                                    <i class="fa-solid fa-trash"></i>
                                 </button>
                             </div>
                         </div>
@@ -4561,33 +4541,135 @@
             reader.readAsText(file);
         }
 
+        // Account Management: Delete Account
+        async function handleDeleteAccount() {
+            if (!window.auth || !window.auth.currentUser) {
+                showToast("You must be logged in to delete your account.", "error");
+                return;
+            }
+
+            const confirmation = confirm("WARNING: This will permanently delete your user profile, all financial data from Firestore, and your user account. This action cannot be undone.\n\nAre you sure you want to proceed?");
+            if (!confirmation) return;
+
+            showLoading(true);
+            const user = window.auth.currentUser;
+            const uid = user.uid;
+
+            try {
+                // Cascade delete user data from Firestore subcollections
+                const userDocRef = window.db.collection('users').doc(uid);
+                const batch = window.db.batch();
+
+                const collections = ['income', 'expenses', 'budgets', 'debts', 'savings', 'savingsGoals', 'settings'];
+                for (const colName of collections) {
+                    const snap = await userDocRef.collection(colName).get();
+                    snap.forEach(doc => {
+                        batch.delete(doc.ref);
+                    });
+                }
+
+                batch.delete(userDocRef);
+                await batch.commit();
+                console.log("Firestore account data successfully deleted.");
+
+                // Delete user account from authentication
+                await user.delete();
+                showLoading(false);
+                alert("Your account and all associated data have been permanently deleted.");
+                window.location.reload();
+            } catch (err) {
+                showLoading(false);
+                console.error("Account deletion failed:", err);
+                if (err.code === 'auth/requires-recent-login') {
+                    alert("For security reasons, deleting your account requires recent authentication. Please sign out and sign back in, then try again.");
+                } else {
+                    alert("Account deletion failed: " + err.message);
+                }
+            }
+        }
+
         function displayUserProfile(user) {
             const oldLoginBtn = document.getElementById('google-login-btn');
             if (oldLoginBtn) oldLoginBtn.remove();
 
-            // Update the settings profile card with user info
-            const sAvatar = document.getElementById('settings-user-avatar');
-            const sName = document.getElementById('settings-user-name');
-            const sEmail = document.getElementById('settings-user-email');
-            if (sAvatar) sAvatar.src = user.photoURL || 'https://www.gravatar.com/avatar/00000000000000000000000000000000?d=mp&f=y';
-            if (sName) sName.textContent = user.displayName || 'User';
-            if (sEmail) sEmail.textContent = user.email || '';
+            let profileWidget = document.getElementById('user-profile-widget');
+            if (!profileWidget) {
+                profileWidget = document.createElement('div');
+                profileWidget.className = 'user-profile';
+                profileWidget.id = 'user-profile-widget';
+                profileWidget.innerHTML = `
+                    <img id="user-avatar" src="${user.photoURL || 'https://www.gravatar.com/avatar/00000000000000000000000000000000?d=mp&f=y'}" alt="Avatar">
+                    <div class="user-profile-info">
+                        <span id="user-name">${user.displayName || 'User'}</span>
+                        <span id="user-email-visible" class="user-email-visible">${user.email || ''}</span>
+                    </div>
+                    <i class="fa-solid fa-chevron-down" style="font-size: 0.8rem; margin-right: 0.5rem; color: var(--text-muted);"></i>
+                    <div class="user-dropdown" id="user-dropdown">
+                        <div class="user-dropdown-header">
+                            <strong id="dropdown-user-name">${user.displayName || 'User'}</strong>
+                            <span id="dropdown-user-email">${user.email || ''}</span>
+                        </div>
+                        <div class="user-dropdown-divider"></div>
+                        <button class="dropdown-item text-danger" id="google-logout-btn">
+                            <i class="fa-solid fa-sign-out-alt"></i> Logout
+                        </button>
+                    </div>
+                `;
+
+                const topbarRight = document.querySelector('.topbar-right');
+                if (topbarRight) topbarRight.insertBefore(profileWidget, topbarRight.firstChild);
+
+                profileWidget.addEventListener('click', (e) => {
+                    e.stopPropagation();
+                    const dropdown = document.getElementById('user-dropdown');
+                    if (dropdown) dropdown.classList.toggle('active');
+                });
+
+                const logoutBtn = document.getElementById('google-logout-btn');
+                if (logoutBtn) {
+                    logoutBtn.addEventListener('click', async (e) => {
+                        e.stopPropagation();
+                        try {
+                            await window.auth.signOut();
+                            showToast("Signed out successfully.", "info");
+                        } catch (err) {
+                            console.error("Logout failed:", err);
+                            showToast("Logout failed: " + err.message, "error");
+                        }
+                    });
+                }
+            } else {
+                profileWidget.style.display = 'flex';
+                const avatar = document.getElementById('user-avatar');
+                if (avatar) avatar.src = user.photoURL || 'https://www.gravatar.com/avatar/00000000000000000000000000000000?d=mp&f=y';
+                const uName = document.getElementById('user-name');
+                if (uName) uName.textContent = user.displayName || 'User';
+                const uEmail = document.getElementById('user-email-visible');
+                if (uEmail) uEmail.textContent = user.email || '';
+                const dropName = document.getElementById('dropdown-user-name');
+                if (dropName) dropName.textContent = user.displayName || 'User';
+                const dropEmail = document.getElementById('dropdown-user-email');
+                if (dropEmail) dropEmail.textContent = user.email || '';
+            }
         }
 
         function clearUserProfile() {
+            const profileWidget = document.getElementById('user-profile-widget');
+            if (profileWidget) {
+                profileWidget.style.display = 'none';
+            }
+
             const oldLoginBtn = document.getElementById('google-login-btn');
             if (oldLoginBtn) oldLoginBtn.remove();
         }
 
-        async function handleSettingsLogout() {
-            try {
-                await window.auth.signOut();
-                showToast("Signed out successfully.", "info");
-            } catch (err) {
-                console.error("Logout failed:", err);
-                showToast("Logout failed: " + err.message, "error");
+        // Close dropdown when clicking outside
+        document.addEventListener('click', () => {
+            const dropdown = document.getElementById('user-dropdown');
+            if (dropdown && dropdown.classList.contains('active')) {
+                dropdown.classList.remove('active');
             }
-        }
+        });
 
         function initializeAuthenticatedApp() {
             if (appInitialized) return;
@@ -4644,30 +4726,9 @@
             });
         }
 
-        // --- HELPERS: Mobile sidebar overlay ---
-        function openMobileSidebar() {
-            document.getElementById('sidebar').classList.add('open');
-            document.getElementById('sidebar-overlay').classList.add('active');
-        }
-
-        function closeMobileSidebar() {
-            document.getElementById('sidebar').classList.remove('open');
-            document.getElementById('sidebar-overlay').classList.remove('active');
-        }
-
         // --- INIT ---
         document.getElementById('mobile-menu-btn').addEventListener('click', () => {
-            const sidebar = document.getElementById('sidebar');
-            if (sidebar.classList.contains('open')) {
-                closeMobileSidebar();
-            } else {
-                openMobileSidebar();
-            }
-        });
-
-        // Tap outside sidebar (on overlay) to dismiss — mobile only
-        document.getElementById('sidebar-overlay').addEventListener('click', () => {
-            closeMobileSidebar();
+            document.getElementById('sidebar').classList.toggle('open');
         });
 
         window.addEventListener('DOMContentLoaded', () => {
