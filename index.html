@@ -974,12 +974,123 @@ display: none;
 display: block;
 }
 
-        /* Debt Tracker action buttons – desktop default (flex row, same as before) */
-        .debt-actions {
-            display: flex;
-            gap: 0.5rem;
-            flex-wrap: wrap;
-        }
+/* ===== DEBT TRACKER STYLES (FIXED) ===== */
+
+/* Debt Card Container */
+.debt-card {
+display: flex;
+flex-direction: column;
+gap: 1rem;
+padding: 1.25rem;
+border: 1px solid var(--border-color);
+border-radius: var(--radius-md);
+background: var(--card-bg);
+margin-bottom: 1.25rem;
+}
+
+/* Debt Card Header - Title and delete button */
+.debt-card-header {
+display: flex;
+justify-content: space-between;
+align-items: flex-start;
+gap: 1rem;
+}
+
+.debt-card-title {
+font-size: 1.1rem;
+font-weight: 600;
+color: var(--text-main);
+flex: 1;
+}
+
+/* Debt Card Main Info Section */
+.debt-card-info {
+display: grid;
+grid-template-columns: repeat(auto-fit, minmax(150px, 1fr));
+gap: 1rem;
+margin: 0.5rem 0;
+}
+
+.debt-info-item {
+display: flex;
+flex-direction: column;
+gap: 0.25rem;
+}
+
+.debt-info-label {
+font-size: 0.75rem;
+font-weight: 600;
+text-transform: uppercase;
+color: var(--text-muted);
+letter-spacing: 0.05em;
+}
+
+.debt-info-value {
+font-size: 1.1rem;
+font-weight: 600;
+color: var(--text-main);
+}
+
+/* Progress Bar */
+.debt-progress {
+margin: 0.75rem 0;
+}
+
+/* Action Buttons - Fixed layout */
+.debt-actions {
+display: flex;
+flex-wrap: wrap;
+gap: 0.5rem;
+align-items: center;
+margin-top: 0.75rem;
+}
+
+.debt-actions .btn-secondary,
+.debt-actions .btn-danger,
+.debt-actions button {
+padding: 0.5rem 1rem;
+font-size: 0.875rem;
+white-space: nowrap;
+flex: 0 1 auto;
+}
+
+/* Payment History Tab */
+.debt-payment-history {
+margin-top: 1rem;
+padding-top: 1rem;
+border-top: 1px solid var(--border-color);
+}
+
+.debt-payment-tab-bar {
+display: flex;
+gap: 0.5rem;
+margin-bottom: 0.75rem;
+}
+
+.debt-payment-tab-btn {
+padding: 0.4rem 0.8rem;
+font-size: 0.825rem;
+border-radius: var(--radius-sm);
+background: var(--border-color);
+color: var(--text-muted);
+cursor: pointer;
+transition: all 0.2s;
+}
+
+.debt-payment-tab-btn.active {
+background: var(--primary-light);
+color: var(--primary);
+}
+
+.debt-payment-table {
+margin-top: 0.5rem;
+overflow-x: auto;
+}
+
+.debt-payment-table table {
+width: 100%;
+font-size: 0.85rem;
+}
 
 /* =========================================
           RESPONSIVE DESIGN
@@ -992,513 +1103,55 @@ grid-template-columns: repeat(2, 1fr);
 .grid-3 {
 grid-template-columns: repeat(2, 1fr);
 }
+
+.debt-card-info {
+grid-template-columns: repeat(2, 1fr);
+}
+
+.debt-actions {
+flex-direction: column;
+}
+
+.debt-actions .btn-secondary,
+.debt-actions .btn-danger,
+.debt-actions button {
+width: 100%;
+}
+}
+
+@media (max-width: 768px) {
+.grid-2 {
+grid-template-columns: 1fr;
+}
+
+.debt-card-header {
+flex-direction: column;
+}
+
+.debt-card-info {
+grid-template-columns: 1fr;
+}
+
+.debt-actions {
+flex-direction: column;
+}
+
+.debt-actions .btn-secondary,
+.debt-actions .btn-danger,
+.debt-actions button {
+width: 100%;
+}
 }
 
 /* Mobile sidebar overlay – covers the main content when sidebar is open */
 .sidebar-overlay {
 display: none;
 }
-
-@media (max-width: 768px) {
-.sidebar {
-position: fixed;
-left: -100%;
-height: 100%;
-transition: left 0.3s ease;
-}
-
-.sidebar.open {
-left: 0;
-}
-
-/* Overlay shown when sidebar is open on mobile */
-.sidebar-overlay {
-display: none;
-position: fixed;
-inset: 0;
-background: rgba(0, 0, 0, 0.4);
-z-index: 49; /* just below sidebar (z-index: 50) */
--webkit-tap-highlight-color: transparent;
-}
-
-.sidebar-overlay.active {
-display: block;
-}
-
-.mobile-menu-btn {
-display: block;
-}
-
-.grid-4,
-.grid-3,
-.grid-2 {
-grid-template-columns: 1fr;
-}
-
-.search-bar {
-display: none;
-}
-
-.content-area {
-padding: 0 1rem 1rem 1rem;
-/* Extra bottom spacing so the last card is never hidden */
-padding-bottom: calc(1.5rem + env(safe-area-inset-bottom, 0px));
-}
-
-.topbar {
-padding: 0 1rem;
-}
-
-            /* Debt card header: stack title and actions vertically on mobile */
-            .debt-card-header {
-                flex-direction: column;
-                align-items: stretch;
-                gap: 0.75rem;
-            }
-
-            /* Debt action buttons: 2-row grid on mobile */
-            .debt-actions {
-                display: grid;
-                grid-template-columns: 1fr 1fr;
-                gap: 0.5rem;
-            }
-
-            .debt-actions .debt-action-primary {
-                grid-column: 1 / -1; /* full width row */
-            }
-}
-
-/* Firebase Integration Styles */
-.user-profile {
-position: relative;
-display: flex;
-align-items: center;
-gap: 12px;
-padding: 0.35rem 0.5rem;
-background: var(--card-bg);
-border: 1px solid var(--border-color);
-border-radius: 999px;
-backdrop-filter: var(--glass-blur);
-cursor: pointer;
-user-select: none;
-transition: all 0.2s ease;
-}
-
-.user-profile:hover {
-background: var(--border-color);
-}
-
-.user-profile img {
-width: 32px;
-height: 32px;
-border-radius: 50%;
-object-fit: cover;
-}
-
-.user-profile span {
-font-weight: 500;
-font-size: 0.875rem;
-color: var(--text-main);
-}
-
-.user-dropdown {
-position: absolute;
-top: calc(100% + 8px);
-right: 0;
-width: 220px;
-background: var(--sidebar-bg);
-backdrop-filter: var(--glass-blur);
--webkit-backdrop-filter: var(--glass-blur);
-border: 1px solid var(--glass-border);
-border-radius: var(--radius-md);
-box-shadow: var(--glass-shadow);
-padding: 0.75rem;
-display: none;
-flex-direction: column;
-z-index: 100;
-animation: slideDown 0.2s ease forwards;
-}
-
-.user-dropdown.active {
-display: flex;
-}
-
-.user-dropdown-header {
-display: flex;
-flex-direction: column;
-padding: 0.25rem 0.5rem 0.5rem 0.5rem;
-}
-
-.user-dropdown-header strong {
-font-size: 0.875rem;
-color: var(--text-main);
-}
-
-.user-dropdown-header span {
-font-size: 0.75rem;
-color: var(--text-muted);
-word-break: break-all;
-}
-
-.user-dropdown-divider {
-height: 1px;
-background: var(--border-color);
-margin: 0.5rem 0;
-}
-
-.dropdown-item {
-display: flex;
-align-items: center;
-gap: 8px;
-width: 100%;
-padding: 0.5rem;
-border-radius: var(--radius-sm);
-font-size: 0.875rem;
-font-weight: 500;
-color: var(--text-main);
-text-align: left;
-transition: all 0.2s;
-}
-
-.dropdown-item:hover {
-background: var(--primary-light);
-color: var(--primary);
-}
-
-.dropdown-item.text-danger:hover {
-background: var(--danger-light);
-color: var(--danger);
-}
-
-.firebase-status-panel {
-margin-top: auto;
-padding: 0.75rem;
-border-radius: var(--radius-md);
-background: rgba(0, 0, 0, 0.02);
-border: 1px solid var(--border-color);
-font-size: 0.75rem;
-}
-
-[data-theme="dark"] .firebase-status-panel {
-background: rgba(255, 255, 255, 0.02);
-}
-
-.firebase-status-panel .status-title {
-font-weight: 600;
-margin-bottom: 0.5rem;
-color: var(--text-muted);
-text-transform: uppercase;
-letter-spacing: 0.05em;
-}
-
-.status-item {
-display: flex;
-align-items: center;
-gap: 8px;
-margin-bottom: 0.25rem;
-color: var(--text-main);
-}
-
-.status-item:last-child {
-margin-bottom: 0;
-}
-
-.status-dot {
-width: 8px;
-height: 8px;
-border-radius: 50%;
-background: #94a3b8;
-transition: background-color 0.3s ease;
-}
-
-.status-dot.connected,
-.status-dot.logged-in {
-background: var(--success);
-}
-
-.status-dot.error {
-background: var(--danger);
-}
-
-.status-dot.loading {
-background: var(--warning);
-}
-
-.test-status {
-margin-top: 0.5rem;
-font-size: 0.7rem;
-color: var(--text-muted);
-border-top: 1px dashed var(--border-color);
-padding-top: 0.4rem;
-}
-
-@keyframes slideDown {
-from {
-opacity: 0;
-transform: translateY(-5px);
-}
-
-to {
-opacity: 1;
-transform: translateY(0);
-}
-}
-
-/* Loading Overlay */
-#loading-overlay {
-display: none;
-position: fixed;
-top: 0;
-left: 0;
-right: 0;
-bottom: 0;
-background: rgba(240, 242, 245, 0.85);
-z-index: 9999;
-align-items: center;
-justify-content: center;
-flex-direction: column;
-gap: 1.5rem;
-backdrop-filter: blur(5px);
-transition: opacity 0.3s ease;
-}
-
-[data-theme="dark"] #loading-overlay {
-background: rgba(15, 23, 42, 0.85);
-}
-
-#loading-overlay .spinner {
-width: 50px;
-height: 50px;
-border: 5px solid var(--border-color);
-border-top-color: var(--primary);
-border-radius: 50%;
-animation: spin 1s linear infinite;
-}
-
-#loading-overlay span {
-font-weight: 600;
-color: var(--text-main);
-font-size: 1rem;
-}
-
-@keyframes spin {
-to {
-transform: rotate(360deg);
-}
-}
-
-/* Toast Notifications CSS */
-.toast-msg {
-padding: 12px 24px;
-border-radius: 12px;
-font-size: 0.9rem;
-font-weight: 500;
-color: var(--text-main);
-background: rgba(255, 255, 255, 0.15);
-backdrop-filter: blur(10px);
--webkit-backdrop-filter: blur(10px);
-border: 1px solid rgba(255, 255, 255, 0.25);
-box-shadow: 0 8px 32px 0 rgba(31, 38, 135, 0.15);
-display: flex;
-align-items: center;
-gap: 10px;
-transform: translateY(-20px);
-opacity: 0;
-transition: all 0.3s cubic-bezier(0.68, -0.55, 0.265, 1.55);
-pointer-events: auto;
-}
-
-[data-theme="dark"] .toast-msg {
-background: rgba(15, 23, 42, 0.6);
-border: 1px solid rgba(255, 255, 255, 0.1);
-}
-
-.toast-msg.show {
-transform: translateY(0);
-opacity: 1;
-}
-
-.toast-msg.success {
-border-left: 4px solid var(--success);
-}
-
-.toast-msg.error {
-border-left: 4px solid var(--danger);
-}
-
-.toast-msg.info {
-border-left: 4px solid var(--primary);
-}
-
-/* Auth Gate */
-#auth-gate {
-position: fixed;
-inset: 0;
-z-index: 20000;
-display: flex;
-align-items: center;
-justify-content: center;
-background: linear-gradient(135deg, #f0f2f5 0%, #e2e8f0 100%);
-}
-
-[data-theme="dark"] #auth-gate {
-background: linear-gradient(135deg, #0f172a 0%, #1e293b 100%);
-}
-
-.auth-panel {
-display: flex;
-flex-direction: column;
-align-items: center;
-justify-content: center;
-gap: 1.5rem;
-text-align: center;
-padding: 2rem;
-}
-
-.auth-card {
-background: var(--card-bg);
-backdrop-filter: var(--glass-blur);
--webkit-backdrop-filter: var(--glass-blur);
-border: 1px solid var(--glass-border);
-border-radius: var(--radius-lg);
-box-shadow: var(--glass-shadow);
-padding: 2.5rem;
-max-width: 420px;
-width: 90vw;
-display: flex;
-flex-direction: column;
-align-items: center;
-gap: 1.25rem;
-}
-
-.auth-logo {
-display: flex;
-align-items: center;
-gap: 0.75rem;
-font-size: 1.75rem;
-font-weight: 700;
-color: var(--primary);
-}
-
-.auth-logo i {
-font-size: 2rem;
-}
-
-.auth-card h1 {
-font-size: 1.5rem;
-font-weight: 700;
-color: var(--text-main);
-margin: 0;
-}
-
-.auth-card p {
-color: var(--text-muted);
-margin: 0;
-font-size: 0.9375rem;
-line-height: 1.5;
-}
-
-.auth-error {
-width: 100%;
-padding: 0.75rem 1rem;
-border-radius: var(--radius-sm);
-background: var(--danger-light);
-color: var(--danger);
-font-size: 0.875rem;
-text-align: left;
-line-height: 1.4;
-}
-
-.btn-google {
-display: inline-flex;
-align-items: center;
-justify-content: center;
-gap: 0.75rem;
-width: 100%;
-padding: 0.875rem 1.5rem;
-font-size: 1rem;
-font-weight: 600;
-background: #fff;
-color: #3c4043;
-border: 1px solid #dadce0;
-border-radius: var(--radius-md);
-cursor: pointer;
-transition: all 0.2s ease;
-}
-
-.btn-google:hover:not(:disabled) {
-background: #f8f9fa;
-box-shadow: 0 1px 3px rgba(0, 0, 0, 0.12);
-}
-
-.btn-google:disabled {
-opacity: 0.6;
-cursor: not-allowed;
-}
-
-[data-theme="dark"] .btn-google {
-background: #2d3748;
-color: #e2e8f0;
-border-color: #4a5568;
-}
-
-[data-theme="dark"] .btn-google:hover:not(:disabled) {
-background: #374151;
-}
-
-.user-profile-info {
-display: flex;
-flex-direction: column;
-line-height: 1.2;
-}
-
-.user-profile-info .user-email-visible {
-font-size: 0.7rem;
-color: var(--text-muted);
-font-weight: 400;
-max-width: 140px;
-overflow: hidden;
-text-overflow: ellipsis;
-white-space: nowrap;
-}
 </style>
 </head>
 
 <body>
-<!-- Loading Overlay -->
-<div id="loading-overlay">
-<div class="spinner"></div>
-<span>Syncing with Cloud Firestore...</span>
-</div>
-
-<!-- Toast Notifications Container -->
-<div id="toast-container"
-style="position: fixed; top: 20px; right: 20px; z-index: 10000; display: flex; flex-direction: column; gap: 10px; pointer-events: none;">
-</div>
-
-<!-- Auth Gate (shown until Firebase auth state is resolved) -->
-<div id="auth-gate">
-<div id="auth-loading" class="auth-panel">
-<div class="spinner"></div>
-<span style="color: var(--text-muted); font-weight: 500;">Checking authentication...</span>
-</div>
-<div id="auth-login" class="auth-panel" style="display: none;">
-<div class="auth-card">
-<div class="auth-logo">
-<i class="fa-solid fa-infinity"></i>
-Finova
-</div>
-<h1>Welcome back</h1>
-<p>Sign in with your Google account to access your personal finance dashboard.</p>
-<div id="auth-error" class="auth-error" style="display: none;" role="alert"></div>
-<button type="button" id="google-signin-btn" class="btn-google">
-<i class="fa-brands fa-google"></i>
-Continue with Google
-</button>
-</div>
-</div>
-</div>
-
+<!-- Main App Shell (hidden until JS loads) -->
 <div id="app-shell" style="display: none;">
 <!-- Mobile sidebar overlay: tapping this closes the sidebar -->
 <div class="sidebar-overlay" id="sidebar-overlay"></div>
@@ -1597,84 +1250,72 @@ Finova
 </button>
 <div class="search-bar">
 <i class="fa-solid fa-magnifying-glass"></i>
-<input type="text" placeholder="Search Transaction..." id="global-search-input">
+<input type="text" id="search-input" placeholder="Search transactions..." />
 </div>
 </div>
+
 <div class="topbar-right">
-<button class="btn btn-primary" onclick="openModal('modal-add-transaction')">
-<i class="fa-solid fa-plus"></i> New
-</button>
-<button class="icon-btn" id="theme-toggle" title="Toggle Theme">
-<i class="fa-solid fa-moon"></i>
+<button class="icon-btn" id="theme-toggle" title="Toggle Dark Mode">
+<i class="fa-solid fa-moon icon-moon"></i>
 </button>
 
+<button class="icon-btn" id="sync-btn" title="Sync Data">
+<i class="fa-solid fa-arrows-rotate"></i>
+</button>
+
+<button class="icon-btn" id="profile-btn" title="Profile">
+<i class="fa-solid fa-user"></i>
+</button>
 </div>
 </header>
 
-<!-- Content Area -->
+<!-- View Container -->
 <div class="content-area">
 
-<!-- Firebase Alert Banner -->
-<div id="firebase-alert-banner" class="insight-card danger"
-style="display: none; margin-bottom: 1.5rem;">
-<h4><i class="fa-solid fa-triangle-exclamation"></i> Firebase Connection Error</h4>
-<p id="firebase-alert-msg"></p>
-</div>
-
-<!-- ================= VIEW: DASHBOARD ================= -->
+<!-- ========== DASHBOARD VIEW ========== -->
 <section id="view-dashboard" class="view-section active">
 <div class="card-header">
 <h2>Dashboard</h2>
-<span class="text-muted" id="dashboard-date"></span>
 </div>
 
-<!-- Metrics Grid -->
 <div class="grid-4" style="margin-bottom: 1.5rem;">
 <div class="card metric-card">
-<div class="metric-icon" style="background: var(--success-light); color: var(--success);">
-<i class="fa-solid fa-arrow-down"></i>
-</div>
-<div class="metric-title">Monthly Income</div>
-<div class="metric-value" id="dash-income">₹0</div>
-</div>
-<div class="card metric-card">
-<div class="metric-icon" style="background: var(--danger-light); color: var(--danger);">
-<i class="fa-solid fa-arrow-up"></i>
-</div>
-<div class="metric-title">Monthly Expenses</div>
-<div class="metric-value" id="dash-expense">₹0</div>
-</div>
-<div class="card metric-card">
-<div class="metric-icon" style="background: var(--info); color: white;">
+<div class="metric-icon" style="background: var(--primary-light); color: var(--primary);">
 <i class="fa-solid fa-wallet"></i>
 </div>
-<div class="metric-title">Current Cash</div>
-<div class="metric-value" id="dash-cash">₹0</div>
-</div>
-<div class="card metric-card">
-<div class="metric-icon" style="background: var(--warning); color: white;">
-<i class="fa-solid fa-piggy-bank"></i>
-</div>
-<div class="metric-title">Total Savings</div>
-<div class="metric-value" id="dash-savings">₹0</div>
-</div>
+<div class="metric-title">Total Balance</div>
+<div class="metric-value" id="dashboard-balance">₹0</div>
 </div>
 
-<div style="margin-bottom: 1.5rem;">
-<div class="card">
-<h3 class="card-header">Monthly Trend</h3>
-<div style="position: relative; height: 280px; width: 100%;">
-<canvas id="chart-dash-trend"></canvas>
+<div class="card metric-card">
+<div class="metric-icon" style="background: var(--success-light); color: var(--success);">
+<i class="fa-solid fa-arrow-down-wide-short"></i>
 </div>
+<div class="metric-title">Total Income</div>
+<div class="metric-value" id="dashboard-income">₹0</div>
+</div>
+
+<div class="card metric-card">
+<div class="metric-icon" style="background: var(--danger-light); color: var(--danger);">
+<i class="fa-solid fa-arrow-up-wide-short"></i>
+</div>
+<div class="metric-title">Total Expenses</div>
+<div class="metric-value" id="dashboard-expenses">₹0</div>
+</div>
+
+<div class="card metric-card">
+<div class="metric-icon" style="background: rgba(245, 158, 11, 0.1); color: var(--warning);">
+<i class="fa-solid fa-hand-holding-dollar"></i>
+</div>
+<div class="metric-title">Total Debt</div>
+<div class="metric-value" id="dashboard-debt">₹0</div>
 </div>
 </div>
 
 <div class="grid-2">
-<!-- Recent Transactions -->
 <div class="card">
 <div class="card-header">
 <h3>Recent Transactions</h3>
-<button class="btn btn-secondary" onclick="navigate('view-expenses')">View All</button>
 </div>
 <div class="table-wrapper">
 <table>
@@ -1682,53 +1323,57 @@ style="display: none; margin-bottom: 1.5rem;">
 <tr>
 <th>Date</th>
 <th>Description</th>
+<th>Category</th>
 <th>Amount</th>
 </tr>
 </thead>
-<tbody id="dash-recent-tx">
-<!-- Rendered via JS -->
+<tbody id="recent-transactions-body">
+<!-- JS renders recent transactions -->
 </tbody>
 </table>
 </div>
 </div>
-<!-- Active Goal & Upcoming -->
-<div class="grid-1">
-<div class="card" style="display:none;">
-</div>
+
 <div class="card">
-<h3>Upcoming Bills</h3>
-<div id="dash-upcoming-bills"
-style="margin-top: 1rem; max-height: 400px; overflow-y: auto; content-visibility: auto;">
-<!-- JS -->
+<div class="card-header">
+<h3>Spending Trend</h3>
+</div>
+<div style="position: relative; height: 250px;">
+<canvas id="trend-chart"></canvas>
 </div>
 </div>
 </div>
-</div>
+
 </section>
 
-<!-- ================= VIEW: EXPENSE TRACKER ================= -->
+<!-- ========== EXPENSE TRACKER VIEW ========== -->
 <section id="view-expenses" class="view-section">
 <div class="card-header">
 <h2>Expense Tracker</h2>
-<button class="btn btn-primary" onclick="openModal('modal-add-transaction')">Add
-Expense</button>
+<button class="btn btn-primary" onclick="openModal('modal-add-transaction')">
+<i class="fa-solid fa-plus"></i> Add Expense
+</button>
 </div>
+
 <div class="filter-bar">
 <div class="form-group">
-<label class="form-label">From Date</label>
-<input type="date" class="form-control" id="expense-filter-from">
-</div>
-<div class="form-group">
-<label class="form-label">To Date</label>
-<input type="date" class="form-control" id="expense-filter-to">
-</div>
-<div class="form-group">
-<label class="form-label">Category</label>
-<select class="form-control" id="expense-filter-category">
+<label for="tx-category-filter" class="form-label">Category</label>
+<select id="tx-category-filter" class="form-control" onchange="filterTransactions()">
 <option value="">All Categories</option>
 </select>
 </div>
-<button class="btn btn-secondary" onclick="clearExpenseFilters()">Clear</button>
+
+<div class="form-group">
+<label for="tx-date-from" class="form-label">From</label>
+<input type="date" id="tx-date-from" class="form-control" onchange="filterTransactions()" />
+</div>
+
+<div class="form-group">
+<label for="tx-date-to" class="form-label">To</label>
+<input type="date" id="tx-date-to" class="form-control" onchange="filterTransactions()" />
+</div>
+
+<button class="btn btn-secondary" onclick="resetFilters()">Reset Filters</button>
 </div>
 
 <div class="card">
@@ -1752,6 +1397,7 @@ Expense</button>
 </div>
 </section>
 
+<!-- ========== INCOME TRACKER VIEW ========== -->
 <section id="view-income" class="view-section">
 <div class="card-header">
 <h2>Income Tracker</h2>
@@ -1775,6 +1421,8 @@ Expense</button>
 </div>
 </div>
 </section>
+
+<!-- ========== BUDGET PLANNER VIEW ========== -->
 <section id="view-budget" class="view-section">
 <div class="card-header">
 <h2>Budget Planner</h2>
@@ -1802,6 +1450,8 @@ Expense</button>
 <!-- JS renders editable budget categories -->
 </div>
 </section>
+
+<!-- ========== DEBT TRACKER VIEW ========== -->
 <section id="view-debts" class="view-section">
 <div class="card-header">
 <h2>Debt Tracker</h2>
@@ -1826,9 +1476,11 @@ Expense</button>
 </div>
 
 <div id="debts-list">
-<!-- JS renders debt cards -->
+<!-- JS renders debt cards with fixed layout -->
 </div>
 </section>
+
+<!-- ========== SAVINGS VIEW ========== -->
 <section id="view-goals" class="view-section">
 <div class="card-header">
 <h2>Savings</h2>
@@ -1863,6 +1515,8 @@ style="margin-bottom: 1.5rem; max-width: 400px;">
 </div>
 </div>
 </section>
+
+<!-- ========== GOALS DASHBOARD ========== -->
 <section id="view-goals-dashboard" class="view-section">
 <div class="card-header">
 <h2>Goals Dashboard</h2>
@@ -1871,633 +1525,442 @@ style="margin-bottom: 1.5rem; max-width: 400px;">
 </button>
 </div>
 
-<div class="grid-2" style="margin-bottom: 1.5rem;">
-<div class="card metric-card flash-card success-flash">
-<div class="metric-icon" style="background: var(--success-light); color: var(--success);">
-<i class="fa-solid fa-piggy-bank"></i>
-</div>
-<div class="metric-title">Total Savings</div>
-<div class="metric-value" id="goals-dash-savings">₹0</div>
-</div>
-<div class="card metric-card flash-card warning-flash">
-<div class="metric-icon"
-style="background: rgba(245, 158, 11, 0.15); color: var(--warning);">
-<i class="fa-solid fa-bullseye"></i>
-</div>
-<div class="metric-title">Total Needed to Achieve Goals</div>
-<div class="metric-value" id="goals-dash-target">₹0</div>
-</div>
-</div>
-
-<div id="financial-goals-list">
-<!-- JS -->
+<div id="goals-list">
+<!-- JS renders goal cards -->
 </div>
 </section>
-<section id="view-analytics" class="view-section">
-<div class="card-header" style="display:flex; justify-content:space-between; align-items:center;">
-<h2>Spending Analytics</h2>
-<div style="display:flex; gap: 10px;">
-<select class="form-control" id="analytics-year-filter" onchange="updateAnalytics()"
-style="width: auto;">
-</select>
-<select class="form-control" id="analytics-month-filter" onchange="updateAnalytics()"
-style="width: auto;">
-<option value="01">January</option>
-<option value="02">February</option>
-<option value="03">March</option>
-<option value="04">April</option>
-<option value="05">May</option>
-<option value="06">June</option>
-<option value="07">July</option>
-<option value="08">August</option>
-<option value="09">September</option>
-<option value="10">October</option>
-<option value="11">November</option>
-<option value="12">December</option>
-</select>
-</div>
+
+<!-- ========== CATEGORY MANAGER ========== -->
+<section id="view-categories" class="view-section">
+<div class="card-header">
+<h2>Category Manager</h2>
+<button class="btn btn-primary" onclick="openModal('modal-add-category')">
+<i class="fa-solid fa-plus"></i> Add Category
+</button>
 </div>
 
-<div class="grid-3" style="margin-bottom: 1.5rem;">
-<div class="card metric-card">
-<div class="metric-title">Total Expenses (All Time)</div>
-<div class="metric-value" id="analytics-total-expense">₹0</div>
+<div id="categories-list">
+<!-- JS renders categories -->
 </div>
-<div class="card metric-card">
-<div class="metric-title">This Month</div>
-<div class="metric-value" id="analytics-month-expense">₹0</div>
+</section>
+
+<!-- ========== ANALYTICS VIEW ========== -->
+<section id="view-analytics" class="view-section">
+<div class="card-header">
+<h2>Spending Analytics</h2>
 </div>
-<div class="card metric-card">
-<div class="metric-title">Top Category</div>
-<div class="metric-value" id="analytics-top-category" style="font-size: 1.25rem;">—</div>
+
+<div class="grid-2" style="margin-bottom: 1.5rem;">
+<div class="card">
+<div class="card-header">
+<h3>Category Breakdown</h3>
+</div>
+<div style="position: relative; height: 300px;">
+<canvas id="category-chart"></canvas>
 </div>
 </div>
 
 <div class="card">
-<h3 class="card-header">Spending by Category</h3>
-<div style="position: relative; height: 320px; width: 100%;">
-<canvas id="chart-category-pie"></canvas>
+<div class="card-header">
+<h3>Monthly Comparison</h3>
 </div>
+<div style="position: relative; height: 300px;">
+<canvas id="comparison-chart"></canvas>
 </div>
-
-<div class="card" style="margin-top: 1.5rem;">
-<h3 class="card-header">Category Breakdown</h3>
-<div class="table-wrapper">
-<table>
-<thead>
-<tr>
-<th>Category</th>
-<th>Amount</th>
-<th>% of Total</th>
-</tr>
-</thead>
-<tbody id="analytics-category-table">
-<!-- JS -->
-</tbody>
-</table>
 </div>
 </div>
 </section>
+
+<!-- ========== INSIGHTS VIEW ========== -->
 <section id="view-insights" class="view-section">
 <div class="card-header">
 <h2>Smart Insights</h2>
 </div>
 
-<div class="tab-bar">
-<button class="tab-btn active" data-insights-tab="insights-smart"
-onclick="switchInsightsTab('insights-smart')">
-<i class="fa-solid fa-lightbulb"></i> Smart Insights
-</button>
-<button class="tab-btn" data-insights-tab="insights-advisor"
-onclick="switchInsightsTab('insights-advisor')">
-<i class="fa-solid fa-user-tie"></i> Financial Advisor
-</button>
-</div>
-
-<div id="insights-smart" class="tab-panel active">
-<div id="insights-container"></div>
-</div>
-<div id="insights-advisor" class="tab-panel">
-<div id="advisor-container"></div>
-</div>
-</section>
-<section id="view-search" class="view-section">
-<div class="card-header">
-<h2>Search Transaction</h2>
-</div>
-<div class="card">
-<div id="search-results-wrapper">
-<div class="empty-state" id="search-empty-state">
-<i class="fa-solid fa-magnifying-glass"></i>
-<p>Type in the search bar above to find transactions by description, category, or
-amount.</p>
-</div>
-<div class="table-wrapper" id="search-table-wrapper" style="display: none;">
-<table>
-<thead>
-<tr>
-<th>Date</th>
-<th>Type</th>
-<th>Description</th>
-<th>Category</th>
-<th>Amount</th>
-</tr>
-</thead>
-<tbody id="search-results-container"></tbody>
-</table>
-</div>
+<div id="insights-container">
+<!-- JS renders insights -->
 </div>
 </section>
 
-<!-- ================= VIEW: EXPENSE CATEGORY MANAGER ================= -->
-<section id="view-categories" class="view-section">
-<div class="card-header">
-<h2>Expense Category Manager</h2>
-<button class="btn btn-primary" onclick="openCategoryModal()">Add Category</button>
-</div>
-<div class="card">
-<p class="text-muted" style="margin-bottom: 1rem;">Manage your expense categories here. These
-categories are used globally for transactions and budgeting.</p>
-<div class="table-wrapper">
-<table>
-<thead>
-<tr>
-<th>Category Name</th>
-<th style="text-align: right;">Actions</th>
-</tr>
-</thead>
-<tbody id="expense-categories-list">
-<!-- Rendered via JS -->
-</tbody>
-</table>
-</div>
-</div>
-</section>
+<!-- ========== SETTINGS VIEW ========== -->
 <section id="view-settings" class="view-section">
 <div class="card-header">
 <h2>Settings</h2>
 </div>
 
-<!-- User Profile Card -->
-<div class="card" id="settings-profile-card" style="margin-bottom: 1.5rem; display: none;">
-<h3><i class="fa-solid fa-user" style="margin-right: 0.5rem; color: var(--primary);"></i> Your Profile</h3>
-<div style="display: flex; align-items: center; gap: 1rem; margin-top: 1rem; padding: 1rem; background: var(--primary-light); border-radius: var(--radius-md);">
-<img id="settings-user-avatar" src="" alt="Avatar" style="width: 56px; height: 56px; border-radius: 50%; object-fit: cover; border: 2px solid var(--primary);">
-<div>
-<div id="settings-user-name" style="font-size: 1.1rem; font-weight: 600; color: var(--text-main);"></div>
-<div id="settings-user-email" style="font-size: 0.875rem; color: var(--text-muted); margin-top: 2px;"></div>
-</div>
-</div>
+<div class="card">
+<h3 style="margin-bottom: 1.5rem;">Preferences</h3>
+
+<!-- Currency -->
+<div class="form-group">
+<label class="form-label">Currency</label>
+<select id="settings-currency" class="form-control" onchange="saveSetting('currency', this.value)">
+<option value="₹">Indian Rupee (₹)</option>
+<option value="$">US Dollar ($)</option>
+<option value="€">Euro (€)</option>
+<option value="£">British Pound (£)</option>
+</select>
 </div>
 
-<!-- Data Management Card -->
-<div class="card" style="margin-bottom: 1.5rem;">
-<h3><i class="fa-solid fa-database" style="margin-right: 0.5rem; color: var(--primary);"></i> Data Management</h3>
-<p class="text-muted" style="margin-bottom: 1rem;">Manage your dashboard data. Import or export
-your data state dynamically.</p>
-<div style="display: flex; gap: 0.5rem; flex-wrap: wrap;">
-<button class="btn btn-secondary" onclick="exportDataJSON()"><i
-class="fa-solid fa-file-export"></i> Export JSON</button>
-<button class="btn btn-secondary" onclick="exportDataCSV()"><i
-class="fa-solid fa-file-csv"></i> Export CSV</button>
-<button class="btn btn-secondary" onclick="triggerImportJSON()"><i
-class="fa-solid fa-file-import"></i> Import JSON</button>
-<input type="file" id="import-file-input" style="display: none;" accept=".json"
-onchange="handleImportJSON(event)">
-<button class="btn btn-secondary" onclick="generateMockData()"><i
-class="fa-solid fa-database"></i> Load Demo Data</button>
-</div>
+<!-- Date Format -->
+<div class="form-group">
+<label class="form-label">Date Format</label>
+<select id="settings-date-format" class="form-control" onchange="saveSetting('dateFormat', this.value)">
+<option value="DD/MM/YYYY">DD/MM/YYYY</option>
+<option value="MM/DD/YYYY">MM/DD/YYYY</option>
+<option value="YYYY-MM-DD">YYYY-MM-DD</option>
+</select>
 </div>
 
-<!-- Account Management Card -->
-<div class="card" id="settings-account-card" style="margin-bottom: 1.5rem; display: none;">
-<h3><i class="fa-solid fa-shield-halved" style="margin-right: 0.5rem; color: var(--danger);"></i> Account Management</h3>
-<p class="text-muted" style="margin-bottom: 1rem;">Manage your account session or reset all stored data.</p>
-<div style="display: flex; align-items: center; gap: 0.5rem; flex-wrap: wrap;">
-<button class="btn btn-danger" onclick="confirmResetData()"><i
-class="fa-solid fa-trash-can"></i> Reset All Data</button>
-<button class="btn btn-danger" id="settings-logout-btn" onclick="handleSettingsLogout()" style="margin-left: auto;"><i
-class="fa-solid fa-sign-out-alt"></i> Log Out</button>
+<!-- Notifications -->
+<div class="toggle-row">
+<label class="form-label" style="margin-bottom: 0;">Budget Alerts</label>
+<label class="toggle-switch">
+<input type="checkbox" id="settings-budget-alerts" onchange="saveSetting('budgetAlerts', this.checked)" />
+<span class="toggle-slider"></span>
+</label>
 </div>
+
+<div class="toggle-row">
+<label class="form-label" style="margin-bottom: 0;">Goal Notifications</label>
+<label class="toggle-switch">
+<input type="checkbox" id="settings-goal-notifications" onchange="saveSetting('goalNotifications', this.checked)" />
+<span class="toggle-slider"></span>
+</label>
+</div>
+
+<!-- Data Management -->
+<h3 style="margin-top: 2rem; margin-bottom: 1rem;">Data Management</h3>
+
+<div class="form-row">
+<button class="btn btn-primary" onclick="exportData()">
+<i class="fa-solid fa-download"></i> Export Data
+</button>
+<button class="btn btn-secondary" onclick="document.getElementById('import-file').click()">
+<i class="fa-solid fa-upload"></i> Import Data
+</button>
+<input type="file" id="import-file" accept=".json" style="display: none;" onchange="importData(event)" />
+</div>
+
+<button class="btn btn-danger" onclick="clearAllData()" style="margin-top: 0.5rem;">
+<i class="fa-solid fa-trash"></i> Clear All Data
+</button>
 </div>
 </section>
 
 </div>
+<!-- End content-area -->
 </main>
+<!-- End main-wrapper -->
+
+</div>
+<!-- End app-shell -->
 
 <!-- =========================================
         MODALS
         ========================================= -->
-<!-- Add Expense Modal -->
+
+<!-- Add/Edit Transaction Modal -->
 <div class="modal-overlay" id="modal-add-transaction">
 <div class="modal-content">
 <div class="modal-header">
 <h3>Add Expense</h3>
-<i class="fa-solid fa-xmark modal-close" onclick="closeModal('modal-add-transaction')"></i>
+<span class="modal-close" onclick="closeModal('modal-add-transaction')">✕</span>
 </div>
-<form id="form-add-tx" onsubmit="handleTransactionSubmit(event)">
+<form onsubmit="addTransaction(event)">
 <div class="form-group">
 <label class="form-label">Date</label>
-<input type="date" class="form-control" id="tx-date" required>
+<input type="date" id="tx-date" class="form-control" required />
 </div>
+
 <div class="form-group">
-<label class="form-label">Amount (₹)</label>
-<input type="number" class="form-control" id="tx-amount" step="0.01" required>
+<label class="form-label">Description</label>
+<input type="text" id="tx-description" class="form-control" placeholder="e.g., Grocery shopping" required />
 </div>
-<div class="form-group">
-<label class="form-label">Description / Merchant</label>
-<input type="text" class="form-control" id="tx-desc" required>
-</div>
-<div class="form-row">
+
 <div class="form-group">
 <label class="form-label">Category</label>
-<select class="form-control" id="tx-category" required>
+<select id="tx-category" class="form-control" required>
+<option value="">Select a category</option>
 </select>
 </div>
+
 <div class="form-group">
-<label class="form-label">Need / Want</label>
-<select class="form-control" id="tx-need-want">
-<option value="need">Need</option>
-<option value="want">Want</option>
-<option value="">N/A</option>
-</select>
+<label class="form-label">Amount (₹)</label>
+<input type="number" id="tx-amount" class="form-control" min="0" step="0.01" required />
 </div>
+
+<div class="form-group">
+<label class="form-label">Notes (Optional)</label>
+<input type="text" id="tx-notes" class="form-control" placeholder="Add notes..." />
 </div>
-<button type="submit" class="btn btn-primary"
-style="width: 100%; justify-content: center; margin-top: 1rem;">Save Expense</button>
+
+<button type="submit" class="btn btn-primary" style="width: 100%;">Add Expense</button>
 </form>
 </div>
 </div>
 
-<!-- Add Income Modal -->
+<!-- Add/Edit Income Modal -->
 <div class="modal-overlay" id="modal-add-income">
 <div class="modal-content">
 <div class="modal-header">
 <h3>Add Income</h3>
-<i class="fa-solid fa-xmark modal-close" onclick="closeModal('modal-add-income')"></i>
+<span class="modal-close" onclick="closeModal('modal-add-income')">✕</span>
 </div>
-<form id="form-add-income" onsubmit="handleIncomeSubmit(event)">
+<form onsubmit="addIncome(event)">
 <div class="form-group">
 <label class="form-label">Date</label>
-<input type="date" class="form-control" id="income-date" required>
+<input type="date" id="income-date" class="form-control" required />
 </div>
+
+<div class="form-group">
+<label class="form-label">Source</label>
+<input type="text" id="income-source" class="form-control" placeholder="e.g., Salary, Freelance" required />
+</div>
+
 <div class="form-group">
 <label class="form-label">Amount (₹)</label>
-<input type="number" class="form-control" id="income-amount" step="0.01" required>
+<input type="number" id="income-amount" class="form-control" min="0" step="0.01" required />
 </div>
-<div class="form-group">
-<label class="form-label">Description</label>
-<input type="text" class="form-control" id="income-desc" placeholder="e.g. Salary, Freelance"
-required>
-</div>
-<button type="submit" class="btn btn-primary"
-style="width: 100%; justify-content: center; margin-top: 1rem;">Save Income</button>
+
+<button type="submit" class="btn btn-primary" style="width: 100%;">Add Income</button>
 </form>
 </div>
 </div>
 
-<!-- Add Debt Modal -->
+<!-- Add/Edit Debt Modal -->
 <div class="modal-overlay" id="modal-add-debt">
 <div class="modal-content">
 <div class="modal-header">
 <h3 id="debt-modal-title">Add Debt</h3>
-<i class="fa-solid fa-xmark modal-close" onclick="closeModal('modal-add-debt')"></i>
+<span class="modal-close" onclick="closeModal('modal-add-debt')">✕</span>
 </div>
-<form id="form-add-debt" onsubmit="handleDebtSubmit(event)">
-<input type="hidden" id="debt-edit-id">
+<form onsubmit="addDebt(event)">
+<input type="hidden" id="debt-edit-id" />
+
 <div class="form-group">
 <label class="form-label">Debt Name</label>
-<input type="text" class="form-control" id="debt-name" placeholder="e.g. Car Loan, Credit Card"
-required>
+<input type="text" id="debt-name" class="form-control" placeholder="e.g., Credit Card, Personal Loan" required />
 </div>
+
+<!-- Recurring Debt Option -->
 <div class="toggle-row">
-<div>
-<div class="form-label" style="margin-bottom:0;">Recurring Payment (EMI)</div>
-<div class="text-muted" style="font-size:0.75rem;">Enable for monthly loan/EMI payments
-</div>
-</div>
+<label class="form-label" style="margin-bottom: 0;">Is this a recurring debt (EMI)?</label>
 <label class="toggle-switch">
-<input type="checkbox" id="debt-recurring" onchange="toggleEmiFields()">
+<input type="checkbox" id="debt-recurring" onchange="toggleEmiFields()" />
 <span class="toggle-slider"></span>
 </label>
 </div>
+
+<!-- Onetime Debt Fields -->
 <div id="debt-onetime-fields">
 <div class="form-group">
 <label class="form-label">Total Amount Owed (₹)</label>
-<input type="number" class="form-control" id="debt-amount" step="0.01">
+<input type="number" id="debt-amount" class="form-control" min="0" step="0.01" />
 </div>
 </div>
+
+<!-- EMI Debt Fields -->
 <div id="debt-emi-fields" class="emi-fields">
 <div class="form-group">
 <label class="form-label">Total Loan Amount (₹)</label>
-<input type="number" class="form-control" id="debt-loan-amount" step="0.01">
+<input type="number" id="debt-loan-amount" class="form-control" min="0" step="0.01" />
 </div>
-<div class="form-row">
+
 <div class="form-group">
-<label class="form-label">Monthly EMI (₹)</label>
-<input type="number" class="form-control" id="debt-emi-amount" step="0.01">
+<label class="form-label">EMI Amount (₹)</label>
+<input type="number" id="debt-emi-amount" class="form-control" min="0" step="0.01" />
 </div>
+
 <div class="form-group">
-<label class="form-label">Due Date (day of month)</label>
-<input type="number" class="form-control" id="debt-due-day" min="1" max="28"
-placeholder="e.g. 5">
+<label class="form-label">Due Date (Day of Month)</label>
+<input type="number" id="debt-due-day" class="form-control" min="1" max="31" />
 </div>
 </div>
-</div>
-<button type="submit" class="btn btn-primary"
-style="width: 100%; justify-content: center; margin-top: 1rem;">Save Debt</button>
+
+<button type="submit" class="btn btn-primary" style="width: 100%;">Add Debt</button>
 </form>
 </div>
 </div>
 
-<!-- Add Debt Payment Modal -->
+<!-- Add/Edit Debt Payment Modal -->
 <div class="modal-overlay" id="modal-add-payment">
 <div class="modal-content">
 <div class="modal-header">
-<h3>Record Monthly Payment</h3>
-<i class="fa-solid fa-xmark modal-close" onclick="closeModal('modal-add-payment')"></i>
+<h3>Record Payment</h3>
+<span class="modal-close" onclick="closeModal('modal-add-payment')">✕</span>
 </div>
-<form id="form-add-payment" onsubmit="handlePaymentSubmit(event)">
-<input type="hidden" id="payment-debt-id">
+<form onsubmit="addPayment(event)">
+<input type="hidden" id="payment-debt-id" />
+
 <div class="form-group">
-<label class="form-label">Month</label>
-<input type="month" class="form-control" id="payment-month" required>
+<label class="form-label">Payment Month</label>
+<input type="month" id="payment-month" class="form-control" required />
 </div>
+
 <div class="form-group">
 <label class="form-label">Amount Paid (₹)</label>
-<input type="number" class="form-control" id="payment-amount" step="0.01" required>
+<input type="number" id="payment-amount" class="form-control" min="0" step="0.01" required />
 </div>
-<button type="submit" class="btn btn-primary"
-style="width: 100%; justify-content: center; margin-top: 1rem;">Save Payment</button>
+
+<button type="submit" class="btn btn-primary" style="width: 100%;">Record Payment</button>
 </form>
 </div>
 </div>
 
-<!-- Add Savings Modal -->
+<!-- Add/Edit Savings Goal Modal -->
 <div class="modal-overlay" id="modal-add-savings">
 <div class="modal-content">
 <div class="modal-header">
-<h3>Add Savings Entry</h3>
-<i class="fa-solid fa-xmark modal-close" onclick="closeModal('modal-add-savings')"></i>
+<h3>Add Savings</h3>
+<span class="modal-close" onclick="closeModal('modal-add-savings')">✕</span>
 </div>
-<form id="form-add-savings" onsubmit="handleSavingsSubmit(event)">
-<div class="form-row">
+<form onsubmit="addSavings(event)">
 <div class="form-group">
 <label class="form-label">Date</label>
-<input type="date" class="form-control" id="savings-date" required>
+<input type="date" id="savings-date" class="form-control" required />
 </div>
+
 <div class="form-group">
 <label class="form-label">Amount (₹)</label>
-<input type="number" class="form-control" id="savings-amount" step="0.01" required>
+<input type="number" id="savings-amount" class="form-control" min="0" step="0.01" required />
 </div>
-</div>
-<button type="submit" class="btn btn-primary"
-style="width: 100%; justify-content: center; margin-top: 1rem;">Save</button>
+
+<button type="submit" class="btn btn-primary" style="width: 100%;">Add Savings</button>
 </form>
 </div>
 </div>
 
-<!-- Add Financial Goal Modal -->
+<!-- Add/Edit Goal Modal -->
 <div class="modal-overlay" id="modal-add-goal">
 <div class="modal-content">
 <div class="modal-header">
-<h3>Add Financial Goal</h3>
-<i class="fa-solid fa-xmark modal-close" onclick="closeModal('modal-add-goal')"></i>
+<h3>Add Goal</h3>
+<span class="modal-close" onclick="closeModal('modal-add-goal')">✕</span>
 </div>
-<form id="form-add-goal" onsubmit="handleGoalSubmit(event)">
+<form onsubmit="addGoal(event)">
 <div class="form-group">
 <label class="form-label">Goal Name</label>
-<input type="text" class="form-control" id="goal-name"
-placeholder="e.g. New Phone, Emergency Fund" required>
+<input type="text" id="goal-name" class="form-control" placeholder="e.g., Vacation, Car" required />
 </div>
+
 <div class="form-group">
 <label class="form-label">Target Amount (₹)</label>
-<input type="number" class="form-control" id="goal-amount" step="0.01" required>
+<input type="number" id="goal-amount" class="form-control" min="0" step="0.01" required />
 </div>
-<button type="submit" class="btn btn-primary"
-style="width: 100%; justify-content: center; margin-top: 1rem;">Save Goal</button>
+
+<div class="form-group">
+<label class="form-label">Target Date</label>
+<input type="date" id="goal-date" class="form-control" required />
+</div>
+
+<button type="submit" class="btn btn-primary" style="width: 100%;">Add Goal</button>
 </form>
 </div>
 </div>
 
-<!-- Add/Edit Expense Category Modal -->
+<!-- Add/Edit Category Modal -->
 <div class="modal-overlay" id="modal-add-category">
 <div class="modal-content">
 <div class="modal-header">
-<h3 id="category-modal-title">Add Expense Category</h3>
-<i class="fa-solid fa-xmark modal-close" onclick="closeModal('modal-add-category')"></i>
+<h3>Add Category</h3>
+<span class="modal-close" onclick="closeModal('modal-add-category')">✕</span>
 </div>
-<form id="form-expense-category" onsubmit="handleCategorySubmit(event)">
-<input type="hidden" id="category-edit-id">
-<div class="form-group">
-<label class="form-label">Category Names (comma-separated)</label>
-<input type="text" class="form-control" id="category-name-input"
-placeholder="Housing, Food, Entertainment" required>
-</div>
-<button type="submit" class="btn btn-primary"
-style="width: 100%; justify-content: center;">Save</button>
-</form>
-</div>
-</div>
-
-<!-- Budget Category Modal -->
-<div class="modal-overlay" id="modal-budget-category">
-<div class="modal-content">
-<div class="modal-header">
-<h3 id="budget-cat-modal-title">Add Budget Category</h3>
-<i class="fa-solid fa-xmark modal-close" onclick="closeModal('modal-budget-category')"></i>
-</div>
-<form id="form-budget-category" onsubmit="handleBudgetCategorySubmit(event)">
-<input type="hidden" id="budget-cat-edit-id">
+<form onsubmit="addCategory(event)">
 <div class="form-group">
 <label class="form-label">Category Name</label>
-<select class="form-control" id="budget-cat-name" required>
-</select>
+<input type="text" id="category-name" class="form-control" placeholder="e.g., Groceries, Entertainment" required />
 </div>
-<div class="form-group">
-<label class="form-label">Category Budget (₹)</label>
-<input type="number" class="form-control" id="budget-cat-amount" step="0.01" min="0"
-placeholder="Budget amount">
-</div>
-<button type="submit" class="btn btn-primary" style="width: 100%; justify-content: center;">Save
-Category</button>
+
+<button type="submit" class="btn btn-primary" style="width: 100%;">Add Category</button>
 </form>
 </div>
 </div>
 
+<!-- Add/Edit Budget Category Modal -->
+<div class="modal-overlay" id="modal-add-budget-category">
+<div class="modal-content">
+<div class="modal-header">
+<h3 id="budget-modal-title">Add Budget Category</h3>
+<span class="modal-close" onclick="closeModal('modal-add-budget-category')">✕</span>
+</div>
+<form onsubmit="addBudgetCategory(event)">
+<input type="hidden" id="budget-edit-id" />
 
+<div class="form-group">
+<label class="form-label">Category</label>
+<select id="budget-category" class="form-control" required>
+<option value="">Select category</option>
+</select>
+</div>
 
-</div><!-- /#app-shell -->
+<div class="form-group">
+<label class="form-label">Monthly Budget (₹)</label>
+<input type="number" id="budget-amount" class="form-control" min="0" step="0.01" required />
+</div>
 
-<!-- =========================================
-        JAVASCRIPT
-        ========================================= -->
+<button type="submit" class="btn btn-primary" style="width: 100%;">Add Budget</button>
+</form>
+</div>
+</div>
+
 <script>
-// --- STATE MANAGEMENT ---
-const STORAGE_KEY = 'finova_data';
-
-let state = {
+// ===== APP STATE =====
+const state = {
 transactions: [],
-savings: [],
-financialGoals: [],
+income: [],
 debts: [],
-budgetCategories: [],
-expenseCategories: ['Housing', 'Food', 'Transport', 'Shopping', 'Entertainment', 'Misc'],
-settings: { currency: 'INR', theme: 'light' }
+payments: [],
+savings: [],
+goals: [],
+budgets: [],
+categories: [
+{ id: '1', name: 'Food & Dining' },
+{ id: '2', name: 'Transportation' },
+{ id: '3', name: 'Utilities' },
+{ id: '4', name: 'Entertainment' },
+{ id: '5', name: 'Healthcare' },
+{ id: '6', name: 'Shopping' },
+],
+settings: {
+currency: '₹',
+dateFormat: 'DD/MM/YYYY',
+theme: 'light',
+budgetAlerts: true,
+goalNotifications: true,
+},
 };
+
+let charts = {
+trend: null,
+categoryPie: null,
+comparison: null,
+};
+
+// ===== INITIALIZATION =====
+document.addEventListener('DOMContentLoaded', () => {
+loadData();
+applyTheme(state.settings.theme);
+populateCategories();
+renderDebts();
+renderDashboard();
+attachEventListeners();
+document.getElementById('app-shell').style.display = 'flex';
+});
+
+// ===== LOCAL STORAGE =====
+function saveData() {
+localStorage.setItem('finova-data', JSON.stringify(state));
+}
 
 function loadData() {
-// First load from localStorage to allow seamless guest usage or initial render
-const data = localStorage.getItem(STORAGE_KEY);
-if (data) {
-const parsed = JSON.parse(data);
-state = {
-transactions: parsed.transactions || [],
-savings: parsed.savings || [],
-financialGoals: parsed.financialGoals || parsed.goals || [],
-debts: parsed.debts || [],
-budgetCategories: parsed.budgetCategories || parsed.budgets || [],
-expenseCategories: parsed.expenseCategories || ['Housing', 'Food', 'Transport', 'Shopping', 'Entertainment', 'Misc'],
-settings: { currency: 'INR', theme: 'light', ...(parsed.settings || {}) },
-subscriptions: parsed.subscriptions || [],
-recurringTransactions: parsed.recurringTransactions || []
-};
-state.debts.forEach(d => {
-if (!d.payments) d.payments = [];
-if (d.isRecurring === undefined) d.isRecurring = false;
-});
-if (!state.budgetCategories.length) initDefaultBudgetCategories();
-syncExpenseCategories();
-} else {
-generateMockData();
+const saved = localStorage.getItem('finova-data');
+if (saved) {
+Object.assign(state, JSON.parse(saved));
 }
 }
 
-function syncExpenseCategories() {
-if (!state.expenseCategories) state.expenseCategories = [];
-const add = (name) => {
-if (name && !state.expenseCategories.includes(name)) {
-state.expenseCategories.push(name);
-}
-};
-state.transactions
-.filter(tx => tx.type === 'expense' && tx.category)
-.forEach(tx => add(tx.category));
-state.budgetCategories.forEach(cat => add(cat.name));
-}
-
-function migrateLegacyBudgets() { /* reserved for legacy data */ }
-
-function initDefaultBudgetCategories() {
-state.budgetCategories = [
-{ id: generateId(), name: 'Housing', budgetAmount: 30000 },
-{ id: generateId(), name: 'Food', budgetAmount: 10000 },
-{ id: generateId(), name: 'Entertainment', budgetAmount: 2000 },
-{ id: generateId(), name: 'Shopping', budgetAmount: 5000 }
-];
-}
-
-async function saveData() {
-if (!isFirebaseInitialized || !window.auth || !window.auth.currentUser) {
-console.warn("Save blocked: user is not authenticated.");
-showToast("You must be signed in to save data.", "error");
-return;
-}
-
-updateSyncStatus('syncing');
-const user = window.auth.currentUser;
-const docRef = window.db.collection('users').doc(user.uid);
-const dataToSave = {
-profile: {
-name: user.displayName || '',
-email: user.email || '',
-photoURL: user.photoURL || ''
-},
-income: state.transactions.filter(t => t.type === 'income'),
-expenses: state.transactions.filter(t => t.type === 'expense'),
-budgets: state.budgetCategories,
-debts: state.debts,
-savings: state.savings || [],
-savingsGoals: state.financialGoals || [],
-settings: state.settings,
-expenseCategories: state.expenseCategories || ['Housing', 'Food', 'Transport', 'Shopping', 'Entertainment', 'Misc'],
-subscriptions: state.subscriptions || [],
-recurringTransactions: state.recurringTransactions || [],
-updatedAt: firebase.firestore.FieldValue.serverTimestamp()
-};
-try {
-updateAllUI();
-await docRef.set(dataToSave, { merge: true });
-window.lastSyncedState = dataToSave;
-updateSyncStatus('saved');
-} catch (error) {
-console.error("Error saving data to Firestore:", error);
-showToast("Error saving data: " + error.message, "error");
-updateSyncStatus('error');
-}
-}
-
-// --- UTILS ---
-const formatCurrency = (amount) => {
-return new Intl.NumberFormat('en-IN', {
-style: 'currency',
-currency: 'INR',
-maximumFractionDigits: 0
-}).format(amount);
-};
-
-const generateId = () => Math.random().toString(36).substr(2, 9);
-
-// --- ROUTING / NAVIGATION ---
-const navItems = document.querySelectorAll('.nav-item');
-const views = document.querySelectorAll('.view-section');
-
-navItems.forEach(item => {
-item.addEventListener('click', () => {
-const target = item.getAttribute('data-target');
-navigate(target);
-});
-});
-
-function navigate(targetId) {
-if (!isAuthenticated) return;
-
-// Update active nav
-navItems.forEach(i => i.classList.remove('active'));
-const activeNav = document.querySelector(`.nav-item[data-target="${targetId}"]`);
-if (activeNav) activeNav.classList.add('active');
-
-// Show view
-views.forEach(v => v.classList.remove('active'));
-document.getElementById(targetId).classList.add('active');
-
-// Mobile sidebar auto-close
-closeMobileSidebar();
-
-// Refresh specific view data if needed
-if (targetId === 'view-dashboard') updateDashboard();
-if (targetId === 'view-expenses') updateExpenseTable();
-if (targetId === 'view-income') updateIncomeTable();
-if (targetId === 'view-categories') renderExpenseCategories();
-if (targetId === 'view-budget') updateBudgets();
-if (targetId === 'view-debts') updateDebts();
-if (targetId === 'view-goals') updateSavings();
-if (targetId === 'view-goals-dashboard') updateGoalsDashboard();
-if (targetId === 'view-analytics') updateAnalytics();
-if (targetId === 'view-insights') { updateInsights(); updateAdvisor(); }
-}
-
-function switchInsightsTab(tabId) {
-document.querySelectorAll('[data-insights-tab]').forEach(btn => {
-btn.classList.toggle('active', btn.getAttribute('data-insights-tab') === tabId);
-});
-document.querySelectorAll('#view-insights .tab-panel').forEach(panel => {
-panel.classList.toggle('active', panel.id === tabId);
-});
-if (tabId === 'insights-advisor') updateAdvisor();
-}
-
-// --- THEME MANAGEMENT ---
+// ===== THEME MANAGEMENT =====
 const themeToggleBtn = document.getElementById('theme-toggle');
 
 function applyTheme(theme) {
@@ -2581,2113 +2044,598 @@ if (id === 'modal-add-debt') toggleEmiFields();
 }
 
 function openCategoryModal() {
-document.getElementById('category-edit-id').value = '';
-document.getElementById('category-name-input').value = '';
-document.getElementById('category-modal-title').textContent = 'Add Expense Category';
-openModal('modal-add-category');
+document.getElementById('budget-edit-id').value = '';
+document.getElementById('budget-modal-title').textContent = 'Add Budget Category';
+openModal('modal-add-budget-category');
 }
 
-function handleCategorySubmit(e) {
-e.preventDefault();
-const editId = document.getElementById('category-edit-id').value;
-const input = document.getElementById('category-name-input').value.trim();
-if (!input) return;
-if (editId) {
-const idx = state.expenseCategories.findIndex(cat => cat === editId);
-if (idx !== -1) {
-const newName = input;
-state.expenseCategories[idx] = newName;
-state.transactions.forEach(tx => { if (tx.category === editId) tx.category = newName; });
-}
-} else {
-const names = input.split(',').map(n => n.trim()).filter(n => n.length > 0);
-names.forEach(name => {
-if (!state.expenseCategories.includes(name)) {
-state.expenseCategories.push(name);
-}
-});
-}
-saveData();
-renderExpenseCategories();
-populateCategoryDropdowns();
-closeModal('modal-add-category');
-}
-
-// --- FORM HANDLING ---
-function handleTransactionSubmit(e) {
-e.preventDefault();
-const dateVal = document.getElementById('tx-date').value;
-const amountVal = parseFloat(document.getElementById('tx-amount').value);
-const descVal = document.getElementById('tx-desc').value.trim();
-const catVal = document.getElementById('tx-category').value;
-const needWantVal = document.getElementById('tx-need-want').value;
-
-// Validate Input
-if (!dateVal || isNaN(Date.parse(dateVal))) {
-showToast("Please enter a valid date.", "error");
-return;
-}
-if (isNaN(amountVal) || amountVal <= 0) {
-showToast("Amount must be a positive number.", "error");
-return;
-}
-if (!descVal) {
-showToast("Description cannot be empty.", "error");
-return;
-}
-if (!catVal) {
-showToast("Please select a category.", "error");
-return;
-}
-
-const tx = {
-id: generateId(),
-type: 'expense',
-date: dateVal,
-amount: amountVal,
-desc: descVal,
-category: catVal,
-needWant: needWantVal,
-createdAt: new Date().toISOString(),
-updatedAt: new Date().toISOString()
+// ===== TRANSACTIONS =====
+function addTransaction(event) {
+event.preventDefault();
+const transaction = {
+id: Date.now().toString(),
+date: document.getElementById('tx-date').value,
+description: document.getElementById('tx-description').value,
+category: document.getElementById('tx-category').value,
+amount: parseFloat(document.getElementById('tx-amount').value),
+notes: document.getElementById('tx-notes').value,
 };
-
-state.transactions.push(tx);
+state.transactions.push(transaction);
 saveData();
-showToast("Expense added successfully!", "success");
+renderDashboard();
+filterTransactions();
 closeModal('modal-add-transaction');
 }
 
-function handleIncomeSubmit(e) {
-e.preventDefault();
-const dateVal = document.getElementById('income-date').value;
-const amountVal = parseFloat(document.getElementById('income-amount').value);
-const descVal = document.getElementById('income-desc').value.trim();
-
-// Validate Input
-if (!dateVal || isNaN(Date.parse(dateVal))) {
-showToast("Please enter a valid date.", "error");
-return;
-}
-if (isNaN(amountVal) || amountVal <= 0) {
-showToast("Amount must be a positive number.", "error");
-return;
-}
-if (!descVal) {
-showToast("Description cannot be empty.", "error");
-return;
-}
-
-const tx = {
-id: generateId(),
-type: 'income',
-date: dateVal,
-amount: amountVal,
-desc: descVal,
-createdAt: new Date().toISOString(),
-updatedAt: new Date().toISOString()
-};
-
-state.transactions.push(tx);
+function deleteTransaction(id) {
+state.transactions = state.transactions.filter(t => t.id !== id);
 saveData();
-showToast("Income added successfully!", "success");
+filterTransactions();
+}
+
+function filterTransactions() {
+const category = document.getElementById('tx-category-filter').value;
+const from = document.getElementById('tx-date-from').value;
+const to = document.getElementById('tx-date-to').value;
+
+let filtered = state.transactions;
+
+if (category) filtered = filtered.filter(t => t.category === category);
+if (from) filtered = filtered.filter(t => t.date >= from);
+if (to) filtered = filtered.filter(t => t.date <= to);
+
+const html = filtered.map(t => `
+<tr>
+<td>${t.date}</td>
+<td>${t.description}</td>
+<td><span class="tag tag-expense">${t.category}</span></td>
+<td><span class="tag tag-expense">Expense</span></td>
+<td>₹${t.amount.toFixed(2)}</td>
+<td>
+<button class="btn btn-danger" onclick="deleteTransaction('${t.id}')">Delete</button>
+</td>
+</tr>
+`).join('');
+
+document.getElementById('expense-table-body').innerHTML = html || '<tr><td colspan="6" class="empty-state"><p>No transactions found</p></td></tr>';
+}
+
+function resetFilters() {
+document.getElementById('tx-category-filter').value = '';
+document.getElementById('tx-date-from').value = '';
+document.getElementById('tx-date-to').value = '';
+filterTransactions();
+}
+
+// ===== INCOME =====
+function addIncome(event) {
+event.preventDefault();
+const income = {
+id: Date.now().toString(),
+date: document.getElementById('income-date').value,
+source: document.getElementById('income-source').value,
+amount: parseFloat(document.getElementById('income-amount').value),
+};
+state.income.push(income);
+saveData();
+renderIncomeTable();
+renderDashboard();
 closeModal('modal-add-income');
 }
 
-function deleteTransaction(id) {
-if (confirm("Delete this transaction?")) {
-state.transactions = state.transactions.filter(t => t.id !== id);
+function deleteIncome(id) {
+state.income = state.income.filter(i => i.id !== id);
 saveData();
-showToast("Transaction deleted.", "info");
-}
-}
-
-// --- VIEWS LOGIC ---
-let charts = {};
-
-function initCharts() {
-// Trend Chart
-const ctxTrend = document.getElementById('chart-dash-trend').getContext('2d');
-charts.trend = new Chart(ctxTrend, {
-type: 'bar',
-data: {
-labels: ['Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun'],
-datasets: [
-{ label: 'Income', data: [0, 0, 0, 0, 0, 0], backgroundColor: 'rgba(16, 185, 129, 0.8)', borderRadius: 4 },
-{ label: 'Expense', data: [0, 0, 0, 0, 0, 0], backgroundColor: 'rgba(239, 68, 68, 0.8)', borderRadius: 4 }
-]
-},
-options: { responsive: true, maintainAspectRatio: false, scales: { y: { beginAtZero: true } } }
-});
-
-const ctxPie = document.getElementById('chart-category-pie');
-if (ctxPie) {
-charts.categoryPie = new Chart(ctxPie.getContext('2d'), {
-type: 'doughnut',
-data: { labels: [], datasets: [{ data: [], backgroundColor: ['#6366f1', '#10b981', '#f59e0b', '#ef4444', '#3b82f6', '#a855f7', '#ec4899'], borderWidth: 0 }] },
-options: { responsive: true, maintainAspectRatio: false, plugins: { legend: { position: 'bottom' } } }
-});
-}
+renderIncomeTable();
+renderDashboard();
 }
 
-function populateCategoryDropdowns() {
-const expenseCategories = state.expenseCategories || [];
-const optionsHtml = expenseCategories.map(cat => `<option value="${cat}">${cat}</option>`).join('');
+function renderIncomeTable() {
+const html = state.income.map(i => `
+<tr>
+<td>${i.date}</td>
+<td>${i.source}</td>
+<td>₹${i.amount.toFixed(2)}</td>
+<td>
+<button class="btn btn-danger" onclick="deleteIncome('${i.id}')">Delete</button>
+</td>
+</tr>
+`).join('');
 
-const txCatSelect = document.getElementById('tx-category');
-if (txCatSelect) txCatSelect.innerHTML = optionsHtml;
-
-const budgetCatSelect = document.getElementById('budget-cat-name');
-if (budgetCatSelect) budgetCatSelect.innerHTML = optionsHtml;
-
-const filterSelect = document.getElementById('expense-filter-category');
-if (filterSelect) filterSelect.innerHTML = `<option value="">All Categories</option>` + optionsHtml;
+document.getElementById('income-table-body').innerHTML = html || '<tr><td colspan="4" class="empty-state"><p>No income recorded</p></td></tr>';
 }
 
-function switchExpenseTab(tab) {
-const txTab = document.getElementById('expense-tab-tx');
-const catTab = document.getElementById('expense-tab-cat');
-if (tab === 'tx') {
-txTab.style.display = 'block';
-catTab.style.display = 'none';
-} else {
-txTab.style.display = 'none';
-catTab.style.display = 'block';
-renderExpenseCategories();
-}
-}
-
-function renderExpenseCategories() {
-const list = document.getElementById('expense-categories-list');
-if (!list) return;
-const categories = state.expenseCategories || [];
-if (categories.length === 0) {
-list.innerHTML = '<tr><td colspan="2" style="text-align:center;" class="text-muted">No categories yet. Click "Add Category" to create one.</td></tr>';
-return;
-}
-list.innerHTML = categories.map(cat => `
-               <tr>
-                   <td><span class="tag" style="background:var(--border-color)">${cat}</span></td>
-                   <td style="text-align: right;">
-                       <button class="btn btn-secondary" onclick="editExpenseCategory('${cat}')" style="padding:4px 8px;font-size:0.8rem;margin-right:5px;"><i class="fa-solid fa-pen"></i></button>
-                       <button class="btn btn-secondary" onclick="deleteExpenseCategory('${cat}')" style="padding:4px 8px;font-size:0.8rem;color:var(--danger);"><i class="fa-solid fa-trash"></i></button>
-                   </td>
-               </tr>
-           `).join('');
-}
-
-function editExpenseCategory(cat) {
-document.getElementById('category-modal-title').textContent = 'Edit Expense Category';
-document.getElementById('category-edit-id').value = cat;
-document.getElementById('category-name-input').value = cat;
-openModal('modal-add-category');
-}
-
-function deleteExpenseCategory(cat) {
-if (confirm(`Are you sure you want to delete the category "${cat}"?`)) {
-state.expenseCategories = state.expenseCategories.filter(c => c !== cat);
-saveData();
-renderExpenseCategories();
-populateCategoryDropdowns();
-}
-}
-
-function updateDashboard() {
-const now = new Date();
-const currentMonthStr = now.toISOString().slice(0, 7);
-
-let monthlyIncome = 0;
-let monthlyExpense = 0;
-
-const recentTxs = state.transactions
-.sort((a, b) => new Date(b.date) - new Date(a.date));
-
-state.transactions.forEach(tx => {
-if (tx.date.startsWith(currentMonthStr)) {
-if (tx.type === 'income') monthlyIncome += tx.amount;
-if (tx.type === 'expense') monthlyExpense += tx.amount;
-}
-});
-
-const currentCash = monthlyIncome - monthlyExpense;
-
-document.getElementById('dashboard-date').textContent = now.toLocaleDateString('en-US', { month: 'long', year: 'numeric' });
-document.getElementById('dash-income').textContent = formatCurrency(monthlyIncome);
-document.getElementById('dash-expense').textContent = formatCurrency(monthlyExpense);
-document.getElementById('dash-cash').textContent = formatCurrency(currentCash);
-document.getElementById('dash-savings').textContent = formatCurrency(getTotalSavings());
-
-const txBody = document.getElementById('dash-recent-tx');
-txBody.innerHTML = '';
-recentTxs.forEach(tx => {
-const tr = document.createElement('tr');
-const isInc = tx.type === 'income';
-tr.innerHTML = `
-                   <td>${tx.date}</td>
-                   <td>${tx.desc} <div class="text-muted" style="font-size:0.7rem">${tx.category}</div></td>
-                   <td style="color: var(--${isInc ? 'success' : 'text-main'}); font-weight:600;">
-                       ${isInc ? '+' : '-'}${formatCurrency(tx.amount)}
-                   </td>
-               `;
-txBody.appendChild(tr);
-});
-
-if (recentTxs.length === 0) {
-txBody.innerHTML = '<tr><td colspan="3" style="text-align:center;" class="text-muted">No recent transactions</td></tr>';
-}
-
-const billsEl = document.getElementById('dash-upcoming-bills');
-if (billsEl) {
-if (state.debts.length > 0) {
-billsEl.innerHTML = state.debts.map(d => {
-if (d.isRecurring && d.emiAmount) {
-const nextDue = getNextDueDate(d);
-return `<div style="display:flex;justify-content:space-between;padding:0.5rem 0;border-bottom:1px solid var(--border-color);">
-                               <span>${d.name} <div class="text-muted" style="font-size:0.7rem;">Due ${nextDue}</div></span>
-                               <span style="font-weight:600;color:var(--warning);">${formatCurrency(d.emiAmount)}/mo</span>
-                           </div>`;
-}
-const paid = getDebtPaid(d);
-const remaining = Math.max(0, d.totalOwed - paid);
-return `<div style="display:flex;justify-content:space-between;padding:0.5rem 0;border-bottom:1px solid var(--border-color);">
-                           <span>${d.name}</span>
-                           <span style="font-weight:600;color:var(--danger);">${formatCurrency(remaining)} left</span>
-                       </div>`;
-}).join('');
-} else {
-billsEl.innerHTML = '<p class="text-muted">No debts tracked.</p>';
-}
-}
-
-if (charts.trend) {
-charts.trend.data.datasets[0].data = [40000, 42000, 41000, 45000, 43000, monthlyIncome || 50000];
-charts.trend.data.datasets[1].data = [35000, 36000, 38000, 32000, 39000, monthlyExpense || 30000];
-charts.trend.update();
-}
-}
-
-function getFilteredExpenses() {
-const fromDate = document.getElementById('expense-filter-from')?.value;
-const toDate = document.getElementById('expense-filter-to')?.value;
-const category = document.getElementById('expense-filter-category')?.value;
-
-return state.transactions
-.filter(t => t.type === 'expense')
-.filter(t => !fromDate || t.date >= fromDate)
-.filter(t => !toDate || t.date <= toDate)
-.filter(t => !category || t.category === category)
-.sort((a, b) => new Date(b.date) - new Date(a.date));
-}
-
-function clearExpenseFilters() {
-document.getElementById('expense-filter-from').value = '';
-document.getElementById('expense-filter-to').value = '';
-document.getElementById('expense-filter-category').value = '';
-updateExpenseTable();
-}
-
-function updateExpenseTable() {
-const tbody = document.getElementById('expense-table-body');
-if (!tbody) return;
-tbody.innerHTML = '';
-
-const expenses = getFilteredExpenses();
-
-expenses.forEach(tx => {
-const tr = document.createElement('tr');
-tr.innerHTML = `
-                   <td>${tx.date}</td>
-                   <td><strong>${tx.desc}</strong></td>
-                   <td><span class="tag" style="background:var(--border-color)">${tx.category}</span></td>
-                   <td>
-                       ${tx.needWant === 'need' ? '<span class="tag tag-need">Need</span>' :
-                       tx.needWant === 'want' ? '<span class="tag tag-want">Want</span>' : '-'}
-                   </td>
-                   <td style="font-weight: 600;">${formatCurrency(tx.amount)}</td>
-                   <td>
-                       <button class="btn btn-danger" style="padding: 0.25rem 0.5rem;" onclick="deleteTransaction('${tx.id}')">
-                           <i class="fa-solid fa-trash"></i>
-                       </button>
-                   </td>
-               `;
-tbody.appendChild(tr);
-});
-
-if (expenses.length === 0) {
-tbody.innerHTML = '<tr><td colspan="6" style="text-align:center;" class="text-muted">No expenses found</td></tr>';
-}
-}
-
-function updateIncomeTable() {
-const tbody = document.getElementById('income-table-body');
-if (!tbody) return;
-tbody.innerHTML = '';
-
-const incomes = state.transactions
-.filter(t => t.type === 'income')
-.sort((a, b) => new Date(b.date) - new Date(a.date));
-
-incomes.forEach(tx => {
-const tr = document.createElement('tr');
-tr.innerHTML = `
-                   <td>${tx.date}</td>
-                   <td><strong>${tx.desc}</strong></td>
-                   <td style="font-weight: 600; color: var(--success);">${formatCurrency(tx.amount)}</td>
-                   <td>
-                       <button class="btn btn-danger" style="padding: 0.25rem 0.5rem;" onclick="deleteTransaction('${tx.id}')">
-                           <i class="fa-solid fa-trash"></i>
-                       </button>
-                   </td>
-               `;
-tbody.appendChild(tr);
-});
-
-if (incomes.length === 0) {
-tbody.innerHTML = '<tr><td colspan="4" style="text-align:center;" class="text-muted">No income found</td></tr>';
-}
-}
-
-function getDebtPaid(debt) {
-return (debt.payments || []).reduce((sum, p) => sum + p.amount, 0);
-}
-
-function getNextDueDate(debt) {
-if (!debt.dueDay) return '—';
-const now = new Date();
-let due = new Date(now.getFullYear(), now.getMonth(), debt.dueDay);
-if (due < now) due = new Date(now.getFullYear(), now.getMonth() + 1, debt.dueDay);
-return due.toLocaleDateString('en-US', { month: 'short', day: 'numeric' });
-}
-
-function handleDebtSubmit(e) {
-e.preventDefault();
-const nameVal = document.getElementById('debt-name').value.trim();
+// ===== DEBT TRACKING (FIXED) =====
+function addDebt(event) {
+event.preventDefault();
 const isRecurring = document.getElementById('debt-recurring').checked;
 const editId = document.getElementById('debt-edit-id').value;
 
-if (!nameVal) {
-showToast("Debt name cannot be empty.", "error");
-return;
-}
-
-const debtData = {
-name: nameVal,
-isRecurring,
-payments: editId ? (state.debts.find(d => d.id === editId)?.payments || []) : [],
-updatedAt: new Date().toISOString()
+const debt = {
+id: editId || Date.now().toString(),
+name: document.getElementById('debt-name').value,
+isRecurring: isRecurring,
+totalOwed: isRecurring ? parseFloat(document.getElementById('debt-loan-amount').value) : parseFloat(document.getElementById('debt-amount').value),
+totalPaid: editId ? state.debts.find(d => d.id === editId)?.totalPaid || 0 : 0,
+emiAmount: isRecurring ? parseFloat(document.getElementById('debt-emi-amount').value) : null,
+dueDay: isRecurring ? parseInt(document.getElementById('debt-due-day').value) : null,
+createdDate: new Date().toISOString().split('T')[0],
 };
-
-if (isRecurring) {
-const loanVal = parseFloat(document.getElementById('debt-loan-amount').value);
-const emiVal = parseFloat(document.getElementById('debt-emi-amount').value);
-const dueVal = parseInt(document.getElementById('debt-due-day').value, 10);
-
-if (isNaN(loanVal) || loanVal <= 0 || isNaN(emiVal) || emiVal <= 0 || isNaN(dueVal) || dueVal < 1 || dueVal > 31) {
-showToast("Please enter valid positive loan/EMI amounts and a due day (1-31).", "error");
-return;
-}
-debtData.totalOwed = loanVal;
-debtData.emiAmount = emiVal;
-debtData.dueDay = dueVal;
-} else {
-const amtVal = parseFloat(document.getElementById('debt-amount').value);
-if (isNaN(amtVal) || amtVal <= 0) {
-showToast("Debt amount must be a positive number.", "error");
-return;
-}
-debtData.totalOwed = amtVal;
-debtData.emiAmount = null;
-debtData.dueDay = null;
-}
 
 if (editId) {
-const idx = state.debts.findIndex(d => d.id === editId);
-if (idx >= 0) {
-state.debts[idx] = {
-...state.debts[idx],
-...debtData
-};
-}
+const index = state.debts.findIndex(d => d.id === editId);
+if (index !== -1) state.debts[index] = debt;
 } else {
-state.debts.push({
-id: generateId(),
-createdAt: new Date().toISOString(),
-...debtData
-});
+state.debts.push(debt);
 }
+
 saveData();
-showToast("Debt saved successfully!", "success");
+renderDebts();
+renderDashboard();
 closeModal('modal-add-debt');
 }
 
-function openPaymentModal(debtId) {
-document.getElementById('payment-debt-id').value = debtId;
-const debt = state.debts.find(d => d.id === debtId);
-openModal('modal-add-payment');
-if (debt?.isRecurring && debt.emiAmount) {
-document.getElementById('payment-amount').value = debt.emiAmount;
-}
+function deleteDebt(id) {
+state.debts = state.debts.filter(d => d.id !== id);
+state.payments = state.payments.filter(p => p.debtId !== id);
+saveData();
+renderDebts();
+renderDashboard();
 }
 
-function handlePaymentSubmit(e) {
-e.preventDefault();
+function recordDebtPayment(debtId) {
+document.getElementById('payment-debt-id').value = debtId;
+openModal('modal-add-payment');
+}
+
+function addPayment(event) {
+event.preventDefault();
 const debtId = document.getElementById('payment-debt-id').value;
 const debt = state.debts.find(d => d.id === debtId);
 if (!debt) return;
 
-const monthVal = document.getElementById('payment-month').value;
-const amtVal = parseFloat(document.getElementById('payment-amount').value);
+const amount = parseFloat(document.getElementById('payment-amount').value);
+debt.totalPaid = (debt.totalPaid || 0) + amount;
 
-if (!monthVal) {
-showToast("Please select a month.", "error");
-return;
-}
-if (isNaN(amtVal) || amtVal <= 0) {
-showToast("Payment amount must be a positive number.", "error");
-return;
-}
+const payment = {
+id: Date.now().toString(),
+debtId: debtId,
+month: document.getElementById('payment-month').value,
+amount: amount,
+};
 
-if (!debt.payments) debt.payments = [];
-debt.payments.push({
-month: monthVal,
-amount: amtVal,
-createdAt: new Date().toISOString()
-});
-debt.updatedAt = new Date().toISOString();
-
+state.payments.push(payment);
 saveData();
-showToast("Payment recorded successfully!", "success");
+renderDebts();
+renderDashboard();
 closeModal('modal-add-payment');
 }
 
-function deleteDebt(id) {
-if (confirm('Delete this debt and all its payment history?')) {
-state.debts = state.debts.filter(d => d.id !== id);
-saveData();
-showToast("Debt deleted.", "info");
-}
-}
-
-function updateDebts() {
-let totalOwed = 0, totalPaid = 0;
-state.debts.forEach(d => {
-totalOwed += d.totalOwed;
-totalPaid += getDebtPaid(d);
-});
-
-const owedEl = document.getElementById('debt-total-owed');
-const paidEl = document.getElementById('debt-total-paid');
-const remEl = document.getElementById('debt-remaining');
-if (owedEl) owedEl.textContent = formatCurrency(totalOwed);
-if (paidEl) paidEl.textContent = formatCurrency(totalPaid);
-if (remEl) remEl.textContent = formatCurrency(Math.max(0, totalOwed - totalPaid));
-
-const list = document.getElementById('debts-list');
-if (!list) return;
-
+function renderDebts() {
+const container = document.getElementById('debts-list');
 if (state.debts.length === 0) {
-list.innerHTML = '<div class="empty-state"><i class="fa-solid fa-hand-holding-dollar"></i><p>No debts added yet. Click "Add Debt" to get started.</p></div>';
+container.innerHTML = '<div class="empty-state"><i class="fa-solid fa-inbox"></i><p>No debts recorded</p></div>';
 return;
 }
 
-list.innerHTML = state.debts.map(d => {
-const paid = getDebtPaid(d);
-const remaining = Math.max(0, d.totalOwed - paid);
-const pct = d.totalOwed > 0 ? Math.min(100, (paid / d.totalOwed) * 100) : 0;
-const paymentsHtml = (d.payments || [])
-.sort((a, b) => b.month.localeCompare(a.month))
-.map(p => `<tr><td>${p.month}</td><td style="color:var(--success);font-weight:600;">${formatCurrency(p.amount)}</td></tr>`)
-.join('') || '<tr><td colspan="2" class="text-muted" style="text-align:center;">No payments recorded</td></tr>';
+const html = state.debts.map(debt => {
+const remaining = debt.totalOwed - (debt.totalPaid || 0);
+const percentage = Math.min(((debt.totalPaid || 0) / debt.totalOwed) * 100, 100);
 
-const emiBadge = d.isRecurring ? '<span class="tag tag-need" style="margin-left:0.5rem;">EMI</span>' : '';
-const emiInfo = d.isRecurring ? `
-                   <div class="grid-3" style="margin-bottom:0.75rem;">
-                       <div><div class="metric-title">Monthly EMI</div><div style="font-weight:700;color:var(--warning);">${formatCurrency(d.emiAmount || 0)}</div></div>
-                       <div><div class="metric-title">Next Due</div><div style="font-weight:600;">${getNextDueDate(d)}</div></div>
-                       <div><div class="metric-title">Due Day</div><div style="font-weight:600;">${d.dueDay ? 'Day ' + d.dueDay : '—'}</div></div>
-                   </div>` : '';
+const debtPayments = state.payments.filter(p => p.debtId === debt.id);
 
 return `
-                   <div class="card" style="margin-bottom:1rem;">
-                        <div class="card-header">
-                        <div class="card-header debt-card-header">
-                           <h3>${d.name}${emiBadge}</h3>
-                            <div style="display:flex;gap:0.5rem;flex-wrap:wrap;">
-                                <button class="btn btn-secondary" style="padding:0.5rem 1rem;" onclick="openEditDebtModal('${d.id}')">
-                                    <i class="fa-solid fa-pen"></i> Edit
-                                </button>
-                                <button class="btn btn-primary" style="padding:0.5rem 1rem;" onclick="openPaymentModal('${d.id}')">
-                            <div class="debt-actions">
-                                <button class="btn btn-primary debt-action-primary" style="padding:0.5rem 1rem;justify-content:center;" onclick="openPaymentModal('${d.id}')">
-                                   <i class="fa-solid fa-plus"></i> Add Payment
-                               </button>
-                                <button class="btn btn-danger" style="padding:0.5rem 1rem;" onclick="deleteDebt('${d.id}')">
-                                    <i class="fa-solid fa-trash"></i>
-                                <button class="btn btn-secondary" style="padding:0.5rem 1rem;justify-content:center;" onclick="openEditDebtModal('${d.id}')">
-                                    <i class="fa-solid fa-pen"></i> Edit
-                                </button>
-                                <button class="btn btn-danger" style="padding:0.5rem 1rem;justify-content:center;" onclick="deleteDebt('${d.id}')">
-                                    <i class="fa-solid fa-trash"></i> Delete
-                               </button>
-                           </div>
-                       </div>
-                       ${emiInfo}
-                       <div class="grid-3" style="margin-bottom:1rem;">
-                           <div><div class="metric-title">${d.isRecurring ? 'Loan Amount' : 'Owed'}</div><div style="font-weight:700;">${formatCurrency(d.totalOwed)}</div></div>
-                           <div><div class="metric-title">Paid</div><div style="font-weight:700;color:var(--success);">${formatCurrency(paid)}</div></div>
-                           <div><div class="metric-title">Remaining</div><div style="font-weight:700;color:var(--danger);">${formatCurrency(remaining)}</div></div>
-                       </div>
-                       <div class="progress-container" style="margin-bottom:1rem;">
-                           <div class="progress-bar bg-success" style="width:${pct}%"></div>
-                       </div>
-                       <h4 style="margin-bottom:0.5rem;font-size:0.875rem;">Payment History</h4>
-                       <div class="table-wrapper">
-                           <table><thead><tr><th>Month</th><th>Amount Paid</th></tr></thead><tbody>${paymentsHtml}</tbody></table>
-                       </div>
-                   </div>`;
+<div class="debt-card">
+<div class="debt-card-header">
+<div class="debt-card-title">${debt.name}</div>
+<button class="btn btn-danger" onclick="deleteDebt('${debt.id}')" title="Delete debt">
+<i class="fa-solid fa-trash"></i> Delete
+</button>
+</div>
+
+<div class="debt-card-info">
+<div class="debt-info-item">
+<div class="debt-info-label">Total Owed</div>
+<div class="debt-info-value">₹${debt.totalOwed.toFixed(2)}</div>
+</div>
+<div class="debt-info-item">
+<div class="debt-info-label">Total Paid</div>
+<div class="debt-info-value" style="color: var(--success);">₹${(debt.totalPaid || 0).toFixed(2)}</div>
+</div>
+<div class="debt-info-item">
+<div class="debt-info-label">Remaining</div>
+<div class="debt-info-value" style="color: ${remaining > 0 ? 'var(--danger)' : 'var(--success)'};">₹${remaining.toFixed(2)}</div>
+</div>
+</div>
+
+<div class="debt-progress">
+<div class="progress-container">
+<div class="progress-bar bg-success" style="width: ${percentage}%"></div>
+</div>
+<div class="progress-status">${percentage.toFixed(1)}% Paid</div>
+</div>
+
+<div class="debt-actions">
+<button class="btn btn-secondary" onclick="recordDebtPayment('${debt.id}')">
+<i class="fa-solid fa-plus"></i> Record Payment
+</button>
+<button class="btn btn-secondary" onclick="openEditDebtModal('${debt.id}')">
+<i class="fa-solid fa-pen"></i> Edit
+</button>
+</div>
+
+${debtPayments.length > 0 ? `
+<div class="debt-payment-history">
+<div class="debt-payment-tab-bar">
+<button class="debt-payment-tab-btn active">Payment History</button>
+</div>
+<div class="debt-payment-table">
+<table>
+<thead>
+<tr>
+<th>Month</th>
+<th>Amount</th>
+</tr>
+</thead>
+<tbody>
+${debtPayments.map(p => `
+<tr>
+<td>${p.month}</td>
+<td>₹${p.amount.toFixed(2)}</td>
+</tr>
+`).join('')}
+</tbody>
+</table>
+</div>
+</div>
+` : ''}
+</div>
+`;
 }).join('');
+
+container.innerHTML = html;
 }
 
-function getTotalSavings() {
-return state.savings.reduce((sum, s) => sum + s.amount, 0);
-}
-
-function handleSavingsSubmit(e) {
-e.preventDefault();
-const dateVal = document.getElementById('savings-date').value;
-const amountVal = parseFloat(document.getElementById('savings-amount').value);
-
-if (!dateVal || isNaN(Date.parse(dateVal))) {
-showToast("Please enter a valid date.", "error");
-return;
-}
-if (isNaN(amountVal) || amountVal <= 0) {
-showToast("Savings amount must be a positive number.", "error");
-return;
-}
-
-state.savings.push({
-id: generateId(),
-date: dateVal,
-amount: amountVal,
-createdAt: new Date().toISOString(),
-updatedAt: new Date().toISOString()
-});
+// ===== SAVINGS =====
+function addSavings(event) {
+event.preventDefault();
+const savings = {
+id: Date.now().toString(),
+date: document.getElementById('savings-date').value,
+amount: parseFloat(document.getElementById('savings-amount').value),
+};
+state.savings.push(savings);
 saveData();
-showToast("Savings recorded successfully!", "success");
+renderSavingsTable();
+renderDashboard();
 closeModal('modal-add-savings');
 }
 
 function deleteSavings(id) {
-if (confirm('Delete this savings entry?')) {
 state.savings = state.savings.filter(s => s.id !== id);
 saveData();
-showToast("Savings entry deleted.", "info");
-}
-}
-
-function updateSavings() {
-const total = getTotalSavings();
-const totalEl = document.getElementById('savings-total');
-if (totalEl) totalEl.textContent = formatCurrency(total);
-
-const tbody = document.getElementById('savings-table-body');
-if (!tbody) return;
-tbody.innerHTML = '';
-
-const entries = [...state.savings].sort((a, b) => new Date(b.date) - new Date(a.date));
-entries.forEach(s => {
-const tr = document.createElement('tr');
-tr.innerHTML = `
-                   <td>${s.date}</td>
-                   <td style="font-weight:600;color:var(--success);">${formatCurrency(s.amount)}</td>
-                   <td><button class="btn btn-danger" style="padding:0.25rem 0.5rem;" aria-label="Delete savings record" onclick="deleteSavings('${s.id}')"><i class="fa-solid fa-trash"></i></button></td>
-               `;
-tbody.appendChild(tr);
-});
-
-if (entries.length === 0) {
-tbody.innerHTML = '<tr><td colspan="3" style="text-align:center;" class="text-muted">No savings entries yet</td></tr>';
-}
+renderSavingsTable();
+renderDashboard();
 }
 
-function handleGoalSubmit(e) {
-e.preventDefault();
-const nameVal = document.getElementById('goal-name').value.trim();
-const amountVal = parseFloat(document.getElementById('goal-amount').value);
+function renderSavingsTable() {
+const html = state.savings.map(s => `
+<tr>
+<td>${s.date}</td>
+<td>₹${s.amount.toFixed(2)}</td>
+<td>
+<button class="btn btn-danger" onclick="deleteSavings('${s.id}')">Delete</button>
+</td>
+</tr>
+`).join('');
 
-if (!nameVal) {
-showToast("Savings goal name cannot be empty.", "error");
-return;
-}
-if (isNaN(amountVal) || amountVal <= 0) {
-showToast("Target amount must be a positive number.", "error");
-return;
+document.getElementById('savings-table-body').innerHTML = html || '<tr><td colspan="3" class="empty-state"><p>No savings recorded</p></td></tr>';
 }
 
-state.financialGoals.push({
-id: generateId(),
-name: nameVal,
-targetAmount: amountVal,
-createdAt: new Date().toISOString(),
-updatedAt: new Date().toISOString()
-});
+// ===== CATEGORIES =====
+function populateCategories() {
+const select1 = document.getElementById('tx-category');
+const select2 = document.getElementById('budget-category');
+const select3 = document.getElementById('tx-category-filter');
+
+const options = state.categories.map(cat => `<option value="${cat.id}">${cat.name}</option>`).join('');
+
+select1.innerHTML = '<option value="">Select a category</option>' + options;
+select2.innerHTML = '<option value="">Select category</option>' + options;
+select3.innerHTML = '<option value="">All Categories</option>' + state.categories.map(cat => `<option value="${cat.name}">${cat.name}</option>`).join('');
+}
+
+// ===== BUDGET =====
+function addBudgetCategory(event) {
+event.preventDefault();
+const editId = document.getElementById('budget-edit-id').value;
+const categoryId = document.getElementById('budget-category').value;
+const amount = parseFloat(document.getElementById('budget-amount').value);
+
+if (editId) {
+const budget = state.budgets.find(b => b.id === editId);
+if (budget) budget.amount = amount;
+} else {
+state.budgets.push({ id: Date.now().toString(), categoryId, amount });
+}
+
 saveData();
-showToast("Savings goal saved successfully!", "success");
+renderBudgetCategories();
+closeModal('modal-add-budget-category');
+}
+
+function renderBudgetCategories() {
+const container = document.getElementById('budget-categories-list');
+
+const budgetStats = state.budgets.map(b => {
+const category = state.categories.find(c => c.id === b.categoryId);
+const spent = state.transactions.filter(t => t.category === category.name).reduce((sum, t) => sum + t.amount, 0);
+const remaining = b.amount - spent;
+
+return `
+<div class="card" style="margin-bottom: 1rem;">
+<div class="card-header">
+<h4>${category.name}</h4>
+<button class="btn btn-secondary" onclick="editBudgetCategory('${b.id}')">Edit</button>
+</div>
+<div class="budget-item-row">
+<div style="flex: 1;">
+<div class="progress-container">
+<div class="progress-bar ${spent > b.amount ? 'bg-danger' : 'bg-primary'}" style="width: ${Math.min((spent / b.amount) * 100, 100)}%"></div>
+</div>
+<div class="progress-status ${spent > b.amount ? 'exceeded' : ''}">
+₹${spent.toFixed(2)} / ₹${b.amount.toFixed(2)} (₹${remaining.toFixed(2)} remaining)
+</div>
+</div>
+<button class="btn btn-danger" onclick="deleteBudgetCategory('${b.id}')">Delete</button>
+</div>
+</div>
+`;
+}).join('');
+
+container.innerHTML = budgetStats || '<div class="empty-state"><p>No budgets set</p></div>';
+}
+
+function editBudgetCategory(id) {
+const budget = state.budgets.find(b => b.id === id);
+if (!budget) return;
+document.getElementById('budget-edit-id').value = id;
+document.getElementById('budget-category').value = budget.categoryId;
+document.getElementById('budget-amount').value = budget.amount;
+document.getElementById('budget-modal-title').textContent = 'Edit Budget Category';
+openModal('modal-add-budget-category');
+}
+
+function deleteBudgetCategory(id) {
+state.budgets = state.budgets.filter(b => b.id !== id);
+saveData();
+renderBudgetCategories();
+}
+
+// ===== GOALS =====
+function addGoal(event) {
+event.preventDefault();
+const goal = {
+id: Date.now().toString(),
+name: document.getElementById('goal-name').value,
+targetAmount: parseFloat(document.getElementById('goal-amount').value),
+targetDate: document.getElementById('goal-date').value,
+currentAmount: 0,
+};
+state.goals.push(goal);
+saveData();
+renderGoals();
 closeModal('modal-add-goal');
 }
 
-function deleteGoal(id) {
-if (confirm('Delete this goal?')) {
-state.financialGoals = state.financialGoals.filter(g => g.id !== id);
-saveData();
-showToast("Goal deleted.", "info");
-}
-}
-
-function updateGoalsDashboard() {
-const totalSavings = getTotalSavings();
-const totalTarget = state.financialGoals.reduce((sum, g) => sum + g.targetAmount, 0);
-
-const savEl = document.getElementById('goals-dash-savings');
-const tgtEl = document.getElementById('goals-dash-target');
-if (savEl) savEl.textContent = formatCurrency(totalSavings);
-if (tgtEl) tgtEl.textContent = formatCurrency(totalTarget);
-
-const list = document.getElementById('financial-goals-list');
-if (!list) return;
-
-if (state.financialGoals.length === 0) {
-list.innerHTML = '<div class="empty-state"><i class="fa-solid fa-trophy"></i><p>No financial goals yet. Add goals like "New Phone" or "Emergency Fund".</p></div>';
+function renderGoals() {
+const container = document.getElementById('goals-list');
+if (state.goals.length === 0) {
+container.innerHTML = '<div class="empty-state"><p>No goals set</p></div>';
 return;
 }
 
-list.innerHTML = state.financialGoals.map(g => {
-const progress = g.targetAmount > 0 ? Math.min(100, (totalSavings / g.targetAmount) * 100) : 0;
-const achieved = totalSavings >= g.targetAmount;
-const remaining = Math.max(0, g.targetAmount - totalSavings);
-const surplus = achieved ? totalSavings - g.targetAmount : 0;
-
-const statusHtml = achieved
-? `<div class="goal-achieved" style="margin:0.75rem 0;"><i class="fa-solid fa-circle-check"></i> Goal Achieved</div>
-                      ${surplus > 0 ? `<div class="text-muted" style="font-size:0.875rem;margin-bottom:0.5rem;">Surplus: ${formatCurrency(surplus)}</div>` : ''}`
-: `<div style="margin:0.75rem 0;">
-                          <div style="font-weight:600;color:var(--warning);">Remaining to Goal: ${formatCurrency(remaining)}</div>
-                          <div class="text-muted" style="font-size:0.875rem;margin-top:0.25rem;">Progress: ${progress.toFixed(0)}%</div>
-                      </div>`;
-
+const html = state.goals.map(goal => {
+const percentage = Math.min((goal.currentAmount / goal.targetAmount) * 100, 100);
 return `
-                   <div class="card" style="margin-bottom:1rem;">
-                       <div class="card-header">
-                           <h3>${g.name}</h3>
-                           <button class="btn btn-danger" style="padding:0.5rem 1rem;" onclick="deleteGoal('${g.id}')"><i class="fa-solid fa-trash"></i></button>
-                       </div>
-                       <div class="metric-title">Target Amount</div>
-                       <div class="metric-value" style="font-size:1.5rem;margin-bottom:0.25rem;">${formatCurrency(g.targetAmount)}</div>
-                       ${statusHtml}
-                       <div class="progress-container">
-                           <div class="progress-bar ${achieved ? 'bg-success' : 'bg-primary'}" style="width:${progress}%"></div>
-                       </div>
-                   </div>`;
+<div class="card" style="margin-bottom: 1rem;">
+<div class="card-header">
+<h4>${goal.name}</h4>
+<span class="text-muted">${goal.targetDate}</span>
+</div>
+<div class="progress-container">
+<div class="progress-bar bg-success" style="width: ${percentage}%"></div>
+</div>
+<div class="progress-status">₹${goal.currentAmount.toFixed(2)} / ₹${goal.targetAmount.toFixed(2)}</div>
+</div>
+`;
 }).join('');
+
+container.innerHTML = html;
 }
 
-function updateAnalytics() {
-const expenses = state.transactions.filter(t => t.type === 'expense');
-const yearInput = document.getElementById('analytics-year-filter');
-const monthInput = document.getElementById('analytics-month-filter');
-const cm = yearInput && monthInput ? `${yearInput.value}-${monthInput.value}` : new Date().toISOString().slice(0, 7);
+// ===== DASHBOARD =====
+function renderDashboard() {
+const totalBalance = state.income.reduce((s, i) => s + i.amount, 0) - state.transactions.reduce((s, t) => s + t.amount, 0);
+const totalIncome = state.income.reduce((s, i) => s + i.amount, 0);
+const totalExpenses = state.transactions.reduce((s, t) => s + t.amount, 0);
+const totalDebt = state.debts.reduce((s, d) => s + (d.totalOwed - (d.totalPaid || 0)), 0);
 
-let totalAll = 0, totalMonth = 0;
-const byCategory = {};
+document.getElementById('dashboard-balance').textContent = `₹${totalBalance.toFixed(2)}`;
+document.getElementById('dashboard-income').textContent = `₹${totalIncome.toFixed(2)}`;
+document.getElementById('dashboard-expenses').textContent = `₹${totalExpenses.toFixed(2)}`;
+document.getElementById('dashboard-debt').textContent = `₹${totalDebt.toFixed(2)}`;
 
-expenses.forEach(tx => {
-totalAll += tx.amount;
-if (tx.date.startsWith(cm)) {
-totalMonth += tx.amount;
-byCategory[tx.category] = (byCategory[tx.category] || 0) + tx.amount;
+// Debt metrics
+document.getElementById('debt-total-owed').textContent = `₹${state.debts.reduce((s, d) => s + d.totalOwed, 0).toFixed(2)}`;
+document.getElementById('debt-total-paid').textContent = `₹${state.debts.reduce((s, d) => s + (d.totalPaid || 0), 0).toFixed(2)}`;
+document.getElementById('debt-remaining').textContent = `₹${totalDebt.toFixed(2)}`;
+
+// Budget metrics
+const budgetAllocated = state.budgets.reduce((s, b) => s + b.amount, 0);
+const budgetSpent = state.transactions.reduce((s, t) => s + t.amount, 0);
+document.getElementById('budget-total-allocated').textContent = `₹${budgetAllocated.toFixed(2)}`;
+document.getElementById('budget-total-spent').textContent = `₹${budgetSpent.toFixed(2)}`;
+document.getElementById('budget-remaining').textContent = `₹${(budgetAllocated - budgetSpent).toFixed(2)}`;
+
+// Savings metrics
+document.getElementById('savings-total').textContent = `₹${state.savings.reduce((s, sv) => s + sv.amount, 0).toFixed(2)}`;
+
+// Recent transactions
+renderRecentTransactions();
+
+// Charts
+renderCharts();
 }
+
+function renderRecentTransactions() {
+const recent = [...state.transactions].reverse().slice(0, 5);
+const html = recent.map(t => `
+<tr>
+<td>${t.date}</td>
+<td>${t.description}</td>
+<td><span class="tag tag-expense">${t.category}</span></td>
+<td>₹${t.amount.toFixed(2)}</td>
+</tr>
+`).join('');
+
+document.getElementById('recent-transactions-body').innerHTML = html || '<tr><td colspan="4" class="empty-state"><p>No transactions</p></td></tr>';
+}
+
+// ===== CHARTS =====
+function renderCharts() {
+// Category Pie Chart
+const categoryData = {};
+state.transactions.forEach(t => {
+categoryData[t.category] = (categoryData[t.category] || 0) + t.amount;
 });
 
-const totalEl = document.getElementById('analytics-total-expense');
-const monthEl = document.getElementById('analytics-month-expense');
-const topEl = document.getElementById('analytics-top-category');
-if (totalEl) totalEl.textContent = formatCurrency(totalAll);
-if (monthEl) monthEl.textContent = formatCurrency(totalMonth);
-
-const sortedCats = Object.entries(byCategory).sort((a, b) => b[1] - a[1]);
-if (topEl) topEl.textContent = sortedCats.length > 0 ? sortedCats[0][0] : '—';
-
-const catTable = document.getElementById('analytics-category-table');
-if (catTable) {
-catTable.innerHTML = sortedCats.length === 0
-? '<tr><td colspan="3" style="text-align:center;" class="text-muted">No expense data</td></tr>'
-: sortedCats.map(([cat, amt]) => `
-                       <tr>
-                           <td><span class="tag" style="background:var(--border-color)">${cat}</span></td>
-                           <td style="font-weight:600;">${formatCurrency(amt)}</td>
-                           <td>${totalMonth > 0 ? ((amt / totalMonth) * 100).toFixed(1) : 0}%</td>
-                       </tr>`).join('');
-}
-
-if (charts.categoryPie) {
-charts.categoryPie.data.labels = sortedCats.map(c => c[0]);
-charts.categoryPie.data.datasets[0].data = sortedCats.map(c => c[1]);
-charts.categoryPie.update();
-}
-}
-
-function updateInsights() {
-const container = document.getElementById('insights-container');
-if (!container) return;
-
-const expenses = state.transactions.filter(t => t.type === 'expense');
-const incomes = state.transactions.filter(t => t.type === 'income');
-const now = new Date();
-const cm = now.toISOString().slice(0, 7);
-const pm = new Date(now.getFullYear(), now.getMonth() - 1, 1).toISOString().slice(0, 7);
-
-const insights = [];
-
-if (expenses.length === 0 && incomes.length === 0) {
-container.innerHTML = '<div class="empty-state"><i class="fa-solid fa-lightbulb"></i><p>Add transactions to receive smart insights about your spending.</p></div>';
-return;
-}
-
-const monthExp = expenses.filter(t => t.date.startsWith(cm)).reduce((s, t) => s + t.amount, 0);
-const prevExp = expenses.filter(t => t.date.startsWith(pm)).reduce((s, t) => s + t.amount, 0);
-if (prevExp > 0) {
-const change = ((monthExp - prevExp) / prevExp * 100).toFixed(0);
-if (monthExp > prevExp) {
-insights.push({ type: 'warning', title: 'Spending Increased', text: `Your expenses this month are ${change}% higher than last month (${formatCurrency(monthExp)} vs ${formatCurrency(prevExp)}).` });
-} else if (monthExp < prevExp) {
-insights.push({ type: 'success', title: 'Spending Decreased', text: `Great job! Your expenses dropped ${Math.abs(change)}% compared to last month.` });
-}
-}
-
-const byCategory = {};
-expenses.filter(t => t.date.startsWith(cm)).forEach(t => {
-byCategory[t.category] = (byCategory[t.category] || 0) + t.amount;
-});
-const topCat = Object.entries(byCategory).sort((a, b) => b[1] - a[1])[0];
-if (topCat) {
-insights.push({ type: '', title: 'Top Spending Category', text: `${topCat[0]} is your biggest expense this month at ${formatCurrency(topCat[1])} (${monthExp > 0 ? ((topCat[1] / monthExp) * 100).toFixed(0) : 0}% of total).` });
-}
-
-const wants = expenses.filter(t => t.date.startsWith(cm) && t.needWant === 'want').reduce((s, t) => s + t.amount, 0);
-const needs = expenses.filter(t => t.date.startsWith(cm) && t.needWant === 'need').reduce((s, t) => s + t.amount, 0);
-if (wants + needs > 0) {
-insights.push({ type: wants > needs ? 'warning' : 'success', title: 'Needs vs Wants', text: `This month: ${formatCurrency(needs)} on needs and ${formatCurrency(wants)} on wants.` });
-}
-
-const monthInc = incomes.filter(t => t.date.startsWith(cm)).reduce((s, t) => s + t.amount, 0);
-const savings = monthInc - monthExp;
-if (monthInc > 0) {
-insights.push({
-type: savings >= 0 ? 'success' : 'danger',
-title: 'Monthly Balance',
-text: savings >= 0
-? `You're saving ${formatCurrency(savings)} this month (${((savings / monthInc) * 100).toFixed(0)}% of income).`
-: `You're overspending by ${formatCurrency(Math.abs(savings))} this month.`
-});
-}
-
-const totalSavings = getTotalSavings();
-const totalGoals = state.financialGoals.reduce((s, g) => s + g.targetAmount, 0);
-if (totalGoals > 0) {
-const pct = ((totalSavings / totalGoals) * 100).toFixed(0);
-insights.push({
-type: totalSavings >= totalGoals ? 'success' : '',
-title: 'Goal Progress',
-text: totalSavings >= totalGoals
-? `Your total savings (${formatCurrency(totalSavings)}) cover all your goals!`
-: `You're ${pct}% of the way to funding all goals. ${formatCurrency(totalGoals - totalSavings)} still needed.`
-});
-}
-
-if (state.debts.length > 0) {
-const totalRemaining = state.debts.reduce((s, d) => s + Math.max(0, d.totalOwed - getDebtPaid(d)), 0);
-insights.push({ type: 'warning', title: 'Outstanding Debt', text: `You have ${formatCurrency(totalRemaining)} in remaining debt across ${state.debts.length} account(s).` });
-}
-
-container.innerHTML = insights.map(i => `
-               <div class="insight-card ${i.type}">
-                   <h4><i class="fa-solid fa-lightbulb"></i> ${i.title}</h4>
-                   <p>${i.text}</p>
-               </div>`).join('');
-}
-
-function updateAdvisor() {
-const container = document.getElementById('advisor-container');
-if (!container) return;
-
-const recs = generateFinancialRecommendations();
-if (recs.length === 0) {
-container.innerHTML = '<div class="empty-state"><i class="fa-solid fa-user-tie"></i><p>Add transactions, budgets, and savings data to receive personalized recommendations.</p></div>';
-return;
-}
-container.innerHTML = recs.map(r => `
-               <div class="insight-card ${r.type}">
-                   <h4><i class="fa-solid ${r.icon}"></i> ${r.title}</h4>
-                   <p>${r.text}</p>
-                   ${r.action ? `<p style="margin-top:0.5rem;font-weight:500;color:var(--primary);font-size:0.8rem;"><i class="fa-solid fa-arrow-right"></i> ${r.action}</p>` : ''}
-               </div>`).join('');
-}
-
-function generateFinancialRecommendations() {
-const recs = [];
-const now = new Date();
-const cm = now.toISOString().slice(0, 7);
-const expenses = state.transactions.filter(t => t.type === 'expense' && t.date.startsWith(cm));
-const incomes = state.transactions.filter(t => t.type === 'income' && t.date.startsWith(cm));
-const monthInc = incomes.reduce((s, t) => s + t.amount, 0);
-const monthExp = expenses.reduce((s, t) => s + t.amount, 0);
-const totalSavings = getTotalSavings();
-
-if (monthInc === 0) {
-recs.push({ type: 'warning', icon: 'fa-money-bill-wave', title: 'No Income Recorded', text: 'No income logged this month. Add your salary or other income sources to get accurate advice.', action: 'Go to Income Tracker and add your income.' });
-} else if (monthExp > monthInc) {
-recs.push({ type: 'danger', icon: 'fa-triangle-exclamation', title: 'Spending Exceeds Income', text: `You're spending ${formatCurrency(monthExp - monthInc)} more than you earn this month. This is an unhealthy pattern that can lead to debt accumulation.`, action: 'Review expenses and cut non-essential spending immediately.' });
-} else if (monthInc > 0 && (monthInc - monthExp) / monthInc >= 0.2) {
-recs.push({ type: 'success', icon: 'fa-thumbs-up', title: 'Strong Savings Rate', text: `You're saving ${((monthInc - monthExp) / monthInc * 100).toFixed(0)}% of your income this month. Excellent financial discipline!`, action: 'Consider allocating extra savings toward your highest-priority goal.' });
-}
-
-state.budgetCategories.forEach(cat => {
-const allocated = getCategoryBudget(cat);
-const spent = getCategorySpent(cat, cm);
-if (allocated > 0 && spent > allocated) {
-recs.push({ type: 'danger', icon: 'fa-chart-pie', title: `Budget Exceeded: ${cat.name}`, text: `${cat.name} is over budget by ${formatCurrency(spent - allocated)} (${formatCurrency(spent)} spent vs ${formatCurrency(allocated)} allocated).`, action: `Reduce ${cat.name} spending or adjust your budget in Budget Planner.` });
-} else if (allocated > 0 && spent > allocated * 0.85) {
-recs.push({ type: 'warning', icon: 'fa-chart-pie', title: `Budget Warning: ${cat.name}`, text: `You've used ${((spent / allocated) * 100).toFixed(0)}% of your ${cat.name} budget with time left in the month.`, action: 'Slow down spending in this category to stay on track.' });
-}
-});
-
-const byCat = {};
-expenses.forEach(t => { byCat[t.category] = (byCat[t.category] || 0) + t.amount; });
-const sorted = Object.entries(byCat).sort((a, b) => b[1] - a[1]);
-if (sorted.length > 0 && monthExp > 0) {
-const [topName, topAmt] = sorted[0];
-if (topAmt / monthExp > 0.4) {
-recs.push({ type: 'warning', icon: 'fa-scissors', title: 'Concentrated Spending', text: `${topName} accounts for ${((topAmt / monthExp) * 100).toFixed(0)}% of your spending. Consider diversifying or reducing costs here.`, action: `Look for ways to lower ${topName} expenses — negotiate bills, find alternatives, or set a stricter sub-budget.` });
-}
-}
-
-const wantSpending = expenses.filter(t => t.needWant === 'want').reduce((s, t) => s + t.amount, 0);
-if (wantSpending > monthExp * 0.3 && monthExp > 0) {
-recs.push({ type: 'warning', icon: 'fa-bag-shopping', title: 'High Discretionary Spending', text: `${formatCurrency(wantSpending)} (${((wantSpending / monthExp) * 100).toFixed(0)}%) went to "wants" this month.`, action: 'Try a 30-day rule for non-essential purchases to boost savings.' });
-}
-
-if (totalSavings === 0 && monthInc > monthExp) {
-recs.push({ type: '', icon: 'fa-piggy-bank', title: 'Start Building Savings', text: `You have ${formatCurrency(monthInc - monthExp)} available this month but no savings recorded.`, action: 'Add a savings entry to start tracking your progress toward goals.' });
-} else if (state.financialGoals.length > 0) {
-const totalNeeded = state.financialGoals.reduce((s, g) => s + g.targetAmount, 0);
-if (totalSavings < totalNeeded) {
-const gap = totalNeeded - totalSavings;
-const monthsToGoal = monthInc > monthExp ? Math.ceil(gap / (monthInc - monthExp)) : null;
-recs.push({ type: '', icon: 'fa-bullseye', title: 'Savings Goal Gap', text: `You need ${formatCurrency(gap)} more to fund all goals.${monthsToGoal ? ` At your current rate, ~${monthsToGoal} month(s) to reach them.` : ''}`, action: 'Increase monthly savings by cutting one discretionary category.' });
-}
-}
-
-state.debts.forEach(d => {
-const remaining = Math.max(0, d.totalOwed - getDebtPaid(d));
-if (remaining > 0) {
-if (d.isRecurring && d.emiAmount) {
-const monthsLeft = Math.ceil(remaining / d.emiAmount);
-recs.push({ type: 'warning', icon: 'fa-credit-card', title: `EMI: ${d.name}`, text: `${formatCurrency(remaining)} remaining. At ${formatCurrency(d.emiAmount)}/month, ~${monthsLeft} payment(s) left. Next due: ${getNextDueDate(d)}.`, action: 'Ensure EMI is paid on time to avoid penalties. Consider paying extra when possible.' });
-} else {
-recs.push({ type: 'warning', icon: 'fa-hand-holding-dollar', title: `Debt: ${d.name}`, text: `${formatCurrency(remaining)} still owed on ${d.name}.`, action: 'Prioritize paying off high-interest debts first using the avalanche method.' });
-}
-} else if (d.totalOwed > 0) {
-recs.push({ type: 'success', icon: 'fa-check-circle', title: `Debt Cleared: ${d.name}`, text: `Congratulations! You've fully paid off ${d.name}.`, action: 'Redirect those payments toward savings or your next goal.' });
-}
-});
-
-const totalAllocated = state.budgetCategories.reduce((s, c) => s + getCategoryBudget(c), 0);
-if (totalAllocated > 0 && monthInc > 0 && totalAllocated > monthInc) {
-recs.push({ type: 'danger', icon: 'fa-sliders', title: 'Over-Allocated Budget', text: `Your budget (${formatCurrency(totalAllocated)}) exceeds your monthly income (${formatCurrency(monthInc)}).`, action: 'Reduce category budgets in Budget Planner to match realistic income.' });
-} else if (totalAllocated > 0 && monthInc > totalAllocated) {
-recs.push({ type: 'success', icon: 'fa-sliders', title: 'Budget Headroom', text: `You have ${formatCurrency(monthInc - totalAllocated)} unallocated after budgeting.`, action: 'Allocate this surplus to savings or debt repayment for faster progress.' });
-}
-
-if (recs.length === 0) {
-recs.push({ type: 'success', icon: 'fa-star', title: 'Looking Good', text: 'Your finances appear balanced. Keep tracking regularly and stay consistent with your budget.', action: 'Review your goals monthly and adjust as needed.' });
-}
-
-return recs;
-}
-
-function getCategoryBudget(cat) { return cat.budgetAmount || 0; }
-function getCategorySpent(cat, monthStr) {
-return state.transactions
-.filter(t => t.type === 'expense' && t.date.startsWith(monthStr) && t.category === cat.name)
-.reduce((s, t) => s + t.amount, 0);
-}
-
-function openBudgetCategoryModal(catId) {
-document.getElementById('budget-cat-edit-id').value = catId || '';
-document.getElementById('budget-cat-modal-title').textContent = catId ? 'Edit Category' : 'Add Budget Category';
-document.getElementById('budget-cat-name').value = '';
-document.getElementById('budget-cat-amount').value = '';
-if (catId) {
-const cat = state.budgetCategories.find(c => c.id === catId);
-if (cat) {
-document.getElementById('budget-cat-name').value = cat.name;
-document.getElementById('budget-cat-amount').value = cat.budgetAmount || 0;
-}
-}
-openModal('modal-budget-category');
-}
-
-function handleBudgetCategorySubmit(e) {
-e.preventDefault();
-const editId = document.getElementById('budget-cat-edit-id').value;
-const nameVal = document.getElementById('budget-cat-name').value.trim();
-const budgetAmount = parseFloat(document.getElementById('budget-cat-amount').value) || 0;
-
-if (!nameVal) {
-showToast("Category name cannot be empty.", "error");
-return;
-}
-if (isNaN(budgetAmount) || budgetAmount <= 0) {
-showToast("Budget allocation must be a positive number.", "error");
-return;
-}
-
-if (editId) {
-const cat = state.budgetCategories.find(c => c.id === editId);
-if (cat) {
-cat.name = nameVal;
-cat.budgetAmount = budgetAmount;
-cat.updatedAt = new Date().toISOString();
-}
-} else {
-const newCat = {
-id: generateId(),
-name: nameVal,
-budgetAmount,
-createdAt: new Date().toISOString(),
-updatedAt: new Date().toISOString()
-};
-state.budgetCategories.push(newCat);
-}
-saveData();
-showToast("Budget category saved successfully!", "success");
-closeModal('modal-budget-category');
-}
-
-function deleteBudgetCategory(catId) {
-if (confirm('Delete this budget category?')) {
-state.budgetCategories = state.budgetCategories.filter(c => c.id !== catId);
-saveData();
-showToast("Budget category deleted.", "info");
-}
-}
-
-function getBudgetProgressInfo(spent, allocated) {
-if (allocated <= 0) {
-return { barClass: 'bg-success', barWidth: 0, statusText: '0% of Budget Used', exceeded: false };
-}
-const pct = (spent / allocated) * 100;
-const barWidth = Math.min(100, pct);
-let barClass, statusText, exceeded = false;
-
-if (pct > 100) {
-barClass = 'bg-danger';
-statusText = 'Budget Exceeded';
-exceeded = true;
-} else if (pct >= 100) {
-barClass = 'bg-warning';
-statusText = '100% of Budget Used';
-} else if (pct >= 50) {
-barClass = 'bg-info';
-statusText = `${Math.round(pct)}% of Budget Used`;
-} else {
-barClass = 'bg-success';
-statusText = `${Math.round(pct)}% of Budget Used`;
-}
-
-return { barClass, barWidth, statusText, exceeded };
-}
-
-function updateBudgets() {
-const now = new Date();
-const cm = now.toISOString().slice(0, 7);
-const list = document.getElementById('budget-categories-list');
-if (!list) return;
-
-let totalAllocated = 0;
-let totalSpent = 0;
-
-state.budgetCategories.forEach(cat => {
-totalAllocated += getCategoryBudget(cat);
-totalSpent += getCategorySpent(cat, cm);
-});
-
-const allocEl = document.getElementById('budget-total-allocated');
-const spentEl = document.getElementById('budget-total-spent');
-const remEl = document.getElementById('budget-remaining');
-if (allocEl) allocEl.textContent = formatCurrency(totalAllocated);
-if (spentEl) spentEl.textContent = formatCurrency(totalSpent);
-if (remEl) {
-const remaining = totalAllocated - totalSpent;
-remEl.textContent = formatCurrency(remaining);
-remEl.style.color = remaining >= 0 ? 'var(--success)' : 'var(--danger)';
-}
-
-if (state.budgetCategories.length === 0) {
-list.innerHTML = '<div class="empty-state"><i class="fa-solid fa-wallet"></i><p>No budget categories yet. Click "Add Category" to start planning.</p></div>';
-return;
-}
-
-list.innerHTML = state.budgetCategories.map(cat => {
-const allocated = getCategoryBudget(cat);
-const spent = getCategorySpent(cat, cm);
-const progress = getBudgetProgressInfo(spent, allocated);
-
-return `
-                   <div class="card" style="margin-bottom:1rem;">
-                       <div class="budget-cat-header" style="margin-bottom:1rem;">
-                           <div>
-                               <h3>${cat.name}</h3>
-                               <div class="metric-trend" style="justify-content:flex-start;gap:1rem;margin-top:0.25rem;">
-                                   <span>${formatCurrency(spent)} spent</span>
-                                   <span class="text-muted">of ${formatCurrency(allocated)}</span>
-                               </div>
-                           </div>
-                           <div style="display:flex;gap:0.5rem;flex-wrap:wrap;">
-                               <button class="btn btn-secondary" style="padding:0.4rem 0.75rem;" onclick="openBudgetCategoryModal('${cat.id}')"><i class="fa-solid fa-pen"></i></button>
-                               <button class="btn btn-danger" style="padding:0.4rem 0.75rem;" onclick="deleteBudgetCategory('${cat.id}')"><i class="fa-solid fa-trash"></i></button>
-                           </div>
-                       </div>
-                       <div class="progress-container">
-                           <div class="progress-bar ${progress.barClass}" style="width:${progress.barWidth}%"></div>
-                       </div>
-                       <div class="progress-status${progress.exceeded ? ' exceeded' : ''}">${progress.statusText}</div>
-                   </div>`;
-}).join('');
-}
-
-function confirmResetData() {
-if (confirm('Are you sure you want to permanently delete ALL financial data? This cannot be undone.\n\nAll transactions, budgets, income, categories, savings goals, preferences, and other data will be erased from Firebase and local storage.')) {
-resetData();
-}
-}
-
-async function resetData() {
-showLoading(true);
-
-try {
-// Delete all data from Firebase if authenticated
-if (isFirebaseInitialized && window.auth && window.auth.currentUser) {
-const user = window.auth.currentUser;
-const uid = user.uid;
-const userDocRef = window.db.collection('users').doc(uid);
-
-// Delete all subcollections
-const collections = ['income', 'expenses', 'budgets', 'debts', 'savings', 'savingsGoals', 'settings'];
-for (const colName of collections) {
-const snap = await userDocRef.collection(colName).get();
-const batch = window.db.batch();
-snap.forEach(doc => {
-batch.delete(doc.ref);
-});
-if (snap.size > 0) await batch.commit();
-}
-
-// Reset the main user document to a clean state
-const cleanData = {
-profile: {
-name: user.displayName || '',
-email: user.email || '',
-photoURL: user.photoURL || ''
+const pieCtx = document.getElementById('category-chart');
+if (pieCtx) {
+if (charts.categoryPie) charts.categoryPie.destroy();
+charts.categoryPie = new Chart(pieCtx, {
+type: 'pie',
+data: {
+labels: Object.keys(categoryData),
+datasets: [{
+data: Object.values(categoryData),
+backgroundColor: ['#6366f1', '#10b981', '#ef4444', '#f59e0b', '#3b82f6', '#8b5cf6', '#ec4899'],
+}],
 },
-income: [],
-expenses: [],
-budgets: [],
-debts: [],
-savings: [],
-savingsGoals: [],
-settings: { currency: 'INR', theme: 'light' },
-expenseCategories: ['Housing', 'Food', 'Transport', 'Shopping', 'Entertainment', 'Misc'],
-subscriptions: [],
-recurringTransactions: [],
-updatedAt: firebase.firestore.FieldValue.serverTimestamp()
-};
-
-await userDocRef.set(cleanData);
-console.log('All Firebase data deleted and user document reset.');
+options: {
+responsive: true,
+maintainAspectRatio: false,
+plugins: { legend: { position: 'bottom' } },
+},
+});
 }
 
-// Clear localStorage
-localStorage.removeItem(STORAGE_KEY);
+// Trend Chart
+const trendCtx = document.getElementById('trend-chart');
+if (trendCtx) {
+const last30Days = [...Array(30)].map((_, i) => {
+const d = new Date();
+d.setDate(d.getDate() - 29 + i);
+return d.toISOString().split('T')[0];
+});
 
-// Reset local state to clean first-time defaults
-state = {
-transactions: [],
-savings: [],
-financialGoals: [],
-debts: [],
-budgetCategories: [],
-expenseCategories: ['Housing', 'Food', 'Transport', 'Shopping', 'Entertainment', 'Misc'],
-settings: { currency: 'INR', theme: 'light' },
-subscriptions: [],
-recurringTransactions: []
-};
-initDefaultBudgetCategories();
+const trendData = last30Days.map(date => state.transactions.filter(t => t.date === date).reduce((s, t) => s + t.amount, 0));
 
-// Refresh all UI
-updateAllUI();
-applyTheme(state.settings.theme);
-populateCategoryDropdowns();
-renderExpenseCategories();
-navigate('view-dashboard');
-
-showLoading(false);
-showToast('All data has been reset successfully. You are now in a clean state.', 'success');
-} catch (error) {
-showLoading(false);
-console.error('Reset data failed:', error);
-showToast('Reset failed: ' + error.message, 'error');
+if (charts.trend) charts.trend.destroy();
+charts.trend = new Chart(trendCtx, {
+type: 'line',
+data: {
+labels: last30Days,
+datasets: [{
+label: 'Daily Expenses',
+data: trendData,
+borderColor: '#6366f1',
+backgroundColor: 'rgba(99, 102, 241, 0.1)',
+tension: 0.4,
+fill: true,
+}],
+},
+options: {
+responsive: true,
+maintainAspectRatio: false,
+plugins: { legend: { display: false } },
+scales: { y: { beginAtZero: true } },
+},
+});
 }
 }
 
-function generateMockData() {
-const today = new Date();
-const cm = today.toISOString().slice(0, 7);
-
-state.transactions = [
-{ id: '1', type: 'income', date: `${cm}-01`, amount: 85000, desc: 'Salary', category: 'Salary' },
-{ id: '2', type: 'expense', date: `${cm}-02`, amount: 25000, desc: 'Rent', category: 'Housing', needWant: 'need' },
-{ id: '3', type: 'expense', date: `${cm}-05`, amount: 3000, desc: 'Groceries', category: 'Food', needWant: 'need' },
-{ id: '4', type: 'expense', date: `${cm}-10`, amount: 1500, desc: 'Netflix', category: 'Entertainment', needWant: 'want' },
-{ id: '5', type: 'expense', date: `${cm}-15`, amount: 4500, desc: 'Dinner Date', category: 'Food', needWant: 'want' },
-{ id: '6', type: 'expense', date: `${cm}-20`, amount: 2000, desc: 'Electricity Bill', category: 'Housing', needWant: 'need' }
-];
-
-state.savings = [
-{ id: 's1', date: `${cm}-05`, amount: 10000 },
-{ id: 's2', date: `${cm}-15`, amount: 5000 }
-];
-
-state.financialGoals = [
-{ id: 'g1', name: 'Emergency Fund', targetAmount: 100000 },
-{ id: 'g2', name: 'New Phone', targetAmount: 45000 }
-];
-
-state.debts = [
-{ id: 'd1', name: 'Car Loan', totalOwed: 500000, isRecurring: true, emiAmount: 12000, dueDay: 5, payments: [{ month: cm, amount: 12000 }] },
-{ id: 'd2', name: 'Credit Card', totalOwed: 30000, isRecurring: false, payments: [{ month: cm, amount: 5000 }] }
-];
-
-initDefaultBudgetCategories();
-syncExpenseCategories();
+// ===== SETTINGS =====
+function saveSetting(key, value) {
+state.settings[key] = value;
 saveData();
-alert("Demo data loaded!");
 }
 
-// --- GLOBAL SEARCH LOGIC ---
-const searchInput = document.getElementById('global-search-input');
-
-searchInput.addEventListener('input', (e) => {
-const query = e.target.value.toLowerCase().trim();
-if (query.length > 0) {
-if (!document.getElementById('view-search').classList.contains('active')) {
-navigate('view-search');
-}
-
-const results = state.transactions.filter(tx =>
-tx.desc.toLowerCase().includes(query) ||
-tx.category.toLowerCase().includes(query) ||
-tx.amount.toString().includes(query) ||
-tx.type.toLowerCase().includes(query) ||
-tx.date.includes(query)
-);
-
-renderSearchResults(results, query);
-} else {
-renderSearchResults([], '');
-}
-});
-
-function renderSearchResults(results, query) {
-const emptyState = document.getElementById('search-empty-state');
-const tableWrapper = document.getElementById('search-table-wrapper');
-const searchContainer = document.getElementById('search-results-container');
-
-if (!query) {
-if (emptyState) emptyState.style.display = 'block';
-if (tableWrapper) tableWrapper.style.display = 'none';
-return;
-}
-
-if (emptyState) emptyState.style.display = 'none';
-if (tableWrapper) tableWrapper.style.display = 'block';
-if (!searchContainer) return;
-
-searchContainer.innerHTML = '';
-
-if (results.length === 0) {
-searchContainer.innerHTML = '<tr><td colspan="5" style="text-align:center;" class="text-muted">No results found for "' + query + '"</td></tr>';
-return;
-}
-
-results.forEach(tx => {
-const tr = document.createElement('tr');
-const isInc = tx.type === 'income';
-tr.innerHTML = `
-                   <td>${tx.date}</td>
-                   <td><span class="tag ${isInc ? 'tag-income' : 'tag-expense'}">${tx.type}</span></td>
-                   <td><strong>${tx.desc}</strong></td>
-                   <td><span class="tag" style="background:var(--border-color)">${tx.category}</span></td>
-                   <td style="color: var(--${isInc ? 'success' : 'text-main'}); font-weight:600;">
-                       ${isInc ? '+' : '-'}${formatCurrency(tx.amount)}
-                   </td>
-               `;
-searchContainer.appendChild(tr);
-});
-}
-
-// --- FIREBASE INTEGRATION LOGIC ---
-// Replace with your Firebase project credentials, or set window.FIREBASE_CONFIG before this script runs.
-const firebaseConfig = window.FIREBASE_CONFIG || {
-apiKey: "AIzaSyB5D7gV0GfmkIsJOAEVrWXgUGrYO2W62PY",
-authDomain: "revolution-5785d.firebaseapp.com",
-projectId: "revolution-5785d",
-storageBucket: "revolution-5785d.firebasestorage.app",
-messagingSenderId: "13606877312",
-appId: "1:13606877312:web:f54a29e205128606238e65",
-measurementId: "G-JV9KR8MV2C"
-};
-
-// Determine if config is placeholder or empty
-const isConfigPlaceholder = !firebaseConfig ||
-!firebaseConfig.apiKey ||
-firebaseConfig.apiKey.includes('YOUR_') ||
-firebaseConfig.apiKey === '';
-
-let isFirebaseInitialized = false;
-let isAuthReady = false;
-let isAuthenticated = false;
-let appInitialized = false;
-
-let firestoreUnsubscribe = null;
-
-function showAuthLoading() {
-const gate = document.getElementById('auth-gate');
-const loading = document.getElementById('auth-loading');
-const login = document.getElementById('auth-login');
-if (gate) gate.style.display = 'flex';
-if (loading) loading.style.display = 'flex';
-if (login) login.style.display = 'none';
-}
-
-function showAuthError(message) {
-const authError = document.getElementById('auth-error');
-if (authError) {
-authError.textContent = message;
-authError.style.display = 'block';
-}
-}
-
-function clearAuthError() {
-const authError = document.getElementById('auth-error');
-if (authError) {
-authError.textContent = '';
-authError.style.display = 'none';
-}
-}
-
-function showLoginScreen(errorMessage) {
-const gate = document.getElementById('auth-gate');
-const loading = document.getElementById('auth-loading');
-const login = document.getElementById('auth-login');
-const appShell = document.getElementById('app-shell');
-const signInBtn = document.getElementById('google-signin-btn');
-
-if (gate) gate.style.display = 'flex';
-if (loading) loading.style.display = 'none';
-if (login) login.style.display = 'flex';
-if (appShell) appShell.style.display = 'none';
-
-clearAuthError();
-if (errorMessage) showAuthError(errorMessage);
-
-if (signInBtn) {
-signInBtn.disabled = !isFirebaseInitialized;
-}
-}
-
-function hideAuthGate() {
-const gate = document.getElementById('auth-gate');
-if (gate) gate.style.display = 'none';
-clearAuthError();
-}
-
-function showAppShell() {
-const appShell = document.getElementById('app-shell');
-if (appShell) appShell.style.display = 'contents';
-}
-
-function hideAppShell() {
-const appShell = document.getElementById('app-shell');
-if (appShell) appShell.style.display = 'none';
-}
-
-function getAuthErrorMessage(err) {
-if (!err) return 'Authentication failed. Please try again.';
-if (err.code === 'auth/popup-closed-by-user') return 'Sign-in was cancelled. Please try again.';
-if (err.code === 'auth/popup-blocked') return 'Pop-up was blocked by your browser. Please allow pop-ups and try again.';
-if (err.code === 'auth/cancelled-popup-request') return 'Another sign-in attempt is already in progress.';
-if (err.code === 'auth/network-request-failed') return 'Network error. Check your connection and try again.';
-return err.message || 'Authentication failed. Please try again.';
-}
-
-function handleAuthenticatedUser(user) {
-isAuthenticated = true;
-hideAuthGate();
-showAppShell();
-displayUserProfile(user);
-
-const accountCard = document.getElementById('settings-account-card');
-if (accountCard) accountCard.style.display = 'block';
-
-// Update settings profile card
-const profileCard = document.getElementById('settings-profile-card');
-if (profileCard) {
-profileCard.style.display = 'block';
-const sAvatar = document.getElementById('settings-user-avatar');
-const sName = document.getElementById('settings-user-name');
-const sEmail = document.getElementById('settings-user-email');
-if (sAvatar) sAvatar.src = user.photoURL || 'https://www.gravatar.com/avatar/00000000000000000000000000000000?d=mp&f=y';
-if (sName) sName.textContent = user.displayName || 'User';
-if (sEmail) sEmail.textContent = user.email || '';
-}
-
-if (!appInitialized) {
-initializeAuthenticatedApp();
-}
-
-setupFirestoreSync(user);
-
-if (typeof startIdleDetector === 'function') startIdleDetector();
-}
-
-function handleUnauthenticatedUser() {
-isAuthenticated = false;
-hideAppShell();
-showLoginScreen();
-
-updateStatusDot('status-auth', 'logged-out', 'Logged Out');
-clearUserProfile();
-updateStatusDot('status-firestore', 'neutral', 'Waiting for Sign-In');
-
-const testStatusEl = document.getElementById('firestore-test-status');
-if (testStatusEl) testStatusEl.innerHTML = '';
-
-const accountCard = document.getElementById('settings-account-card');
-if (accountCard) accountCard.style.display = 'none';
-
-const profileCard = document.getElementById('settings-profile-card');
-if (profileCard) profileCard.style.display = 'none';
-
-if (firestoreUnsubscribe) {
-firestoreUnsubscribe();
-firestoreUnsubscribe = null;
-}
-
-if (typeof stopIdleDetector === 'function') stopIdleDetector();
-}
-
-function showLoading(show) {
-const overlay = document.getElementById('loading-overlay');
-if (overlay) overlay.style.display = show ? 'flex' : 'none';
-}
-
-function initFirebase() {
-if (typeof firebase === 'undefined') {
-isAuthReady = true;
-showFirebaseError("Firebase SDK could not be loaded. Please ensure you are online and that CDN scripts loaded correctly.");
-updateStatusDot('status-firebase', 'error', 'CDN Load Error');
-showLoginScreen("Firebase SDK could not be loaded. Please check your internet connection and refresh the page.");
-return;
-}
-
-if (isConfigPlaceholder) {
-isAuthReady = true;
-showFirebaseError("Firebase is not configured. Replace the placeholders in index.html (under firebaseConfig) to enable Firestore/Auth.");
-updateStatusDot('status-firebase', 'error', 'Not Configured');
-showLoginScreen("Firebase is not configured. Replace the placeholder values in firebaseConfig inside index.html with your Firebase project credentials.");
-return;
-}
-
-try {
-firebase.initializeApp(firebaseConfig);
-isFirebaseInitialized = true;
-updateStatusDot('status-firebase', 'connected', 'Connected');
-
-window.auth = firebase.auth();
-window.db = firebase.firestore();
-
-window.auth.setPersistence(firebase.auth.Auth.Persistence.LOCAL)
-.catch((err) => {
-console.error("Failed to set auth persistence:", err);
-showAuthError("Could not enable persistent sign-in: " + err.message);
-});
-
-try {
-window.db.enablePersistence({ synchronizeTabs: true })
-.catch((err) => {
-if (err.code === 'failed-precondition') {
-console.warn("Multiple tabs open, persistence can only be enabled in one tab at a time.");
-} else if (err.code === 'unimplemented') {
-console.warn("The current browser does not support offline persistence.");
-}
-});
-} catch (e) {
-console.error("Error enabling offline persistence:", e);
-}
-
-window.auth.onAuthStateChanged((user) => {
-if (!isAuthReady) {
-isAuthReady = true;
-}
-
-if (user) {
-updateStatusDot('status-auth', 'logged-in', 'Logged In');
-handleAuthenticatedUser(user);
-} else {
-handleUnauthenticatedUser();
-}
-}, (error) => {
-isAuthReady = true;
-console.error("Auth state observer failed:", error);
-showLoginScreen("Authentication error: " + error.message);
-showFirebaseError("Authentication error: " + error.message);
-});
-
-} catch (error) {
-isAuthReady = true;
-console.error("Firebase initialization failed:", error);
-showFirebaseError("Firebase initialization failed: " + error.message);
-updateStatusDot('status-firebase', 'error', 'Init Error');
-showLoginScreen("Firebase initialization failed: " + error.message);
-}
-}
-
-function setupFirestoreSync(user) {
-if (!isFirebaseInitialized || !window.db || !user) {
-console.warn("Firestore sync skipped: Firebase is not ready or user is missing.");
-return;
-}
-// Clean up any previous listeners
-if (firestoreUnsubscribe) {
-firestoreUnsubscribe();
-}
-
-// Show loading overlay while initial data loads
-showLoading(true);
-const docRef = window.db.collection('users').doc(user.uid);
-
-// Real‑time listener on the user document
-firestoreUnsubscribe = docRef.onSnapshot({ includeMetadataChanges: true }, (doc) => {
-showLoading(false);
-// Store the latest snapshot for diffing
-window.lastSyncedState = doc.data();
-
-// Update UI from snapshot
-if (doc.exists) {
-const data = doc.data();
-
-// Merge Firestore data into local state
-state = {
-transactions: [
-...(data.income || []),
-...(data.expenses || []).map(e => ({ ...e, type: 'expense' }))
-],
-savings: data.savings || [],
-financialGoals: data.savingsGoals || data.financialGoals || [],
-debts: data.debts || [],
-budgetCategories: data.budgets || [],
-expenseCategories: data.expenseCategories || ['Housing', 'Food', 'Transport', 'Shopping', 'Entertainment', 'Misc'],
-settings: { currency: 'INR', theme: 'light', ...(data.settings || {}) },
-subscriptions: data.subscriptions || [],
-recurringTransactions: data.recurringTransactions || []
-};
-
-// Format adjustments
-state.debts.forEach(d => {
-if (!d.payments) d.payments = [];
-if (d.isRecurring === undefined) d.isRecurring = false;
-});
-
-syncExpenseCategories();
-applyTheme(state.settings.theme);
-updateAllUI();
-} else {
-// Firestore is empty for this user. Perform auto-migration from local storage.
-handleAutoMigration(user);
-}
-
-// Update connection status based on cache/origin
-if (doc.metadata.fromCache) {
-updateStatusDot('status-firestore', 'warning', 'Offline (Cached)');
-const testStatusEl = document.getElementById('firestore-test-status');
-if (testStatusEl) {
-testStatusEl.innerHTML = '<span style="color:var(--warning)"><i class="fa-solid fa-cloud-slash"></i> Offline - modifications cached</span>';
-}
-if (typeof updateSyncStatus === 'function') updateSyncStatus('offline');
-} else {
-updateStatusDot('status-firestore', 'connected', 'Connected');
-const testStatusEl = document.getElementById('firestore-test-status');
-if (testStatusEl) {
-testStatusEl.innerHTML = '<span style="color:var(--success)"><i class="fa-solid fa-circle-check"></i> Firestore Read/Write verified</span>';
-}
-if (typeof updateSyncStatus === 'function') updateSyncStatus('connected');
-}
-}, (error) => {
-showLoading(false);
-console.error("Firestore sync failed:", error);
-updateStatusDot('status-firestore', 'error', 'Sync Error');
-showFirebaseError("Firestore sync failed: " + error.message);
-});
-}
-
-async function handleAutoMigration(user) {
-const localDataStr = localStorage.getItem(STORAGE_KEY);
-if (localDataStr) {
-try {
-const parsed = JSON.parse(localDataStr);
-console.log("Found local storage data. Initiating auto-migration for UID:", user.uid);
-
-state = {
-transactions: parsed.transactions || [],
-savings: parsed.savings || [],
-financialGoals: parsed.financialGoals || parsed.goals || [],
-debts: parsed.debts || [],
-budgetCategories: parsed.budgetCategories || parsed.budgets || [],
-expenseCategories: parsed.expenseCategories || ['Housing', 'Food', 'Transport', 'Shopping', 'Entertainment', 'Misc'],
-settings: { currency: 'INR', theme: 'light', ...(parsed.settings || {}) },
-subscriptions: parsed.subscriptions || [],
-recurringTransactions: parsed.recurringTransactions || []
-};
-
-// Format corrections
-state.debts.forEach(d => {
-if (!d.payments) d.payments = [];
-if (d.isRecurring === undefined) d.isRecurring = false;
-});
-
-// Save directly to Firestore
-const docRef = window.db.collection('users').doc(user.uid);
-const dataToSave = {
-profile: {
-name: user.displayName || '',
-email: user.email || '',
-photoURL: user.photoURL || ''
-},
-income: state.transactions.filter(t => t.type === 'income'),
-expenses: state.transactions.filter(t => t.type === 'expense'),
-budgets: state.budgetCategories,
-debts: state.debts,
-savings: state.savings || [],
-savingsGoals: state.financialGoals || [],
-settings: state.settings,
-expenseCategories: state.expenseCategories || ['Housing', 'Food', 'Transport', 'Shopping', 'Entertainment', 'Misc'],
-subscriptions: state.subscriptions || [],
-recurringTransactions: state.recurringTransactions || [],
-migrationCompleted: true,
-updatedAt: firebase.firestore.FieldValue.serverTimestamp()
-};
-
-showLoading(true);
-await docRef.set(dataToSave);
-showLoading(false);
-console.log("Auto-migration to Firestore completed successfully.");
-} catch (e) {
-showLoading(false);
-console.error("Migration failed:", e);
-alert("Migration failed: " + e.message);
-}
-} else {
-// Generate fresh data for new user in Firestore
-console.log("No local storage data found. Initializing Firestore with default categories.");
-state = {
-transactions: [],
-savings: [],
-financialGoals: [],
-debts: [],
-budgetCategories: [],
-expenseCategories: ['Housing', 'Food', 'Transport', 'Shopping', 'Entertainment', 'Misc'],
-settings: { currency: 'INR', theme: 'light' },
-subscriptions: [],
-recurringTransactions: []
-};
-initDefaultBudgetCategories();
-
-const docRef = window.db.collection('users').doc(user.uid);
-const dataToSave = {
-profile: {
-name: user.displayName || '',
-email: user.email || '',
-photoURL: user.photoURL || ''
-},
-income: [],
-expenses: [],
-budgets: state.budgetCategories,
-debts: [],
-savings: [],
-savingsGoals: [],
-settings: state.settings,
-expenseCategories: state.expenseCategories,
-subscriptions: [],
-recurringTransactions: [],
-migrationCompleted: true,
-updatedAt: firebase.firestore.FieldValue.serverTimestamp()
-};
-
-try {
-showLoading(true);
-await docRef.set(dataToSave);
-showLoading(false);
-} catch (e) {
-showLoading(false);
-console.error("Failed to initialize user document:", e);
-}
-}
-}
-
-function updateAllUI() {
-updateDashboard();
-updateExpenseTable();
-updateIncomeTable();
-updateBudgets();
-updateDebts();
-updateSavings();
-updateGoalsDashboard();
-updateAnalytics();
-updateInsights();
-updateAdvisor();
-populateCategoryDropdowns();
-renderExpenseCategories();
-
-// Additional UI components that rely on Firestore data
-if (typeof updateForecast === 'function') updateForecast();
-if (typeof updateSmartInsights === 'function') updateSmartInsights();
-}
-
-function showFirebaseError(message) {
-const banner = document.getElementById('firebase-alert-banner');
-const msgEl = document.getElementById('firebase-alert-msg');
-if (banner && msgEl) {
-msgEl.textContent = message;
-banner.style.display = 'block';
-}
-}
-
-function updateStatusDot(id, status, text) {
-const dotEl = document.querySelector(`#${id} .status-dot`);
-const textEl = document.querySelector(`#${id} .status-text`);
-if (!dotEl || !textEl) return;
-
-dotEl.className = 'status-dot';
-if (status === 'connected' || status === 'logged-in') {
-dotEl.classList.add('connected');
-} else if (status === 'error') {
-dotEl.classList.add('error');
-} else if (status === 'loading') {
-dotEl.classList.add('loading');
+function exportData() {
+const dataStr = JSON.stringify(state, null, 2);
+const dataBlob = new Blob([dataStr], { type: 'application/json' });
+const url = URL.createObjectURL(dataBlob);
+const link = document.createElement('a');
+link.href = url;
+link.download = `finova-backup-${new Date().toISOString().split('T')[0]}.json`;
+link.click();
 }
-textEl.textContent = text;
-}
-
-// Helper to update the Sync status UI element
-function updateSyncStatus(state) {
-// state: 'idle', 'syncing', 'saved', 'offline', 'error', 'connected'
-const statusEl = document.getElementById('status-sync');
-if (!statusEl) return;
-const dot = statusEl.querySelector('.status-dot');
-const text = statusEl.querySelector('.status-text');
-let dotClass = 'neutral';
-let display = '';
-switch (state) {
-case 'idle':
-dotClass = 'neutral';
-display = 'Idle';
-break;
-case 'syncing':
-dotClass = 'warning';
-display = 'Syncing...';
-break;
-case 'saved':
-dotClass = 'connected';
-display = 'Changes Saved';
-break;
-case 'offline':
-dotClass = 'warning';
-display = 'Offline';
-break;
-case 'error':
-dotClass = 'error';
-display = 'Error';
-break;
-case 'connected':
-dotClass = 'connected';
-display = 'Connected';
-break;
-default:
-display = state;
-}
-if (dot) dot.className = `status-dot ${dotClass}`;
-if (text) text.textContent = display;
-}
-
-// Idle detection – unsubscribe Firestore listeners after inactivity
-let idleTimer = null;
-const IDLE_TIMEOUT = 5 * 60 * 1000; // 5 minutes
-function startIdleDetector() {
-resetIdleTimer();
-['mousemove', 'mousedown', 'keydown', 'touchstart', 'scroll'].forEach(evt =>
-window.addEventListener(evt, resetIdleTimer)
-);
-}
-function stopIdleDetector() {
-clearTimeout(idleTimer);
-['mousemove', 'mousedown', 'keydown', 'touchstart', 'scroll'].forEach(evt =>
-window.removeEventListener(evt, resetIdleTimer)
-);
-}
-function resetIdleTimer() {
-clearTimeout(idleTimer);
-if (!firestoreUnsubscribe && window.auth && window.auth.currentUser) {
-console.log('User active again, resubscribing to Firestore...');
-setupFirestoreSync(window.auth.currentUser);
-}
-idleTimer = setTimeout(() => {
-// Unsubscribe during idle
-if (firestoreUnsubscribe) {
-firestoreUnsubscribe();
-firestoreUnsubscribe = null;
-updateSyncStatus('idle');
-console.log('Firestore listeners paused due to inactivity');
-const testStatusEl = document.getElementById('firestore-test-status');
-if (testStatusEl) {
-testStatusEl.innerHTML = '<span style="color:var(--text-muted)"><i class="fa-solid fa-pause"></i> Sync paused (idle) - move mouse to resume</span>';
-}
-}
-}, IDLE_TIMEOUT);
-}
-
-// Network status listeners
-window.addEventListener('online', () => {
-updateSyncStatus('connected');
-// Re‑connect if we have a logged‑in user
-if (window.auth && window.auth.currentUser) {
-setupFirestoreSync(window.auth.currentUser);
-startIdleDetector();
-}
-});
-window.addEventListener('offline', () => {
-updateSyncStatus('offline');
-});
-
-async function handleLogin() {
-const signInBtn = document.getElementById('google-signin-btn');
-
-if (!isFirebaseInitialized || !window.auth) {
-showAuthError("Firebase is not initialized. Please verify your configuration settings and refresh the page.");
-return;
-}
-
-clearAuthError();
-
-try {
-if (signInBtn) {
-signInBtn.disabled = true;
-signInBtn.innerHTML = '<div class="spinner" style="width:20px;height:20px;border-width:3px;"></div> Signing in...';
-}
 
-const provider = new firebase.auth.GoogleAuthProvider();
-await window.auth.signInWithPopup(provider);
-} catch (err) {
-console.error("Google Sign-In failed:", err);
-showAuthError(getAuthErrorMessage(err));
-} finally {
-if (signInBtn) {
-signInBtn.disabled = false;
-signInBtn.innerHTML = '<i class="fa-brands fa-google"></i> Continue with Google';
-}
-}
-}
-
-// Toast notifications utility
-function showToast(message, type = 'info') {
-const container = document.getElementById('toast-container');
-if (!container) return;
-
-const toast = document.createElement('div');
-toast.className = `toast-msg ${type}`;
-
-let iconClass = 'fa-circle-info';
-if (type === 'success') iconClass = 'fa-circle-check';
-if (type === 'error') iconClass = 'fa-triangle-exclamation';
-
-toast.innerHTML = `<i class="fa-solid ${iconClass}"></i><span>${message}</span>`;
-container.appendChild(toast);
-
-// Trigger transition
-setTimeout(() => toast.classList.add('show'), 10);
-
-// Auto fade out and remove
-setTimeout(() => {
-toast.classList.remove('show');
-setTimeout(() => toast.remove(), 300);
-}, 4000);
-}
-
-// Data Management: JSON Export
-function exportDataJSON() {
-try {
-const dataStr = "data:text/json;charset=utf-8," + encodeURIComponent(JSON.stringify(state, null, 2));
-const downloadAnchor = document.createElement('a');
-downloadAnchor.setAttribute("href", dataStr);
-downloadAnchor.setAttribute("download", `finova_data_export_${new Date().toISOString().split('T')[0]}.json`);
-document.body.appendChild(downloadAnchor);
-downloadAnchor.click();
-downloadAnchor.remove();
-showToast("JSON data exported successfully!", "success");
-} catch (err) {
-console.error("Export JSON failed:", err);
-showToast("Export failed: " + err.message, "error");
-}
-}
-
-// Data Management: CSV Export
-function exportDataCSV() {
-try {
-if (!state.transactions || state.transactions.length === 0) {
-showToast("No transaction data to export.", "error");
-return;
-}
-const headers = ["ID", "Type", "Date", "Amount", "Description", "Category", "Need/Want", "Created At", "Updated At"];
-const rows = state.transactions.map(t => [
-t.id,
-t.type,
-t.date,
-t.amount,
-`"${(t.desc || '').replace(/"/g, '""')}"`,
-t.category || '',
-t.needWant || '',
-t.createdAt || '',
-t.updatedAt || ''
-]);
-const csvContent = "data:text/csv;charset=utf-8,"
-+ [headers.join(","), ...rows.map(r => r.join(","))].join("\n");
-const downloadAnchor = document.createElement('a');
-downloadAnchor.setAttribute("href", encodeURI(csvContent));
-downloadAnchor.setAttribute("download", `finova_transactions_export_${new Date().toISOString().split('T')[0]}.csv`);
-document.body.appendChild(downloadAnchor);
-downloadAnchor.click();
-downloadAnchor.remove();
-showToast("CSV data exported successfully!", "success");
-} catch (err) {
-console.error("Export CSV failed:", err);
-showToast("Export failed: " + err.message, "error");
-}
-}
-
-function triggerImportJSON() {
-document.getElementById('import-file-input').click();
-}
-// Data Management: JSON Import
-async function handleImportJSON(event) {
+function importData(event) {
 const file = event.target.files[0];
 if (!file) return;
 
 const reader = new FileReader();
-reader.onload = async function (e) {
+reader.onload = (e) => {
 try {
 const imported = JSON.parse(e.target.result);
-
-if (typeof imported !== 'object' || imported === null) {
-throw new Error("Invalid structure. Root must be a JSON object.");
-}
-
-let importedCount = 0;
-let skippedCount = 0;
-
-const mergeList = (targetArray, sourceArray, name) => {
-if (!Array.isArray(sourceArray)) return;
-sourceArray.forEach(item => {
-if (!item.id) item.id = generateId();
-
-// Field validations
-if (name === 'transactions') {
-if (!item.date || isNaN(parseFloat(item.amount)) || !item.type) return;
-}
-if (name === 'budgetCategories') {
-if (!item.name || isNaN(parseFloat(item.budgetAmount))) return;
-}
-if (name === 'debts') {
-if (!item.name || isNaN(parseFloat(item.totalOwed))) return;
-}
-
-// Prevent duplicates
-const exists = targetArray.some(x => x.id === item.id);
-if (exists) {
-skippedCount++;
-} else {
-if (!item.createdAt) item.createdAt = new Date().toISOString();
-if (!item.updatedAt) item.updatedAt = new Date().toISOString();
-targetArray.push(item);
-importedCount++;
-}
-});
-};
-
-if (imported.transactions) mergeList(state.transactions, imported.transactions, 'transactions');
-if (imported.savings) mergeList(state.savings, imported.savings, 'savings');
-if (imported.financialGoals) mergeList(state.financialGoals, imported.financialGoals, 'financialGoals');
-if (imported.debts) mergeList(state.debts, imported.debts, 'debts');
-if (imported.budgetCategories) mergeList(state.budgetCategories, imported.budgetCategories, 'budgetCategories');
-
-if (imported.settings) {
-state.settings = { ...state.settings, ...imported.settings };
-}
-
-if (importedCount > 0) {
-await saveData();
-showToast(`Import successful: ${importedCount} items added, ${skippedCount} duplicate items skipped.`, "success");
-} else {
-showToast(`No new items imported. ${skippedCount} duplicates skipped.`, "info");
-}
+Object.assign(state, imported);
+saveData();
+location.reload();
 } catch (err) {
-console.error("JSON Import failed:", err);
-showToast("Import failed: " + err.message, "error");
+alert('Failed to import data');
 }
-event.target.value = '';
 };
 reader.readAsText(file);
 }
 
-function displayUserProfile(user) {
-const oldLoginBtn = document.getElementById('google-login-btn');
-if (oldLoginBtn) oldLoginBtn.remove();
-
-// Update the settings profile card with user info
-const sAvatar = document.getElementById('settings-user-avatar');
-const sName = document.getElementById('settings-user-name');
-const sEmail = document.getElementById('settings-user-email');
-if (sAvatar) sAvatar.src = user.photoURL || 'https://www.gravatar.com/avatar/00000000000000000000000000000000?d=mp&f=y';
-if (sName) sName.textContent = user.displayName || 'User';
-if (sEmail) sEmail.textContent = user.email || '';
-}
-
-function clearUserProfile() {
-const oldLoginBtn = document.getElementById('google-login-btn');
-if (oldLoginBtn) oldLoginBtn.remove();
-}
-
-async function handleSettingsLogout() {
-try {
-await window.auth.signOut();
-showToast("Signed out successfully.", "info");
-} catch (err) {
-console.error("Logout failed:", err);
-showToast("Logout failed: " + err.message, "error");
+function clearAllData() {
+if (confirm('Are you sure? This will delete all your data.')) {
+localStorage.removeItem('finova-data');
+location.reload();
 }
 }
 
-function initializeAuthenticatedApp() {
-if (appInitialized) return;
-appInitialized = true;
-
-const yearSelect = document.getElementById('analytics-year-filter');
-if (yearSelect) {
-const currentYear = new Date().getFullYear();
-let yearHtml = '';
-for (let y = currentYear - 5; y <= currentYear + 5; y++) {
-yearHtml += `<option value="${y}" ${y === currentYear ? 'selected' : ''}>${y}</option>`;
-}
-yearSelect.innerHTML = yearHtml;
-}
-
-const monthSelect = document.getElementById('analytics-month-filter');
-if (monthSelect) {
-const cm = (new Date().getMonth() + 1).toString().padStart(2, '0');
-monthSelect.value = cm;
-}
-
-populateCategoryDropdowns();
-renderExpenseCategories();
-applyTheme(state.settings.theme);
-initCharts();
-
-['expense-filter-from', 'expense-filter-to', 'expense-filter-category'].forEach(id => {
-const el = document.getElementById(id);
-if (el) el.addEventListener('change', updateExpenseTable);
-});
-
-const sideNavItems = document.querySelectorAll('.nav-item');
-sideNavItems.forEach(item => {
-item.setAttribute('tabindex', '0');
-item.setAttribute('role', 'button');
-item.addEventListener('keydown', (e) => {
-if (e.key === 'Enter' || e.key === ' ') {
-e.preventDefault();
-item.click();
-}
+// ===== EVENT LISTENERS =====
+function attachEventListeners() {
+// Navigation
+document.querySelectorAll('.nav-item').forEach(item => {
+item.addEventListener('click', () => {
+const target = item.getAttribute('data-target');
+document.querySelectorAll('.nav-item').forEach(i => i.classList.remove('active'));
+document.querySelectorAll('.view-section').forEach(s => s.classList.remove('active'));
+item.classList.add('active');
+document.getElementById(target).classList.add('active');
 });
 });
 
-document.querySelectorAll('.modal-close').forEach(btn => {
-btn.setAttribute('tabindex', '0');
-btn.setAttribute('role', 'button');
-btn.setAttribute('aria-label', 'Close modal');
-btn.addEventListener('keydown', (e) => {
-if (e.key === 'Enter' || e.key === ' ') {
-e.preventDefault();
-btn.click();
-}
-});
-});
-}
-
-// --- HELPERS: Mobile sidebar overlay ---
-function openMobileSidebar() {
-document.getElementById('sidebar').classList.add('open');
-document.getElementById('sidebar-overlay').classList.add('active');
-}
-
-function closeMobileSidebar() {
-document.getElementById('sidebar').classList.remove('open');
-document.getElementById('sidebar-overlay').classList.remove('active');
-}
-
-// --- INIT ---
+// Mobile menu
 document.getElementById('mobile-menu-btn').addEventListener('click', () => {
-const sidebar = document.getElementById('sidebar');
-if (sidebar.classList.contains('open')) {
-closeMobileSidebar();
-} else {
-openMobileSidebar();
-}
+document.getElementById('sidebar').classList.toggle('open');
 });
 
-// Tap outside sidebar (on overlay) to dismiss — mobile only
 document.getElementById('sidebar-overlay').addEventListener('click', () => {
-closeMobileSidebar();
+document.getElementById('sidebar').classList.remove('open');
 });
 
-window.addEventListener('DOMContentLoaded', () => {
-showAuthLoading();
-
-const signInBtn = document.getElementById('google-signin-btn');
-if (signInBtn) {
-signInBtn.addEventListener('click', handleLogin);
+// Modal close on overlay click
+document.querySelectorAll('.modal-overlay').forEach(modal => {
+modal.addEventListener('click', (e) => {
+if (e.target === modal) modal.classList.remove('active');
+});
+});
 }
-
-initFirebase();
-});
-
 </script>
 </body>
+
+</html>
