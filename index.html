@@ -1764,11 +1764,11 @@
                             <div class="metric-value" id="dash-cash">₹0</div>
                         </div>
                         <div class="card metric-card">
-                            <div class="metric-icon" style="background: var(--warning); color: white;">
-                                <i class="fa-solid fa-piggy-bank"></i>
+                            <div class="metric-icon" style="background: rgba(245, 158, 11, 0.15); color: var(--warning);">
+                                <i class="fa-solid fa-receipt"></i>
                             </div>
-                            <div class="metric-title">Total Savings</div>
-                            <div class="metric-value" id="dash-savings">₹0</div>
+                            <div class="metric-title">Outstanding Dues</div>
+                            <div class="metric-value" id="dash-outstanding">₹0</div>
                         </div>
                     </div>
 
@@ -2243,6 +2243,16 @@
                             </select>
                         </div>
                     </div>
+                    <div class="toggle-row" style="margin-top: 1rem; margin-bottom: 1rem;">
+                        <div>
+                            <div class="form-label" style="margin-bottom:0;">Pay Later</div>
+                            <div class="text-muted" style="font-size:0.75rem;">Mark this expense to pay later (adds to outstanding dues and does not deduct from current cash)</div>
+                        </div>
+                        <label class="toggle-switch">
+                            <input type="checkbox" id="tx-pay-later">
+                            <span class="toggle-slider"></span>
+                        </label>
+                    </div>
                     <button type="submit" class="btn btn-primary"
                         style="width: 100%; justify-content: center; margin-top: 1rem;">Save Expense</button>
                 </form>
@@ -2345,9 +2355,11 @@
                     </div>
                     <div class="form-group">
                         <label class="form-label">Amount Paid (₹)</label>
-                        <input type="number" class="form-control" id="payment-amount" step="0.01" required>
+                        <input type="number" class="form-control" id="payment-amount" step="0.01" required oninput="validatePaymentAmount()">
+                        <div id="payment-remaining-hint" class="text-muted" style="font-size:0.75rem; margin-top:0.35rem;"></div>
+                        <div id="payment-error-msg" style="color: var(--danger); font-size: 0.8rem; margin-top: 0.35rem; display: none;"></div>
                     </div>
-                    <button type="submit" class="btn btn-primary"
+                    <button type="submit" id="btn-save-payment" class="btn btn-primary"
                         style="width: 100%; justify-content: center; margin-top: 1rem;">Save Payment</button>
                 </form>
             </div>
@@ -2661,6 +2673,7 @@
             document.getElementById(id).classList.add('active');
             if (id === 'modal-add-transaction') {
                 document.getElementById('tx-date').valueAsDate = new Date();
+                document.getElementById('tx-pay-later').checked = false;
             }
             if (id === 'modal-add-income') {
                 document.getElementById('income-date').valueAsDate = new Date();
@@ -2756,6 +2769,7 @@
             const descVal = document.getElementById('tx-desc').value.trim();
             const catVal = document.getElementById('tx-category').value;
             const needWantVal = document.getElementById('tx-need-want').value;
+            const payLaterVal = document.getElementById('tx-pay-later').checked;
 
             // Validate Input
             if (!dateVal || isNaN(Date.parse(dateVal))) {
@@ -2783,6 +2797,7 @@
                 desc: descVal,
                 category: catVal,
                 needWant: needWantVal,
+                payLater: payLaterVal,
                 createdAt: new Date().toISOString(),
                 updatedAt: new Date().toISOString()
             };
@@ -2933,6 +2948,8 @@
 
             let monthlyIncome = 0;
             let monthlyExpense = 0;
+            let cashDeductibleExpenses = 0;
+            let outstandingDues = 0;
 
             const recentTxs = state.transactions
                 .sort((a, b) => new Date(b.date) - new Date(a.date));
@@ -2940,17 +2957,25 @@
             state.transactions.forEach(tx => {
                 if (tx.date.startsWith(currentMonthStr)) {
                     if (tx.type === 'income') monthlyIncome += tx.amount;
-                    if (tx.type === 'expense') monthlyExpense += tx.amount;
+                    if (tx.type === 'expense') {
+                        monthlyExpense += tx.amount;
+                        if (!tx.payLater) {
+                            cashDeductibleExpenses += tx.amount;
+                        }
+                    }
+                }
+                if (tx.type === 'expense' && tx.payLater) {
+                    outstandingDues += tx.amount;
                 }
             });
 
-            const currentCash = monthlyIncome - monthlyExpense;
+            const currentCash = monthlyIncome - cashDeductibleExpenses;
 
             document.getElementById('dashboard-date').textContent = now.toLocaleDateString('en-US', { month: 'long', year: 'numeric' });
             document.getElementById('dash-income').textContent = formatCurrency(monthlyIncome);
             document.getElementById('dash-expense').textContent = formatCurrency(monthlyExpense);
             document.getElementById('dash-cash').textContent = formatCurrency(currentCash);
-            document.getElementById('dash-savings').textContent = formatCurrency(getTotalSavings());
+            document.getElementById('dash-outstanding').textContent = formatCurrency(outstandingDues);
 
             const txBody = document.getElementById('dash-recent-tx');
             txBody.innerHTML = '';
@@ -2959,7 +2984,7 @@
                 const isInc = tx.type === 'income';
                 tr.innerHTML = `
                    <td>${tx.date}</td>
-                   <td>${tx.desc} <div class="text-muted" style="font-size:0.7rem">${tx.category}</div></td>
+                   <td>${tx.desc} ${tx.payLater ? ' <span class="tag" style="background: rgba(245, 158, 11, 0.15); color: var(--warning); font-size:0.6rem; padding: 2px 6px;">Pay Later</span>' : ''}<div class="text-muted" style="font-size:0.7rem">${tx.category}</div></td>
                    <td style="color: var(--${isInc ? 'success' : 'text-main'}); font-weight:600;">
                        ${isInc ? '+' : '-'}${formatCurrency(tx.amount)}
                    </td>
@@ -2973,8 +2998,9 @@
 
             const billsEl = document.getElementById('dash-upcoming-bills');
             if (billsEl) {
-                if (state.debts.length > 0) {
-                    billsEl.innerHTML = state.debts.map(d => {
+                const unpaidDebts = state.debts.filter(d => getDebtPaid(d) < d.totalOwed);
+                if (unpaidDebts.length > 0) {
+                    billsEl.innerHTML = unpaidDebts.map(d => {
                         if (d.isRecurring && d.emiAmount) {
                             const nextDue = getNextDueDate(d);
                             return `<div style="display:flex;justify-content:space-between;padding:0.5rem 0;border-bottom:1px solid var(--border-color);">
@@ -2990,7 +3016,7 @@
                        </div>`;
                     }).join('');
                 } else {
-                    billsEl.innerHTML = '<p class="text-muted">No debts tracked.</p>';
+                    billsEl.innerHTML = '<p class="text-muted">No unpaid debts tracked.</p>';
                 }
             }
 
@@ -3032,7 +3058,7 @@
                 const tr = document.createElement('tr');
                 tr.innerHTML = `
                    <td>${tx.date}</td>
-                   <td><strong>${tx.desc}</strong></td>
+                   <td><strong>${tx.desc}</strong>${tx.payLater ? ' <span class="tag" style="background: rgba(245, 158, 11, 0.15); color: var(--warning); margin-left: 5px;">Pay Later</span>' : ''}</td>
                    <td><span class="tag" style="background:var(--border-color)">${tx.category}</span></td>
                    <td>
                        ${tx.needWant === 'need' ? '<span class="tag tag-need">Need</span>' :
@@ -3044,7 +3070,7 @@
                            <i class="fa-solid fa-trash"></i>
                        </button>
                    </td>
-               `;
+                `;
                 tbody.appendChild(tr);
             });
 
@@ -3159,8 +3185,46 @@
             document.getElementById('payment-debt-id').value = debtId;
             const debt = state.debts.find(d => d.id === debtId);
             openModal('modal-add-payment');
+            // Reset error state
+            const errorEl = document.getElementById('payment-error-msg');
+            const hintEl = document.getElementById('payment-remaining-hint');
+            const saveBtn = document.getElementById('btn-save-payment');
+            errorEl.style.display = 'none';
+            errorEl.textContent = '';
+            saveBtn.disabled = false;
+            saveBtn.style.opacity = '1';
+            if (debt) {
+                const remaining = debt.totalOwed - getDebtPaid(debt);
+                hintEl.textContent = `Remaining balance: ${formatCurrency(remaining)}`;
+            } else {
+                hintEl.textContent = '';
+            }
             if (debt?.isRecurring && debt.emiAmount) {
                 document.getElementById('payment-amount').value = debt.emiAmount;
+                validatePaymentAmount();
+            }
+        }
+
+        function validatePaymentAmount() {
+            const debtId = document.getElementById('payment-debt-id').value;
+            const debt = state.debts.find(d => d.id === debtId);
+            if (!debt) return;
+
+            const amtVal = parseFloat(document.getElementById('payment-amount').value);
+            const remaining = debt.totalOwed - getDebtPaid(debt);
+            const errorEl = document.getElementById('payment-error-msg');
+            const saveBtn = document.getElementById('btn-save-payment');
+
+            if (!isNaN(amtVal) && amtVal > remaining) {
+                errorEl.textContent = `Amount exceeds remaining balance of ${formatCurrency(remaining)}`;
+                errorEl.style.display = 'block';
+                saveBtn.disabled = true;
+                saveBtn.style.opacity = '0.5';
+            } else {
+                errorEl.style.display = 'none';
+                errorEl.textContent = '';
+                saveBtn.disabled = false;
+                saveBtn.style.opacity = '1';
             }
         }
 
@@ -3179,6 +3243,13 @@
             }
             if (isNaN(amtVal) || amtVal <= 0) {
                 showToast("Payment amount must be a positive number.", "error");
+                return;
+            }
+
+            const paid = getDebtPaid(debt);
+            const remaining = debt.totalOwed - paid;
+            if (amtVal > remaining) {
+                showToast(`Payment amount cannot exceed remaining balance of ${formatCurrency(remaining)}.`, "error");
                 return;
             }
 
@@ -3242,14 +3313,18 @@
                        <div><div class="metric-title">Due Day</div><div style="font-weight:600;">${d.dueDay ? 'Day ' + d.dueDay : '—'}</div></div>
                    </div>` : '';
 
+                const actionButton = remaining <= 0 ?
+                    `<span class="tag tag-income" style="display: inline-flex; align-items: center; gap: 6px; padding: 0.5rem 1rem; font-size: 0.875rem; font-weight: 600;"><i class="fa-solid fa-circle-check"></i> Paid Off</span>` :
+                    `<button class="btn btn-primary debt-action-primary" onclick="openPaymentModal('${d.id}')">
+                        <i class="fa-solid fa-plus"></i> Add Payment
+                    </button>`;
+
                 return `
                    <div class="card" style="margin-bottom:1rem;">
                         <div class="card-header debt-card-header">
                            <h3>${d.name}${emiBadge}</h3>
-                           <div class="debt-actions">
-                               <button class="btn btn-primary debt-action-primary" onclick="openPaymentModal('${d.id}')">
-                                   <i class="fa-solid fa-plus"></i> Add Payment
-                               </button>
+                           <div class="debt-actions" style="align-items: center; display: flex; gap: 0.5rem;">
+                               ${actionButton}
                                <button class="btn btn-secondary" onclick="openEditDebtModal('${d.id}')">
                                    <i class="fa-solid fa-pen"></i> Edit
                                </button>
