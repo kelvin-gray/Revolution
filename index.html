@@ -2119,6 +2119,7 @@
                                 </table>
                             </div>
                         </div>
+                    </div>
                 </section>
 
                 <!-- ================= VIEW: EXPENSE CATEGORY MANAGER ================= -->
@@ -3998,11 +3999,11 @@
                 }
 
                 const results = state.transactions.filter(tx =>
-                    tx.desc.toLowerCase().includes(query) ||
-                    tx.category.toLowerCase().includes(query) ||
-                    tx.amount.toString().includes(query) ||
-                    tx.type.toLowerCase().includes(query) ||
-                    tx.date.includes(query)
+                    (tx.desc || '').toLowerCase().includes(query) ||
+                    (tx.category || '').toLowerCase().includes(query) ||
+                    (tx.amount || '').toString().includes(query) ||
+                    (tx.type || '').toLowerCase().includes(query) ||
+                    (tx.date || '').includes(query)
                 );
 
                 renderSearchResults(results, query);
@@ -4040,11 +4041,11 @@
                    <td>${tx.date}</td>
                    <td><span class="tag ${isInc ? 'tag-income' : 'tag-expense'}">${tx.type}</span></td>
                    <td><strong>${tx.desc}</strong></td>
-                   <td><span class="tag" style="background:var(--border-color)">${tx.category}</span></td>
+                   <td><span class="tag" style="background:var(--border-color)">${tx.category || (isInc ? 'Income' : 'N/A')}</span></td>
                    <td style="color: var(--${isInc ? 'success' : 'text-main'}); font-weight:600;">
                        ${isInc ? '+' : '-'}${formatCurrency(tx.amount)}
                    </td>
-               `;
+                `;
                 searchContainer.appendChild(tr);
             });
         }
