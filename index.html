@@ -1149,7 +1149,8 @@
 
             .debt-actions .btn {
                 padding: 0.75rem 1rem;
-                height: 44px; /* comfortable touch target & equal height */
+                height: 44px;
+                /* comfortable touch target & equal height */
                 width: 100%;
                 box-sizing: border-box;
             }
@@ -1764,7 +1765,8 @@
                             <div class="metric-value" id="dash-cash">₹0</div>
                         </div>
                         <div class="card metric-card">
-                            <div class="metric-icon" style="background: rgba(245, 158, 11, 0.15); color: var(--warning);">
+                            <div class="metric-icon"
+                                style="background: rgba(245, 158, 11, 0.15); color: var(--warning);">
                                 <i class="fa-solid fa-receipt"></i>
                             </div>
                             <div class="metric-title">Outstanding Dues</div>
@@ -2247,7 +2249,8 @@
                     <div class="toggle-row" style="margin-top: 1rem; margin-bottom: 1rem;">
                         <div>
                             <div class="form-label" style="margin-bottom:0;">Pay Later</div>
-                            <div class="text-muted" style="font-size:0.75rem;">Mark this expense to pay later (adds to outstanding dues and does not deduct from current cash)</div>
+                            <div class="text-muted" style="font-size:0.75rem;">Mark this expense to pay later (adds to
+                                outstanding dues and does not deduct from current cash)</div>
                         </div>
                         <label class="toggle-switch">
                             <input type="checkbox" id="tx-pay-later">
@@ -2356,9 +2359,12 @@
                     </div>
                     <div class="form-group">
                         <label class="form-label">Amount Paid (₹)</label>
-                        <input type="number" class="form-control" id="payment-amount" step="0.01" required oninput="validatePaymentAmount()">
-                        <div id="payment-remaining-hint" class="text-muted" style="font-size:0.75rem; margin-top:0.35rem;"></div>
-                        <div id="payment-error-msg" style="color: var(--danger); font-size: 0.8rem; margin-top: 0.35rem; display: none;"></div>
+                        <input type="number" class="form-control" id="payment-amount" step="0.01" required
+                            oninput="validatePaymentAmount()">
+                        <div id="payment-remaining-hint" class="text-muted"
+                            style="font-size:0.75rem; margin-top:0.35rem;"></div>
+                        <div id="payment-error-msg"
+                            style="color: var(--danger); font-size: 0.8rem; margin-top: 0.35rem; display: none;"></div>
                     </div>
                     <button type="submit" id="btn-save-payment" class="btn btn-primary"
                         style="width: 100%; justify-content: center; margin-top: 1rem;">Save Payment</button>
