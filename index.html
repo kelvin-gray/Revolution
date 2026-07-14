@@ -1149,12 +1149,8 @@
 
             .debt-actions .btn {
                 padding: 0.75rem 1rem;
-<<<<<<< HEAD
                 height: 44px;
                 /* comfortable touch target & equal height */
-=======
-                height: 44px; /* comfortable touch target & equal height */
->>>>>>> 3449357 (fixed almost everything and added a guest profile)
                 width: 100%;
                 box-sizing: border-box;
             }
@@ -2363,7 +2359,6 @@
                     </div>
                     <div class="form-group">
                         <label class="form-label">Amount Paid (₹)</label>
-<<<<<<< HEAD
                         <input type="number" class="form-control" id="payment-amount" step="0.01" required
                             oninput="validatePaymentAmount()">
                         <div id="payment-remaining-hint" class="text-muted"
@@ -2372,11 +2367,6 @@
                             style="color: var(--danger); font-size: 0.8rem; margin-top: 0.35rem; display: none;"></div>
                     </div>
                     <button type="submit" id="btn-save-payment" class="btn btn-primary"
-=======
-                        <input type="number" class="form-control" id="payment-amount" step="0.01" required>
-                    </div>
-                    <button type="submit" class="btn btn-primary"
->>>>>>> 3449357 (fixed almost everything and added a guest profile)
                         style="width: 100%; justify-content: center; margin-top: 1rem;">Save Payment</button>
                 </form>
             </div>
@@ -3001,11 +2991,7 @@
                 const isInc = tx.type === 'income';
                 tr.innerHTML = `
                    <td>${tx.date}</td>
-<<<<<<< HEAD
                    <td>${tx.desc} ${tx.payLater ? ' <span class="tag" style="background: rgba(245, 158, 11, 0.15); color: var(--warning); font-size:0.6rem; padding: 2px 6px;">Pay Later</span>' : ''}<div class="text-muted" style="font-size:0.7rem">${tx.category}</div></td>
-=======
-                   <td>${tx.desc} <div class="text-muted" style="font-size:0.7rem">${tx.category}</div></td>
->>>>>>> 3449357 (fixed almost everything and added a guest profile)
                    <td style="color: var(--${isInc ? 'success' : 'text-main'}); font-weight:600;">
                        ${isInc ? '+' : '-'}${formatCurrency(tx.amount)}
                    </td>
@@ -3019,14 +3005,9 @@
 
             const billsEl = document.getElementById('dash-upcoming-bills');
             if (billsEl) {
-<<<<<<< HEAD
                 const unpaidDebts = state.debts.filter(d => getDebtPaid(d) < d.totalOwed);
                 if (unpaidDebts.length > 0) {
                     billsEl.innerHTML = unpaidDebts.map(d => {
-=======
-                if (state.debts.length > 0) {
-                    billsEl.innerHTML = state.debts.map(d => {
->>>>>>> 3449357 (fixed almost everything and added a guest profile)
                         if (d.isRecurring && d.emiAmount) {
                             const nextDue = getNextDueDate(d);
                             return `<div style="display:flex;justify-content:space-between;padding:0.5rem 0;border-bottom:1px solid var(--border-color);">
@@ -3084,11 +3065,7 @@
                 const tr = document.createElement('tr');
                 tr.innerHTML = `
                    <td>${tx.date}</td>
-<<<<<<< HEAD
                    <td><strong>${tx.desc}</strong>${tx.payLater ? ' <span class="tag" style="background: rgba(245, 158, 11, 0.15); color: var(--warning); margin-left: 5px;">Pay Later</span>' : ''}</td>
-=======
-                   <td><strong>${tx.desc}</strong></td>
->>>>>>> 3449357 (fixed almost everything and added a guest profile)
                    <td><span class="tag" style="background:var(--border-color)">${tx.category}</span></td>
                    <td>
                        ${tx.needWant === 'need' ? '<span class="tag tag-need">Need</span>' :
@@ -3100,11 +3077,7 @@
                            <i class="fa-solid fa-trash"></i>
                        </button>
                    </td>
-<<<<<<< HEAD
                 `;
-=======
-               `;
->>>>>>> 3449357 (fixed almost everything and added a guest profile)
                 tbody.appendChild(tr);
             });
 
@@ -3219,7 +3192,6 @@
             document.getElementById('payment-debt-id').value = debtId;
             const debt = state.debts.find(d => d.id === debtId);
             openModal('modal-add-payment');
-<<<<<<< HEAD
             // Reset error state
             const errorEl = document.getElementById('payment-error-msg');
             const hintEl = document.getElementById('payment-remaining-hint');
@@ -3260,10 +3232,6 @@
                 errorEl.textContent = '';
                 saveBtn.disabled = false;
                 saveBtn.style.opacity = '1';
-=======
-            if (debt?.isRecurring && debt.emiAmount) {
-                document.getElementById('payment-amount').value = debt.emiAmount;
->>>>>>> 3449357 (fixed almost everything and added a guest profile)
             }
         }
 
@@ -3285,7 +3253,6 @@
                 return;
             }
 
-<<<<<<< HEAD
             const paid = getDebtPaid(debt);
             const remaining = debt.totalOwed - paid;
             if (amtVal > remaining) {
@@ -3293,8 +3260,6 @@
                 return;
             }
 
-=======
->>>>>>> 3449357 (fixed almost everything and added a guest profile)
             if (!debt.payments) debt.payments = [];
             debt.payments.push({
                 month: monthVal,
@@ -3354,29 +3319,19 @@
                        <div><div class="metric-title">Next Due</div><div style="font-weight:600;">${getNextDueDate(d)}</div></div>
                        <div><div class="metric-title">Due Day</div><div style="font-weight:600;">${d.dueDay ? 'Day ' + d.dueDay : '—'}</div></div>
                    </div>` : '';
-<<<<<<< HEAD
 
                 const actionButton = remaining <= 0 ?
                     `<span class="tag tag-income" style="display: inline-flex; align-items: center; gap: 6px; padding: 0.5rem 1rem; font-size: 0.875rem; font-weight: 600;"><i class="fa-solid fa-circle-check"></i> Paid Off</span>` :
                     `<button class="btn btn-primary debt-action-primary" onclick="openPaymentModal('${d.id}')">
                         <i class="fa-solid fa-plus"></i> Add Payment
                     </button>`;
-=======
->>>>>>> 3449357 (fixed almost everything and added a guest profile)
 
                 return `
                    <div class="card" style="margin-bottom:1rem;">
                         <div class="card-header debt-card-header">
                            <h3>${d.name}${emiBadge}</h3>
-<<<<<<< HEAD
                            <div class="debt-actions" style="align-items: center; display: flex; gap: 0.5rem;">
                                ${actionButton}
-=======
-                           <div class="debt-actions">
-                               <button class="btn btn-primary debt-action-primary" onclick="openPaymentModal('${d.id}')">
-                                   <i class="fa-solid fa-plus"></i> Add Payment
-                               </button>
->>>>>>> 3449357 (fixed almost everything and added a guest profile)
                                <button class="btn btn-secondary" onclick="openEditDebtModal('${d.id}')">
                                    <i class="fa-solid fa-pen"></i> Edit
                                </button>
@@ -4092,19 +4047,11 @@
                    <td>${tx.date}</td>
                    <td><span class="tag ${isInc ? 'tag-income' : 'tag-expense'}">${tx.type}</span></td>
                    <td><strong>${tx.desc}</strong></td>
-<<<<<<< HEAD
                    <td><span class="tag" style="background:var(--border-color)">${tx.category || (isInc ? 'Income' : 'N/A')}</span></td>
                    <td style="color: var(--${isInc ? 'success' : 'text-main'}); font-weight:600;">
                        ${isInc ? '+' : '-'}${formatCurrency(tx.amount)}
                    </td>
                 `;
-=======
-                   <td><span class="tag" style="background:var(--border-color)">${tx.category}</span></td>
-                   <td style="color: var(--${isInc ? 'success' : 'text-main'}); font-weight:600;">
-                       ${isInc ? '+' : '-'}${formatCurrency(tx.amount)}
-                   </td>
-               `;
->>>>>>> 3449357 (fixed almost everything and added a guest profile)
                 searchContainer.appendChild(tr);
             });
         }
@@ -5083,8 +5030,4 @@
         });
 
     </script>
-<<<<<<< HEAD
 </body>
-=======
-</body>
->>>>>>> 3449357 (fixed almost everything and added a guest profile)
