@@ -1390,7 +1390,7 @@
             display: flex;
             align-items: center;
             gap: 10px;
-            transform: translateY(-20px);
+            transform: translateY(20px);
             opacity: 0;
             transition: all 0.3s cubic-bezier(0.68, -0.55, 0.265, 1.55);
             pointer-events: auto;
@@ -1416,6 +1416,86 @@
 
         .toast-msg.info {
             border-left: 4px solid var(--primary);
+        }
+
+        /* Custom Confirm Dialog */
+        .confirm-overlay {
+            position: fixed;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background: rgba(0, 0, 0, 0.5);
+            backdrop-filter: blur(6px);
+            -webkit-backdrop-filter: blur(6px);
+            z-index: 20000;
+            display: none;
+            align-items: center;
+            justify-content: center;
+            opacity: 0;
+            transition: opacity 0.25s ease;
+        }
+
+        .confirm-overlay.active {
+            display: flex;
+            opacity: 1;
+        }
+
+        .confirm-dialog {
+            background: var(--bg-color);
+            border: 1px solid var(--glass-border);
+            border-radius: var(--radius-lg);
+            padding: 2rem;
+            max-width: 420px;
+            width: 90%;
+            box-shadow: 0 25px 60px -12px rgba(0, 0, 0, 0.35);
+            transform: scale(0.9) translateY(20px);
+            transition: transform 0.3s cubic-bezier(0.34, 1.56, 0.64, 1);
+            text-align: center;
+        }
+
+        .confirm-overlay.active .confirm-dialog {
+            transform: scale(1) translateY(0);
+        }
+
+        .confirm-icon {
+            width: 56px;
+            height: 56px;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            margin: 0 auto 1.25rem;
+            font-size: 1.5rem;
+            background: var(--danger-light);
+            color: var(--danger);
+        }
+
+        .confirm-title {
+            font-size: 1.15rem;
+            font-weight: 600;
+            color: var(--text-main);
+            margin-bottom: 0.5rem;
+        }
+
+        .confirm-message {
+            font-size: 0.9rem;
+            color: var(--text-muted);
+            line-height: 1.5;
+            margin-bottom: 1.75rem;
+        }
+
+        .confirm-actions {
+            display: flex;
+            gap: 0.75rem;
+            justify-content: center;
+        }
+
+        .confirm-actions .btn {
+            min-width: 110px;
+            justify-content: center;
+            font-size: 0.9rem;
+            padding: 0.7rem 1.25rem;
         }
 
         /* Auth Gate */
@@ -1582,7 +1662,21 @@
 
     <!-- Toast Notifications Container -->
     <div id="toast-container"
-        style="position: fixed; top: 20px; right: 20px; z-index: 10000; display: flex; flex-direction: column; gap: 10px; pointer-events: none;">
+        style="position: fixed; bottom: 24px; right: 24px; z-index: 10000; display: flex; flex-direction: column-reverse; gap: 10px; pointer-events: none;">
+    </div>
+
+    <!-- Custom Confirm Dialog -->
+    <div class="confirm-overlay" id="custom-confirm-overlay">
+        <div class="confirm-dialog">
+            <div class="confirm-icon" id="confirm-icon"><i class="fa-solid fa-triangle-exclamation"></i></div>
+            <div class="confirm-title" id="confirm-title">Are you sure?</div>
+            <div class="confirm-message" id="confirm-message"></div>
+            <div class="confirm-actions">
+                <button class="btn btn-secondary" id="confirm-cancel-btn">Cancel</button>
+                <button class="btn btn-danger" id="confirm-ok-btn"
+                    style="background:var(--danger);color:white;">Delete</button>
+            </div>
+        </div>
     </div>
 
     <!-- Auth Gate (shown until Firebase auth state is resolved) -->
@@ -2851,8 +2945,9 @@
             closeModal('modal-add-income');
         }
 
-        function deleteTransaction(id) {
-            if (confirm("Delete this transaction?")) {
+        async function deleteTransaction(id) {
+            const ok = await showConfirm('Delete Transaction', 'Are you sure you want to delete this transaction? This action cannot be undone.');
+            if (ok) {
                 state.transactions = state.transactions.filter(t => t.id !== id);
                 saveData();
                 showToast("Transaction deleted.", "info");
@@ -2940,13 +3035,33 @@
             openModal('modal-add-category');
         }
 
-        function deleteExpenseCategory(cat) {
-            if (confirm(`Are you sure you want to delete the category "${cat}"?`)) {
+        async function deleteExpenseCategory(cat) {
+            const hasExpenses = state.transactions && state.transactions.some(t => t.type === 'expense' && t.category === cat);
+            if (hasExpenses) {
+                showToast(`Cannot delete category "${cat}" because there are expenses associated with it.`, "error");
+                return;
+            }
+            const ok = await showConfirm('Delete Category', `Are you sure you want to delete the category "${cat}"?`);
+            if (ok) {
                 state.expenseCategories = state.expenseCategories.filter(c => c !== cat);
                 saveData();
                 renderExpenseCategories();
                 populateCategoryDropdowns();
             }
+        }
+
+        function sortTransactions(txList) {
+            return [...txList].sort((a, b) => {
+                const dateDiff = new Date(b.date) - new Date(a.date);
+                if (dateDiff !== 0) return dateDiff;
+                if (a.createdAt && b.createdAt) {
+                    const timeDiff = new Date(b.createdAt) - new Date(a.createdAt);
+                    if (timeDiff !== 0) return timeDiff;
+                }
+                const indexDiff = state.transactions.indexOf(b) - state.transactions.indexOf(a);
+                if (indexDiff !== 0) return indexDiff;
+                return b.id.localeCompare(a.id);
+            });
         }
 
         function updateDashboard() {
@@ -2958,8 +3073,7 @@
             let cashDeductibleExpenses = 0;
             let outstandingDues = 0;
 
-            const recentTxs = state.transactions
-                .sort((a, b) => new Date(b.date) - new Date(a.date));
+            const recentTxs = sortTransactions(state.transactions);
 
             state.transactions.forEach(tx => {
                 if (tx.date.startsWith(currentMonthStr)) {
@@ -3039,12 +3153,12 @@
             const toDate = document.getElementById('expense-filter-to')?.value;
             const category = document.getElementById('expense-filter-category')?.value;
 
-            return state.transactions
+            const filtered = state.transactions
                 .filter(t => t.type === 'expense')
                 .filter(t => !fromDate || t.date >= fromDate)
                 .filter(t => !toDate || t.date <= toDate)
-                .filter(t => !category || t.category === category)
-                .sort((a, b) => new Date(b.date) - new Date(a.date));
+                .filter(t => !category || t.category === category);
+            return sortTransactions(filtered);
         }
 
         function clearExpenseFilters() {
@@ -3091,9 +3205,7 @@
             if (!tbody) return;
             tbody.innerHTML = '';
 
-            const incomes = state.transactions
-                .filter(t => t.type === 'income')
-                .sort((a, b) => new Date(b.date) - new Date(a.date));
+            const incomes = sortTransactions(state.transactions.filter(t => t.type === 'income'));
 
             incomes.forEach(tx => {
                 const tr = document.createElement('tr');
@@ -3273,8 +3385,9 @@
             closeModal('modal-add-payment');
         }
 
-        function deleteDebt(id) {
-            if (confirm('Delete this debt and all its payment history?')) {
+        async function deleteDebt(id) {
+            const ok = await showConfirm('Delete Debt', 'Delete this debt and all its payment history? This action cannot be undone.');
+            if (ok) {
                 state.debts = state.debts.filter(d => d.id !== id);
                 saveData();
                 showToast("Debt deleted.", "info");
@@ -3387,8 +3500,9 @@
             closeModal('modal-add-savings');
         }
 
-        function deleteSavings(id) {
-            if (confirm('Delete this savings entry?')) {
+        async function deleteSavings(id) {
+            const ok = await showConfirm('Delete Savings Entry', 'Are you sure you want to delete this savings entry? This action cannot be undone.');
+            if (ok) {
                 state.savings = state.savings.filter(s => s.id !== id);
                 saveData();
                 showToast("Savings entry deleted.", "info");
@@ -3446,8 +3560,9 @@
             closeModal('modal-add-goal');
         }
 
-        function deleteGoal(id) {
-            if (confirm('Delete this goal?')) {
+        async function deleteGoal(id) {
+            const ok = await showConfirm('Delete Goal', 'Are you sure you want to delete this financial goal? This action cannot be undone.');
+            if (ok) {
                 state.financialGoals = state.financialGoals.filter(g => g.id !== id);
                 saveData();
                 showToast("Goal deleted.", "info");
@@ -3784,8 +3899,9 @@
             closeModal('modal-budget-category');
         }
 
-        function deleteBudgetCategory(catId) {
-            if (confirm('Delete this budget category?')) {
+        async function deleteBudgetCategory(catId) {
+            const ok = await showConfirm('Delete Budget Category', 'Are you sure you want to delete this budget category? This action cannot be undone.');
+            if (ok) {
                 state.budgetCategories = state.budgetCategories.filter(c => c.id !== catId);
                 saveData();
                 showToast("Budget category deleted.", "info");
@@ -3876,8 +3992,13 @@
             }).join('');
         }
 
-        function confirmResetData() {
-            if (confirm('Are you sure you want to permanently delete ALL financial data? This cannot be undone.\n\nAll transactions, budgets, income, categories, savings goals, preferences, and other data will be erased from Firebase and local storage.')) {
+        async function confirmResetData() {
+            const ok = await showConfirm(
+                'Delete All Data',
+                'Are you sure you want to permanently delete ALL financial data? This cannot be undone. All transactions, budgets, income, categories, savings goals, preferences, and other data will be erased from Firebase and local storage.',
+                'Delete Everything'
+            );
+            if (ok) {
                 resetData();
             }
         }
@@ -4004,13 +4125,13 @@
                     navigate('view-search');
                 }
 
-                const results = state.transactions.filter(tx =>
+                const results = sortTransactions(state.transactions.filter(tx =>
                     (tx.desc || '').toLowerCase().includes(query) ||
                     (tx.category || '').toLowerCase().includes(query) ||
                     (tx.amount || '').toString().includes(query) ||
                     (tx.type || '').toLowerCase().includes(query) ||
                     (tx.date || '').includes(query)
-                );
+                ));
 
                 renderSearchResults(results, query);
             } else {
@@ -4772,6 +4893,43 @@
                 toast.classList.remove('show');
                 setTimeout(() => toast.remove(), 300);
             }, 4000);
+        }
+
+        // Custom confirm dialog utility — returns a Promise<boolean>
+        function showConfirm(title, message, confirmText = 'Delete') {
+            return new Promise((resolve) => {
+                const overlay = document.getElementById('custom-confirm-overlay');
+                const titleEl = document.getElementById('confirm-title');
+                const messageEl = document.getElementById('confirm-message');
+                const okBtn = document.getElementById('confirm-ok-btn');
+                const cancelBtn = document.getElementById('confirm-cancel-btn');
+
+                titleEl.textContent = title || 'Are you sure?';
+                messageEl.textContent = message || '';
+                okBtn.textContent = confirmText;
+
+                function cleanup(result) {
+                    overlay.classList.remove('active');
+                    okBtn.removeEventListener('click', onOk);
+                    cancelBtn.removeEventListener('click', onCancel);
+                    overlay.removeEventListener('click', onOverlayClick);
+                    document.removeEventListener('keydown', onKeydown);
+                    resolve(result);
+                }
+
+                function onOk() { cleanup(true); }
+                function onCancel() { cleanup(false); }
+                function onOverlayClick(e) { if (e.target === overlay) cleanup(false); }
+                function onKeydown(e) { if (e.key === 'Escape') cleanup(false); }
+
+                okBtn.addEventListener('click', onOk);
+                cancelBtn.addEventListener('click', onCancel);
+                overlay.addEventListener('click', onOverlayClick);
+                document.addEventListener('keydown', onKeydown);
+
+                overlay.classList.add('active');
+                cancelBtn.focus();
+            });
         }
 
         // Data Management: JSON Export
