@@ -6,7 +6,7 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
     <title>Personal Finance Dashboard</title>
     <!-- Chart.js -->
-    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.1/dist/chart.umd.min.js"></script>
     <!-- FontAwesome -->
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
     <!-- Google Fonts -->
@@ -2033,6 +2033,12 @@
                         </div>
                     </div>
 
+                    <div style="margin-bottom: 1.5rem; display: flex; gap: 0.5rem; flex-wrap: wrap;">
+                        <button class="btn btn-secondary debt-filter-btn active" id="debt-filter-all" onclick="filterDebtTrackerView('all')">All Debts & Dues</button>
+                        <button class="btn btn-secondary debt-filter-btn" id="debt-filter-dues" onclick="filterDebtTrackerView('dues')">Category Outstanding Dues</button>
+                        <button class="btn btn-secondary debt-filter-btn" id="debt-filter-direct" onclick="filterDebtTrackerView('direct')">Loans & Direct Debts</button>
+                    </div>
+
                     <div id="debts-list">
                         <!-- JS renders debt cards -->
                     </div>
@@ -2466,6 +2472,41 @@
             </div>
         </div>
 
+        <!-- Add Due Payment Modal -->
+        <div class="modal-overlay" id="modal-add-due-payment">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h3>Record Payment for Outstanding Dues</h3>
+                    <i class="fa-solid fa-xmark modal-close" onclick="closeModal('modal-add-due-payment')"></i>
+                </div>
+                <form id="form-add-due-payment" onsubmit="handleDuePaymentSubmit(event)">
+                    <input type="hidden" id="due-payment-category">
+                    <div style="background: var(--primary-light); padding: 0.75rem 1rem; border-radius: var(--radius-sm); margin-bottom: 1rem;">
+                        <div style="font-weight: 600;" id="due-payment-cat-title">Category: </div>
+                        <div style="font-size: 0.85rem; color: var(--text-muted); display: flex; justify-content: space-between; margin-top: 4px; flex-wrap: wrap; gap: 4px;">
+                            <span>Owed: <strong id="due-payment-owed-val">₹0</strong></span>
+                            <span>Paid: <strong id="due-payment-paid-val" style="color:var(--success);">₹0</strong></span>
+                            <span>Remaining: <strong id="due-payment-rem-val" style="color:var(--danger);">₹0</strong></span>
+                        </div>
+                    </div>
+                    <div class="form-group">
+                        <label class="form-label">Payment Date</label>
+                        <input type="date" class="form-control" id="due-payment-date" required>
+                    </div>
+                    <div class="form-group">
+                        <label class="form-label">Amount Paid (₹)</label>
+                        <input type="number" class="form-control" id="due-payment-amount" step="0.01" required>
+                        <div class="text-muted" style="font-size:0.75rem; margin-top:0.35rem;">Enter amount to pay towards this category's dues.</div>
+                    </div>
+                    <div class="form-group">
+                        <label class="form-label">Note / Payment Method (Optional)</label>
+                        <input type="text" class="form-control" id="due-payment-note" placeholder="e.g. Paid via UPI, Partial payoff">
+                    </div>
+                    <button type="submit" class="btn btn-primary" style="width: 100%; justify-content: center; margin-top: 1rem;">Record Payment</button>
+                </form>
+            </div>
+        </div>
+
         <!-- Add Savings Modal -->
         <div class="modal-overlay" id="modal-add-savings">
             <div class="modal-content">
@@ -2574,6 +2615,7 @@
             savings: [],
             financialGoals: [],
             debts: [],
+            duePayments: [],
             budgetCategories: [],
             expenseCategories: ['Housing', 'Food', 'Transport', 'Shopping', 'Entertainment', 'Misc'],
             settings: { currency: 'INR', theme: 'light' }
@@ -2589,6 +2631,7 @@
                     savings: parsed.savings || [],
                     financialGoals: parsed.financialGoals || parsed.goals || [],
                     debts: parsed.debts || [],
+                    duePayments: parsed.duePayments || [],
                     budgetCategories: parsed.budgetCategories || parsed.budgets || [],
                     expenseCategories: parsed.expenseCategories || ['Housing', 'Food', 'Transport', 'Shopping', 'Entertainment', 'Misc'],
                     settings: { currency: 'INR', theme: 'light', ...(parsed.settings || {}) },
@@ -2665,6 +2708,7 @@
                 expenses: state.transactions.filter(t => t.type === 'expense'),
                 budgets: state.budgetCategories,
                 debts: state.debts,
+                duePayments: state.duePayments || [],
                 savings: state.savings || [],
                 savingsGoals: state.financialGoals || [],
                 settings: state.settings,
@@ -3071,7 +3115,7 @@
             let monthlyIncome = 0;
             let monthlyExpense = 0;
             let cashDeductibleExpenses = 0;
-            let outstandingDues = 0;
+            let totalPayLaterOwed = 0;
 
             const recentTxs = sortTransactions(state.transactions);
 
@@ -3086,9 +3130,12 @@
                     }
                 }
                 if (tx.type === 'expense' && tx.payLater) {
-                    outstandingDues += tx.amount;
+                    totalPayLaterOwed += tx.amount;
                 }
             });
+
+            const totalPayLaterPaid = (state.duePayments || []).reduce((sum, p) => sum + (p.amount || 0), 0);
+            const outstandingDues = Math.max(0, totalPayLaterOwed - totalPayLaterPaid);
 
             const currentCash = monthlyIncome - cashDeductibleExpenses;
 
@@ -3176,10 +3223,24 @@
             const expenses = getFilteredExpenses();
 
             expenses.forEach(tx => {
+                let payLaterBadge = '';
+                if (tx.payLater) {
+                    const catTxs = state.transactions.filter(t => t.type === 'expense' && t.payLater && t.category === tx.category);
+                    const catOwed = catTxs.reduce((sum, t) => sum + t.amount, 0);
+                    const catPaid = (state.duePayments || []).filter(p => p.category === tx.category).reduce((sum, p) => sum + (p.amount || 0), 0);
+                    if (catOwed > 0 && catPaid >= catOwed) {
+                        payLaterBadge = ' <span class="tag tag-income" style="margin-left: 5px;"><i class="fa-solid fa-circle-check"></i> Pay Later • Paid</span>';
+                    } else if (catPaid > 0) {
+                        payLaterBadge = ' <span class="tag" style="background: rgba(245, 158, 11, 0.15); color: var(--warning); margin-left: 5px;"><i class="fa-solid fa-clock"></i> Pay Later • Partial</span>';
+                    } else {
+                        payLaterBadge = ' <span class="tag" style="background: rgba(239, 68, 68, 0.15); color: var(--danger); margin-left: 5px;"><i class="fa-solid fa-clock"></i> Pay Later • Unpaid</span>';
+                    }
+                }
+
                 const tr = document.createElement('tr');
                 tr.innerHTML = `
                    <td>${tx.date}</td>
-                   <td><strong>${tx.desc}</strong>${tx.payLater ? ' <span class="tag" style="background: rgba(245, 158, 11, 0.15); color: var(--warning); margin-left: 5px;">Pay Later</span>' : ''}</td>
+                   <td><strong>${tx.desc}</strong>${payLaterBadge}</td>
                    <td><span class="tag" style="background:var(--border-color)">${tx.category}</span></td>
                    <td>
                        ${tx.needWant === 'need' ? '<span class="tag tag-need">Need</span>' :
@@ -3394,80 +3455,292 @@
             }
         }
 
-        function updateDebts() {
-            let totalOwed = 0, totalPaid = 0;
-            state.debts.forEach(d => {
-                totalOwed += d.totalOwed;
-                totalPaid += getDebtPaid(d);
+        let debtTrackerFilter = 'all';
+
+        function filterDebtTrackerView(filter) {
+            debtTrackerFilter = filter;
+            document.querySelectorAll('.debt-filter-btn').forEach(btn => btn.classList.remove('active'));
+            const activeBtn = document.getElementById(`debt-filter-${filter}`);
+            if (activeBtn) activeBtn.classList.add('active');
+            updateDebts();
+        }
+
+        function openDuePaymentModal(catName) {
+            document.getElementById('due-payment-category').value = catName;
+            document.getElementById('due-payment-cat-title').textContent = 'Category: ' + catName;
+
+            const payLaterTxs = state.transactions.filter(t => t.type === 'expense' && t.payLater && t.category === catName);
+            const catOwed = payLaterTxs.reduce((sum, t) => sum + t.amount, 0);
+            const catPayments = (state.duePayments || []).filter(p => p.category === catName);
+            const catPaid = catPayments.reduce((sum, p) => sum + (p.amount || 0), 0);
+            const catRem = Math.max(0, catOwed - catPaid);
+
+            document.getElementById('due-payment-owed-val').textContent = formatCurrency(catOwed);
+            document.getElementById('due-payment-paid-val').textContent = formatCurrency(catPaid);
+            document.getElementById('due-payment-rem-val').textContent = formatCurrency(catRem);
+            document.getElementById('due-payment-amount').value = catRem > 0 ? catRem : '';
+            document.getElementById('due-payment-date').value = new Date().toISOString().split('T')[0];
+            document.getElementById('due-payment-note').value = '';
+
+            openModal('modal-add-due-payment');
+        }
+
+        function handleDuePaymentSubmit(e) {
+            e.preventDefault();
+            const catName = document.getElementById('due-payment-category').value;
+            const dateVal = document.getElementById('due-payment-date').value;
+            const amountVal = parseFloat(document.getElementById('due-payment-amount').value);
+            const noteVal = document.getElementById('due-payment-note').value.trim();
+
+            if (!dateVal || isNaN(Date.parse(dateVal))) {
+                showToast("Please select a valid date.", "error");
+                return;
+            }
+            if (isNaN(amountVal) || amountVal <= 0) {
+                showToast("Amount must be a positive number.", "error");
+                return;
+            }
+
+            if (!state.duePayments) state.duePayments = [];
+            state.duePayments.push({
+                id: generateId(),
+                category: catName,
+                amount: amountVal,
+                date: dateVal,
+                note: noteVal,
+                createdAt: new Date().toISOString()
             });
+
+            saveData();
+            showToast(`Payment of ${formatCurrency(amountVal)} recorded for ${catName} dues!`, "success");
+            closeModal('modal-add-due-payment');
+        }
+
+        async function deleteDuePayment(id) {
+            const ok = await showConfirm('Delete Due Payment', 'Are you sure you want to delete this payment entry?');
+            if (ok) {
+                state.duePayments = (state.duePayments || []).filter(p => p.id !== id);
+                saveData();
+                showToast("Payment entry deleted.", "info");
+            }
+        }
+
+        function updateDebts() {
+            // Manual Debts Totals
+            let manualOwed = 0, manualPaid = 0;
+            state.debts.forEach(d => {
+                manualOwed += d.totalOwed;
+                manualPaid += getDebtPaid(d);
+            });
+
+            // Category-Wise Outstanding Dues Calculation
+            const payLaterCategories = new Set();
+            state.transactions.forEach(t => {
+                if (t.type === 'expense' && t.payLater && t.category) payLaterCategories.add(t.category);
+            });
+            (state.duePayments || []).forEach(p => {
+                if (p.category) payLaterCategories.add(p.category);
+            });
+
+            const categoryDues = Array.from(payLaterCategories).map(catName => {
+                const txs = state.transactions.filter(t => t.type === 'expense' && t.payLater && t.category === catName);
+                const totalOwed = txs.reduce((sum, t) => sum + t.amount, 0);
+                const payments = (state.duePayments || []).filter(p => p.category === catName);
+                const totalPaid = payments.reduce((sum, p) => sum + (p.amount || 0), 0);
+                const remaining = Math.max(0, totalOwed - totalPaid);
+                const pct = totalOwed > 0 ? Math.min(100, (totalPaid / totalOwed) * 100) : 0;
+                return {
+                    category: catName,
+                    txs,
+                    totalOwed,
+                    payments,
+                    totalPaid,
+                    remaining,
+                    pct
+                };
+            }).filter(c => c.totalOwed > 0 || c.totalPaid > 0);
+
+            let catOwedTotal = 0, catPaidTotal = 0;
+            categoryDues.forEach(c => {
+                catOwedTotal += c.totalOwed;
+                catPaidTotal += c.totalPaid;
+            });
+
+            // Overall Combined Metrics
+            const overallOwed = manualOwed + catOwedTotal;
+            const overallPaid = manualPaid + catPaidTotal;
+            const overallRemaining = Math.max(0, overallOwed - overallPaid);
 
             const owedEl = document.getElementById('debt-total-owed');
             const paidEl = document.getElementById('debt-total-paid');
             const remEl = document.getElementById('debt-remaining');
-            if (owedEl) owedEl.textContent = formatCurrency(totalOwed);
-            if (paidEl) paidEl.textContent = formatCurrency(totalPaid);
-            if (remEl) remEl.textContent = formatCurrency(Math.max(0, totalOwed - totalPaid));
+            if (owedEl) owedEl.textContent = formatCurrency(overallOwed);
+            if (paidEl) paidEl.textContent = formatCurrency(overallPaid);
+            if (remEl) remEl.textContent = formatCurrency(overallRemaining);
+
+            // Update Filter Buttons Label Counts
+            const btnDues = document.getElementById('debt-filter-dues');
+            const btnDirect = document.getElementById('debt-filter-direct');
+            if (btnDues) btnDues.textContent = `Category Outstanding Dues (${categoryDues.length})`;
+            if (btnDirect) btnDirect.textContent = `Loans & Direct Debts (${state.debts.length})`;
 
             const list = document.getElementById('debts-list');
             if (!list) return;
 
-            if (state.debts.length === 0) {
-                list.innerHTML = '<div class="empty-state"><i class="fa-solid fa-hand-holding-dollar"></i><p>No debts added yet. Click "Add Debt" to get started.</p></div>';
-                return;
+            let html = '';
+
+            // 1. Render Category-Wise Dues Cards
+            if (debtTrackerFilter === 'all' || debtTrackerFilter === 'dues') {
+                if (categoryDues.length > 0) {
+                    if (debtTrackerFilter === 'all') {
+                        html += `<h3 style="margin: 1.5rem 0 1rem 0; color: var(--text-main); font-size: 1.1rem; display: flex; align-items: center; gap: 8px;"><i class="fa-solid fa-clock-rotate-left" style="color:var(--warning);"></i> Category-Wise Outstanding Dues</h3>`;
+                    }
+                    html += categoryDues.map(c => {
+                        const catEscaped = c.category.replace(/'/g, "\\'");
+                        const actionButton = c.remaining <= 0 ?
+                            `<span class="tag tag-income" style="display: inline-flex; align-items: center; gap: 6px; padding: 0.5rem 1rem; font-size: 0.875rem; font-weight: 600;"><i class="fa-solid fa-circle-check"></i> Paid Off</span>` :
+                            `<button class="btn btn-primary debt-action-primary" onclick="openDuePaymentModal('${catEscaped}')">
+                                <i class="fa-solid fa-plus"></i> Add Payment
+                            </button>`;
+
+                        const expensesRows = c.txs.length > 0 ? c.txs.map(t => `
+                            <tr>
+                                <td>${t.date}</td>
+                                <td>${t.desc}</td>
+                                <td style="font-weight:600;">${formatCurrency(t.amount)}</td>
+                            </tr>
+                        `).join('') : '<tr><td colspan="3" class="text-muted" style="text-align:center;">No pay later expenses</td></tr>';
+
+                        const paymentsRows = c.payments.length > 0 ? c.payments.sort((a, b) => new Date(b.date) - new Date(a.date)).map(p => `
+                            <tr>
+                                <td>${p.date}</td>
+                                <td style="color:var(--success);font-weight:600;">${formatCurrency(p.amount)}</td>
+                                <td><span class="text-muted" style="font-size:0.8rem;">${p.note || '—'}</span></td>
+                                <td>
+                                    <button class="btn btn-danger" style="padding: 2px 6px; font-size: 0.75rem;" onclick="deleteDuePayment('${p.id}')">
+                                        <i class="fa-solid fa-trash"></i>
+                                    </button>
+                                </td>
+                            </tr>
+                        `).join('') : '<tr><td colspan="4" class="text-muted" style="text-align:center;">No payments recorded</td></tr>';
+
+                        return `
+                        <div class="card" style="margin-bottom:1.5rem; border-left: 4px solid var(--warning);">
+                            <div class="card-header debt-card-header">
+                                <div>
+                                    <h3 style="display:inline-flex; align-items:center; gap:8px;">
+                                        <i class="fa-solid fa-tags" style="color: var(--warning);"></i>
+                                        Outstanding Dues: ${c.category}
+                                    </h3>
+                                    <span class="tag" style="background: rgba(245, 158, 11, 0.15); color: var(--warning); margin-left:0.5rem;">Pay Later Category</span>
+                                </div>
+                                <div class="debt-actions" style="align-items: center; display: flex; gap: 0.5rem;">
+                                    ${actionButton}
+                                </div>
+                            </div>
+                            <div class="grid-3" style="margin-bottom:1rem;">
+                                <div><div class="metric-title">Accumulated Owed</div><div style="font-weight:700;">${formatCurrency(c.totalOwed)}</div></div>
+                                <div><div class="metric-title">Total Paid</div><div style="font-weight:700;color:var(--success);">${formatCurrency(c.totalPaid)}</div></div>
+                                <div><div class="metric-title">Remaining Due</div><div style="font-weight:700;color:var(--danger);">${formatCurrency(c.remaining)}</div></div>
+                            </div>
+                            <div class="progress-container" style="margin-bottom:1rem;">
+                                <div class="progress-bar bg-success" style="width:${c.pct}%"></div>
+                            </div>
+                            <div class="grid-2" style="margin-top: 1rem; gap: 1rem;">
+                                <div>
+                                    <h4 style="margin-bottom:0.5rem;font-size:0.875rem;"><i class="fa-solid fa-receipt"></i> Pay Later Expenses (${c.txs.length})</h4>
+                                    <div class="table-wrapper" style="max-height: 180px; overflow-y: auto;">
+                                        <table>
+                                            <thead><tr><th>Date</th><th>Description</th><th>Amount</th></tr></thead>
+                                            <tbody>${expensesRows}</tbody>
+                                        </table>
+                                    </div>
+                                </div>
+                                <div>
+                                    <h4 style="margin-bottom:0.5rem;font-size:0.875rem;"><i class="fa-solid fa-history"></i> Payment History (${c.payments.length})</h4>
+                                    <div class="table-wrapper" style="max-height: 180px; overflow-y: auto;">
+                                        <table>
+                                            <thead><tr><th>Date</th><th>Amount</th><th>Note</th><th></th></tr></thead>
+                                            <tbody>${paymentsRows}</tbody>
+                                        </table>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>`;
+                    }).join('');
+                } else if (debtTrackerFilter === 'dues') {
+                    html += '<div class="empty-state"><i class="fa-solid fa-check-circle"></i><p>No category-wise outstanding dues. Expenses marked with "Pay Later" will appear here automatically.</p></div>';
+                }
             }
 
-            list.innerHTML = state.debts.map(d => {
-                const paid = getDebtPaid(d);
-                const remaining = Math.max(0, d.totalOwed - paid);
-                const pct = d.totalOwed > 0 ? Math.min(100, (paid / d.totalOwed) * 100) : 0;
-                const paymentsHtml = (d.payments || [])
-                    .sort((a, b) => b.month.localeCompare(a.month))
-                    .map(p => `<tr><td>${p.month}</td><td style="color:var(--success);font-weight:600;">${formatCurrency(p.amount)}</td></tr>`)
-                    .join('') || '<tr><td colspan="2" class="text-muted" style="text-align:center;">No payments recorded</td></tr>';
+            // 2. Render Direct Debts Cards
+            if (debtTrackerFilter === 'all' || debtTrackerFilter === 'direct') {
+                if (state.debts.length > 0) {
+                    if (debtTrackerFilter === 'all') {
+                        html += `<h3 style="margin: 1.5rem 0 1rem 0; color: var(--text-main); font-size: 1.1rem; display: flex; align-items: center; gap: 8px;"><i class="fa-solid fa-hand-holding-dollar" style="color:var(--primary);"></i> Loans & Direct Debts</h3>`;
+                    }
+                    html += state.debts.map(d => {
+                        const paid = getDebtPaid(d);
+                        const remaining = Math.max(0, d.totalOwed - paid);
+                        const pct = d.totalOwed > 0 ? Math.min(100, (paid / d.totalOwed) * 100) : 0;
+                        const paymentsHtml = (d.payments || [])
+                            .sort((a, b) => b.month.localeCompare(a.month))
+                            .map(p => `<tr><td>${p.month}</td><td style="color:var(--success);font-weight:600;">${formatCurrency(p.amount)}</td></tr>`)
+                            .join('') || '<tr><td colspan="2" class="text-muted" style="text-align:center;">No payments recorded</td></tr>';
 
-                const emiBadge = d.isRecurring ? '<span class="tag tag-need" style="margin-left:0.5rem;">EMI</span>' : '';
-                const emiInfo = d.isRecurring ? `
-                   <div class="grid-3" style="margin-bottom:0.75rem;">
-                       <div><div class="metric-title">Monthly EMI</div><div style="font-weight:700;color:var(--warning);">${formatCurrency(d.emiAmount || 0)}</div></div>
-                       <div><div class="metric-title">Next Due</div><div style="font-weight:600;">${getNextDueDate(d)}</div></div>
-                       <div><div class="metric-title">Due Day</div><div style="font-weight:600;">${d.dueDay ? 'Day ' + d.dueDay : '—'}</div></div>
-                   </div>` : '';
+                        const emiBadge = d.isRecurring ? '<span class="tag tag-need" style="margin-left:0.5rem;">EMI</span>' : '';
+                        const emiInfo = d.isRecurring ? `
+                           <div class="grid-3" style="margin-bottom:0.75rem;">
+                               <div><div class="metric-title">Monthly EMI</div><div style="font-weight:700;color:var(--warning);">${formatCurrency(d.emiAmount || 0)}</div></div>
+                               <div><div class="metric-title">Next Due</div><div style="font-weight:600;">${getNextDueDate(d)}</div></div>
+                               <div><div class="metric-title">Due Day</div><div style="font-weight:600;">${d.dueDay ? 'Day ' + d.dueDay : '—'}</div></div>
+                           </div>` : '';
 
-                const actionButton = remaining <= 0 ?
-                    `<span class="tag tag-income" style="display: inline-flex; align-items: center; gap: 6px; padding: 0.5rem 1rem; font-size: 0.875rem; font-weight: 600;"><i class="fa-solid fa-circle-check"></i> Paid Off</span>` :
-                    `<button class="btn btn-primary debt-action-primary" onclick="openPaymentModal('${d.id}')">
-                        <i class="fa-solid fa-plus"></i> Add Payment
-                    </button>`;
+                        const actionButton = remaining <= 0 ?
+                            `<span class="tag tag-income" style="display: inline-flex; align-items: center; gap: 6px; padding: 0.5rem 1rem; font-size: 0.875rem; font-weight: 600;"><i class="fa-solid fa-circle-check"></i> Paid Off</span>` :
+                            `<button class="btn btn-primary debt-action-primary" onclick="openPaymentModal('${d.id}')">
+                                <i class="fa-solid fa-plus"></i> Add Payment
+                            </button>`;
 
-                return `
-                   <div class="card" style="margin-bottom:1rem;">
-                        <div class="card-header debt-card-header">
-                           <h3>${d.name}${emiBadge}</h3>
-                           <div class="debt-actions" style="align-items: center; display: flex; gap: 0.5rem;">
-                               ${actionButton}
-                               <button class="btn btn-secondary" onclick="openEditDebtModal('${d.id}')">
-                                   <i class="fa-solid fa-pen"></i> Edit
-                               </button>
-                               <button class="btn btn-danger" onclick="deleteDebt('${d.id}')">
-                                   <i class="fa-solid fa-trash"></i> Delete
-                               </button>
-                           </div>
-                       </div>
-                       ${emiInfo}
-                       <div class="grid-3" style="margin-bottom:1rem;">
-                           <div><div class="metric-title">${d.isRecurring ? 'Loan Amount' : 'Owed'}</div><div style="font-weight:700;">${formatCurrency(d.totalOwed)}</div></div>
-                           <div><div class="metric-title">Paid</div><div style="font-weight:700;color:var(--success);">${formatCurrency(paid)}</div></div>
-                           <div><div class="metric-title">Remaining</div><div style="font-weight:700;color:var(--danger);">${formatCurrency(remaining)}</div></div>
-                       </div>
-                       <div class="progress-container" style="margin-bottom:1rem;">
-                           <div class="progress-bar bg-success" style="width:${pct}%"></div>
-                       </div>
-                       <h4 style="margin-bottom:0.5rem;font-size:0.875rem;">Payment History</h4>
-                       <div class="table-wrapper">
-                           <table><thead><tr><th>Month</th><th>Amount Paid</th></tr></thead><tbody>${paymentsHtml}</tbody></table>
-                       </div>
-                   </div>`;
-            }).join('');
+                        return `
+                           <div class="card" style="margin-bottom:1rem;">
+                                <div class="card-header debt-card-header">
+                                   <h3>${d.name}${emiBadge}</h3>
+                                   <div class="debt-actions" style="align-items: center; display: flex; gap: 0.5rem;">
+                                       ${actionButton}
+                                       <button class="btn btn-secondary" onclick="openEditDebtModal('${d.id}')">
+                                           <i class="fa-solid fa-pen"></i> Edit
+                                       </button>
+                                       <button class="btn btn-danger" onclick="deleteDebt('${d.id}')">
+                                           <i class="fa-solid fa-trash"></i> Delete
+                                       </button>
+                                   </div>
+                               </div>
+                               ${emiInfo}
+                               <div class="grid-3" style="margin-bottom:1rem;">
+                                   <div><div class="metric-title">${d.isRecurring ? 'Loan Amount' : 'Owed'}</div><div style="font-weight:700;">${formatCurrency(d.totalOwed)}</div></div>
+                                   <div><div class="metric-title">Paid</div><div style="font-weight:700;color:var(--success);">${formatCurrency(paid)}</div></div>
+                                   <div><div class="metric-title">Remaining</div><div style="font-weight:700;color:var(--danger);">${formatCurrency(remaining)}</div></div>
+                               </div>
+                               <div class="progress-container" style="margin-bottom:1rem;">
+                                   <div class="progress-bar bg-success" style="width:${pct}%"></div>
+                               </div>
+                               <h4 style="margin-bottom:0.5rem;font-size:0.875rem;">Payment History</h4>
+                               <div class="table-wrapper">
+                                   <table><thead><tr><th>Month</th><th>Amount Paid</th></tr></thead><tbody>${paymentsHtml}</tbody></table>
+                               </div>
+                           </div>`;
+                    }).join('');
+                } else if (debtTrackerFilter === 'direct') {
+                    html += '<div class="empty-state"><i class="fa-solid fa-hand-holding-dollar"></i><p>No direct debts added yet. Click "Add Debt" to get started.</p></div>';
+                }
+            }
+
+            if (categoryDues.length === 0 && state.debts.length === 0) {
+                html = '<div class="empty-state"><i class="fa-solid fa-hand-holding-dollar"></i><p>No debts or outstanding dues. Click "Add Debt" or tag expenses as "Pay Later" to get started.</p></div>';
+            }
+
+            list.innerHTML = html;
         }
 
         function getTotalSavings() {
@@ -4035,6 +4308,7 @@
                         expenses: [],
                         budgets: [],
                         debts: [],
+                        duePayments: [],
                         savings: [],
                         savingsGoals: [],
                         settings: { currency: 'INR', theme: 'light' },
@@ -4057,6 +4331,7 @@
                     savings: [],
                     financialGoals: [],
                     debts: [],
+                    duePayments: [],
                     budgetCategories: [],
                     expenseCategories: ['Housing', 'Food', 'Transport', 'Shopping', 'Entertainment', 'Misc'],
                     settings: { currency: 'INR', theme: 'light' },
@@ -4462,6 +4737,7 @@
                         savings: data.savings || [],
                         financialGoals: data.savingsGoals || data.financialGoals || [],
                         debts: data.debts || [],
+                        duePayments: data.duePayments || [],
                         budgetCategories: data.budgets || [],
                         expenseCategories: data.expenseCategories || ['Housing', 'Food', 'Transport', 'Shopping', 'Entertainment', 'Misc'],
                         settings: { currency: 'INR', theme: 'light', ...(data.settings || {}) },
@@ -5036,6 +5312,7 @@
                     if (imported.savings) mergeList(state.savings, imported.savings, 'savings');
                     if (imported.financialGoals) mergeList(state.financialGoals, imported.financialGoals, 'financialGoals');
                     if (imported.debts) mergeList(state.debts, imported.debts, 'debts');
+                    if (imported.duePayments) mergeList(state.duePayments, imported.duePayments, 'duePayments');
                     if (imported.budgetCategories) mergeList(state.budgetCategories, imported.budgetCategories, 'budgetCategories');
 
                     if (imported.settings) {
