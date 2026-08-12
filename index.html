@@ -4,6 +4,9 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
+    <meta http-equiv="Cache-Control" content="no-cache, no-store, must-revalidate">
+    <meta http-equiv="Pragma" content="no-cache">
+    <meta http-equiv="Expires" content="0">
     <title>Personal Finance Dashboard</title>
     <!-- Chart.js -->
     <script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.1/dist/chart.umd.min.js"></script>
@@ -366,6 +369,62 @@
             padding: 0 2rem 2rem 2rem;
             overflow-y: auto;
             position: relative;
+        }
+
+        /* =========================================
+          PULL TO REFRESH (MOBILE)
+          ========================================= */
+        .pull-to-refresh-container {
+            width: 100%;
+            height: 0px;
+            overflow: hidden;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            transition: height 0.1s linear, opacity 0.2s ease;
+            opacity: 0;
+            pointer-events: none;
+            margin-bottom: 0px;
+        }
+
+        .pull-to-refresh-container.pulling,
+        .pull-to-refresh-container.refreshing {
+            opacity: 1;
+        }
+
+        .pull-to-refresh-content {
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            padding: 8px 18px;
+            background: var(--card-bg);
+            border: 1px solid var(--glass-border);
+            backdrop-filter: var(--glass-blur);
+            -webkit-backdrop-filter: var(--glass-blur);
+            border-radius: 999px;
+            box-shadow: var(--glass-shadow);
+            font-size: 0.85rem;
+            font-weight: 500;
+            color: var(--text-muted);
+            margin-top: 10px;
+        }
+
+        .ptr-icon {
+            transition: transform 0.2s ease;
+        }
+
+        .ptr-icon.spin {
+            animation: ptrSpin 0.8s linear infinite;
+        }
+
+        @keyframes ptrSpin {
+            from {
+                transform: rotate(0deg);
+            }
+
+            to {
+                transform: rotate(360deg);
+            }
         }
 
         .view-section {
@@ -1820,6 +1879,14 @@
 
             <!-- Content Area -->
             <div class="content-area">
+
+                <!-- Pull to Refresh Indicator -->
+                <div id="pull-to-refresh-container" class="pull-to-refresh-container">
+                    <div class="pull-to-refresh-content">
+                        <i id="ptr-icon" class="fa-solid fa-arrow-down ptr-icon"></i>
+                        <span id="ptr-text" class="ptr-text">Pull down to refresh</span>
+                    </div>
+                </div>
 
                 <!-- Firebase Alert Banner -->
                 <div id="firebase-alert-banner" class="insight-card danger"
@@ -4611,12 +4678,31 @@
             if (overlay) overlay.style.display = show ? 'flex' : 'none';
         }
 
+        // --- SESSION PERSISTENCE HELPERS ---
+        function setSessionCookie() {
+            document.cookie = "finova_browser_session=active; path=/; SameSite=Lax";
+            sessionStorage.setItem('finova_tab_session', 'active');
+        }
+
+        function clearSessionCookie() {
+            document.cookie = "finova_browser_session=; expires=Thu, 01 Jan 1970 00:00:00 UTC; path=/; SameSite=Lax";
+            sessionStorage.removeItem('finova_tab_session');
+        }
+
+        function isBrowserSessionActive() {
+            return document.cookie.includes('finova_browser_session=active') || sessionStorage.getItem('finova_tab_session') === 'active';
+        }
+
         function initFirebase() {
             if (typeof firebase === 'undefined') {
                 isAuthReady = true;
                 showFirebaseError("Firebase SDK could not be loaded. Please ensure you are online and that CDN scripts loaded correctly.");
                 updateStatusDot('status-firebase', 'error', 'CDN Load Error');
-                if (localStorage.getItem('finova_guest_session') === 'true') {
+                if (!isBrowserSessionActive()) {
+                    localStorage.removeItem('finova_guest_session');
+                    clearSessionCookie();
+                    handleUnauthenticatedUser();
+                } else if (localStorage.getItem('finova_guest_session') === 'true') {
                     handleGuestLogin();
                 } else {
                     showLoginScreen("Firebase SDK could not be loaded. Please check your internet connection and refresh the page.");
@@ -4628,7 +4714,11 @@
                 isAuthReady = true;
                 showFirebaseError("Firebase is not configured. Replace the placeholders in index.html (under firebaseConfig) to enable Firestore/Auth.");
                 updateStatusDot('status-firebase', 'error', 'Not Configured');
-                if (localStorage.getItem('finova_guest_session') === 'true') {
+                if (!isBrowserSessionActive()) {
+                    localStorage.removeItem('finova_guest_session');
+                    clearSessionCookie();
+                    handleUnauthenticatedUser();
+                } else if (localStorage.getItem('finova_guest_session') === 'true') {
                     handleGuestLogin();
                 } else {
                     showLoginScreen("Firebase is not configured. Replace the placeholder values in firebaseConfig inside index.html with your Firebase project credentials.");
@@ -4667,6 +4757,21 @@
                     if (!isAuthReady) {
                         isAuthReady = true;
                     }
+
+                    // Verify if browser was closed between sessions
+                    if (!isBrowserSessionActive()) {
+                        console.log("Browser session closed. Forcing user to login again.");
+                        if (user) {
+                            window.auth.signOut();
+                        }
+                        localStorage.removeItem('finova_guest_session');
+                        clearSessionCookie();
+                        handleUnauthenticatedUser();
+                        return;
+                    }
+
+                    // Active browser session exists, refresh cookie
+                    setSessionCookie();
 
                     if (user) {
                         isGuest = false;
@@ -5043,6 +5148,7 @@
 
                 const provider = new firebase.auth.GoogleAuthProvider();
                 await window.auth.signInWithPopup(provider);
+                setSessionCookie();
             } catch (err) {
                 console.error("Google Sign-In failed:", err);
                 showAuthError(getAuthErrorMessage(err));
@@ -5055,6 +5161,7 @@
         }
 
         function handleGuestLogin() {
+            setSessionCookie();
             isGuest = true;
             localStorage.setItem('finova_guest_session', 'true');
             isAuthenticated = true;
@@ -5354,6 +5461,7 @@
 
         async function handleSettingsLogout() {
             try {
+                clearSessionCookie();
                 if (isGuest) {
                     handleUnauthenticatedUser();
                     showToast("Signed out successfully from Guest session.", "info");
@@ -5433,6 +5541,83 @@
             document.getElementById('sidebar-overlay').classList.remove('active');
         }
 
+        // --- HELPERS: Mobile pull-to-refresh ---
+        function initPullToRefresh() {
+            const contentArea = document.querySelector('.content-area');
+            const ptrContainer = document.getElementById('pull-to-refresh-container');
+            const ptrIcon = document.getElementById('ptr-icon');
+            const ptrText = document.getElementById('ptr-text');
+            if (!contentArea || !ptrContainer) return;
+
+            let startY = 0;
+            let currentY = 0;
+            let isPulling = false;
+            const PULL_THRESHOLD = 70; // px pull threshold to trigger reload
+
+            contentArea.addEventListener('touchstart', (e) => {
+                if (contentArea.scrollTop <= 0) {
+                    startY = e.touches[0].clientY;
+                    isPulling = true;
+                } else {
+                    isPulling = false;
+                }
+            }, { passive: true });
+
+            contentArea.addEventListener('touchmove', (e) => {
+                if (!isPulling) return;
+                currentY = e.touches[0].clientY;
+                const diff = currentY - startY;
+
+                if (diff > 0 && contentArea.scrollTop <= 0) {
+                    const pullDistance = Math.min(diff * 0.5, 100);
+                    ptrContainer.style.height = `${pullDistance}px`;
+                    ptrContainer.classList.add('pulling');
+
+                    if (pullDistance >= PULL_THRESHOLD) {
+                        if (ptrText) ptrText.textContent = "Release to refresh";
+                        if (ptrIcon) ptrIcon.style.transform = "rotate(180deg)";
+                    } else {
+                        if (ptrText) ptrText.textContent = "Pull down to refresh";
+                        if (ptrIcon) ptrIcon.style.transform = "rotate(0deg)";
+                    }
+                }
+            }, { passive: true });
+
+            const resetPullState = () => {
+                if (!isPulling) return;
+                isPulling = false;
+                const currentHeight = parseFloat(ptrContainer.style.height) || 0;
+
+                if (currentHeight >= PULL_THRESHOLD) {
+                    ptrContainer.style.height = "50px";
+                    ptrContainer.classList.remove('pulling');
+                    ptrContainer.classList.add('refreshing');
+                    if (ptrText) ptrText.textContent = "Refreshing page...";
+                    if (ptrIcon) {
+                        ptrIcon.className = "fa-solid fa-spinner ptr-icon spin";
+                        ptrIcon.style.transform = "";
+                    }
+
+                    setTimeout(() => {
+                        window.location.reload();
+                    }, 400);
+                } else {
+                    ptrContainer.style.height = "0px";
+                    ptrContainer.classList.remove('pulling');
+                    setTimeout(() => {
+                        if (ptrText) ptrText.textContent = "Pull down to refresh";
+                        if (ptrIcon) {
+                            ptrIcon.className = "fa-solid fa-arrow-down ptr-icon";
+                            ptrIcon.style.transform = "rotate(0deg)";
+                        }
+                    }, 200);
+                }
+            };
+
+            contentArea.addEventListener('touchend', resetPullState);
+            contentArea.addEventListener('touchcancel', resetPullState);
+        }
+
         // --- INIT ---
         document.getElementById('mobile-menu-btn').addEventListener('click', () => {
             const sidebar = document.getElementById('sidebar');
@@ -5449,6 +5634,7 @@
         });
 
         window.addEventListener('DOMContentLoaded', () => {
+            initPullToRefresh();
             showAuthLoading();
 
             const signInBtn = document.getElementById('google-signin-btn');
