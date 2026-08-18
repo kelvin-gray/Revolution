@@ -4542,6 +4542,7 @@
         let isAuthenticated = false;
         let appInitialized = false;
         let isGuest = false;
+        let pendingSignOut = null;
 
         let firestoreUnsubscribe = null;
 
@@ -4762,7 +4763,7 @@
                     if (!isBrowserSessionActive()) {
                         console.log("Browser session closed. Forcing user to login again.");
                         if (user) {
-                            window.auth.signOut();
+                            pendingSignOut = window.auth.signOut().catch(err => console.error("SignOut error:", err));
                         }
                         localStorage.removeItem('finova_guest_session');
                         clearSessionCookie();
@@ -5146,11 +5147,24 @@
                     signInBtn.innerHTML = '<div class="spinner" style="width:20px;height:20px;border-width:3px;"></div> Signing in...';
                 }
 
+                if (pendingSignOut) {
+                    try {
+                        await pendingSignOut;
+                    } catch (e) {
+                        console.warn("Pending signout check error:", e);
+                    }
+                    pendingSignOut = null;
+                }
+
+                setSessionCookie();
+
                 const provider = new firebase.auth.GoogleAuthProvider();
                 await window.auth.signInWithPopup(provider);
-                setSessionCookie();
             } catch (err) {
                 console.error("Google Sign-In failed:", err);
+                if (!window.auth || !window.auth.currentUser) {
+                    clearSessionCookie();
+                }
                 showAuthError(getAuthErrorMessage(err));
             } finally {
                 if (signInBtn) {
