@@ -4542,7 +4542,6 @@
         let isAuthenticated = false;
         let appInitialized = false;
         let isGuest = false;
-        let pendingSignOut = null;
 
         let firestoreUnsubscribe = null;
 
@@ -4699,11 +4698,7 @@
                 isAuthReady = true;
                 showFirebaseError("Firebase SDK could not be loaded. Please ensure you are online and that CDN scripts loaded correctly.");
                 updateStatusDot('status-firebase', 'error', 'CDN Load Error');
-                if (!isBrowserSessionActive()) {
-                    localStorage.removeItem('finova_guest_session');
-                    clearSessionCookie();
-                    handleUnauthenticatedUser();
-                } else if (localStorage.getItem('finova_guest_session') === 'true') {
+                if (localStorage.getItem('finova_guest_session') === 'true') {
                     handleGuestLogin();
                 } else {
                     showLoginScreen("Firebase SDK could not be loaded. Please check your internet connection and refresh the page.");
@@ -4715,11 +4710,7 @@
                 isAuthReady = true;
                 showFirebaseError("Firebase is not configured. Replace the placeholders in index.html (under firebaseConfig) to enable Firestore/Auth.");
                 updateStatusDot('status-firebase', 'error', 'Not Configured');
-                if (!isBrowserSessionActive()) {
-                    localStorage.removeItem('finova_guest_session');
-                    clearSessionCookie();
-                    handleUnauthenticatedUser();
-                } else if (localStorage.getItem('finova_guest_session') === 'true') {
+                if (localStorage.getItem('finova_guest_session') === 'true') {
                     handleGuestLogin();
                 } else {
                     showLoginScreen("Firebase is not configured. Replace the placeholder values in firebaseConfig inside index.html with your Firebase project credentials.");
@@ -4759,19 +4750,6 @@
                         isAuthReady = true;
                     }
 
-                    // Verify if browser was closed between sessions
-                    if (!isBrowserSessionActive()) {
-                        console.log("Browser session closed. Forcing user to login again.");
-                        if (user) {
-                            pendingSignOut = window.auth.signOut().catch(err => console.error("SignOut error:", err));
-                        }
-                        localStorage.removeItem('finova_guest_session');
-                        clearSessionCookie();
-                        handleUnauthenticatedUser();
-                        return;
-                    }
-
-                    // Active browser session exists, refresh cookie
                     setSessionCookie();
 
                     if (user) {
@@ -5145,15 +5123,6 @@
                 if (signInBtn) {
                     signInBtn.disabled = true;
                     signInBtn.innerHTML = '<div class="spinner" style="width:20px;height:20px;border-width:3px;"></div> Signing in...';
-                }
-
-                if (pendingSignOut) {
-                    try {
-                        await pendingSignOut;
-                    } catch (e) {
-                        console.warn("Pending signout check error:", e);
-                    }
-                    pendingSignOut = null;
                 }
 
                 setSessionCookie();
